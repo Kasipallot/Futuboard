@@ -20,8 +20,13 @@ const HomeButton = () => {
     )
 }
 
+interface ToolBarProps {
+    title: string;
+    boardId: string; // Assuming boardId is also a string
+  }
+  
 //refactor later
-const ToolBar = ({title, boardId}) => {
+const ToolBar = ({title, boardId}: ToolBarProps) => {
 
     return(
         <AppBar position="fixed" sx={{background:"white"}}>
@@ -57,17 +62,20 @@ const Board:React.FC = () => {
     const [boardState, setBoardState] = useState(initialState)
     const id = useParams().id
     
-    //get name, everything from database
-    useEffect(() => {
-        const board = getBoardData(id)
-        console.log(board)
-        setBoardState({board: board})
-    }, [])
 
+useEffect(() => {
+    if (id !== undefined) {
+        const board = getBoardData(id);
+        console.log(board);
+        setBoardState({board: board});
+    }
+        // Optionally handle the else case if needed
+      }, [id]); // Assuming id is a dependency of useEffect
+      
     
   return (
     <>
-      <ToolBar title={boardState.board.title} boardId={id}/>
+      <ToolBar title={boardState.board.title} boardId={id || 'defaultId'}/>
     </>
   );
 }
