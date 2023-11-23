@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import { Paper, Box, Typography, Dialog, DialogContent } from '@mui/material';
-import BoardCreationForm from './BoardCreationForm';
-import {getId, addBoard} from './services/Utils'
+import BoardCreationForm from './BoardCreationForm.tsx';
+import {getId, addBoard} from './services/Utils.ts'
 import {useNavigate} from 'react-router-dom'
 
 interface CreateBoardButtonProps {

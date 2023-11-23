@@ -1,8 +1,8 @@
 import './App.css'
-import Board from './components/Board'
+import Board from './components/Board.tsx'
 import  {BrowserRouter as Router, 
 Routes, Route}from 'react-router-dom'
-import Home from './components/Home'
+import Home from './components/Home.tsx'
 
 function App() {
 

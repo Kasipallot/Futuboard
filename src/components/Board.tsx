@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
 import { useParams } from 'react-router-dom';
-import { getBoardData } from './services/Utils';
+import { getBoardData } from './services/Utils.ts';
 import {useNavigate} from 'react-router-dom'
 
 
