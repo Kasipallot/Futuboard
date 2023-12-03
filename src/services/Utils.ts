@@ -1,8 +1,7 @@
+import { Board } from '../types';
+
 import {v4 as uuidv4} from 'uuid';
 
-interface Board {
-    // Define the structure of your board here
-  }
 export const getId = (): string => {
     return uuidv4();
 }
