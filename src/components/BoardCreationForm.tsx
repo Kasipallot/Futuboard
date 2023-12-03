@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { useForm } from "react-hook-form"
 
-type AddBoardCreationFormProps = {
+interface AddBoardCreationFormProps {
     onSubmit: any,
     onCancel: any,
 }

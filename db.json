@@ -1,0 +1,57 @@
+{
+  "boards": [
+    {
+      "id": "1",
+      "title": "Board 1",
+      "columns": [
+        {
+          "id": "1",
+          "title": "Column 1",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "title": "Board 2",
+      "columns": [
+        {
+          "id": "1",
+          "title": "Column 1",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "title": "Board 3",
+      "columns": [
+        {
+          "id": "1",
+          "title": "Column 1",
+          "tasks": []
+        }
+      ]
+    },
+    {
+      "id": "0a423603-1816-4769-a0ca-02fb58c128d5",
+      "title": "test board",
+      "columns": []
+    },
+    {
+      "id": "6466bde1-83a4-4d63-9207-745897733210",
+      "title": "myboard",
+      "columns": []
+    },
+    {
+      "id": "8aecc5f4-7f9c-4946-a2c6-3acf5f0512f2",
+      "title": "testboard123",
+      "columns": []
+    },
+    {
+      "id": "c6039f2a-fe86-40cd-add2-ed1c287757b3",
+      "title": "testi",
+      "columns": []
+    }
+  ]
+}
