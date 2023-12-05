@@ -56,6 +56,7 @@ const Home: React.FC = () => {
     const navigate = useNavigate()
     const [addBoard] = useAddBoardMutation()
 
+    
     const handleCreateBoard = ({ title }: CreateBoardArgs) => {
         
         const id = getId()
@@ -70,16 +71,19 @@ const Home: React.FC = () => {
         navigate(`/board/${id}`)
         }
 
-  return (
-    <Box>
-        <Typography>
-            Futuboard home page
-        </Typography>
-        <Paper>
-            <CreateBoardButton onNewBoard = {handleCreateBoard}/>
-        </Paper>
+return (
+    <Box display="flow-root" justifyContent="center" alignItems="center" height="100vh">
+        <Box textAlign="center">
+            <Typography>
+                Futuboard home page
+            </Typography>
+            <Paper>
+                <CreateBoardButton onNewBoard={handleCreateBoard} />
+            </Paper>
+        </Box>
     </Box>
-  );
+);
+    
 };
 
 export default Home;

@@ -68,10 +68,10 @@ const BoardContainer:React.FC = () => {
        
   return (
     <>
-    {isLoading && <div>Loading...</div>}
+    {isLoading && <Typography>Loading...</Typography>}
     {isSuccess && board && <>
     <ToolBar title={board.title} boardId={id}/>
-    <Board columns = {board.columns}/>
+    <Board columns={board.columns} />
     </>
     }
     </>
