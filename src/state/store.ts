@@ -1,8 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { boardsApi } from "./apiSlice";
 
-
-
 export const store = configureStore({
     reducer: {
         [boardsApi.reducerPath]: boardsApi.reducer,
