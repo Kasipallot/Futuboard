@@ -8,6 +8,11 @@
           "id": "1",
           "title": "Column 1",
           "tasks": []
+        },
+        {
+          "id": "2",
+          "title": "Column 2",
+          "tasks": []
         }
       ]
     },
@@ -51,6 +56,16 @@
     {
       "id": "c6039f2a-fe86-40cd-add2-ed1c287757b3",
       "title": "testi",
+      "columns": []
+    },
+    {
+      "id": "7b6af0b1-f43a-4c71-9000-02cf29605080",
+      "title": "testboard",
+      "columns": []
+    },
+    {
+      "id": "856e984d-7dba-44ef-847d-2b6a891343cf",
+      "title": "test",
       "columns": []
     }
   ]

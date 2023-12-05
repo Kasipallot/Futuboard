@@ -63,17 +63,17 @@ const BoardContainer:React.FC = () => {
         id = "defaultId"
     }
     
-
-    const {data : board, isLoading, isSuccess} = useGetBoardQuery(id); //tält saa kans loading ja error statuksen
+    const {data : board, isLoading, isSuccess} = useGetBoardQuery(id); 
     console.log(board);
        
-    
   return (
     <>
     {isLoading && <div>Loading...</div>}
-    {isSuccess && board && 
-    <ToolBar title={board.title} boardId={id || 'defaultId'}/>}
-      <Board/>
+    {isSuccess && board && <>
+    <ToolBar title={board.title} boardId={id}/>
+    <Board columns = {board.columns}/>
+    </>
+    }
     </>
   );
 }
