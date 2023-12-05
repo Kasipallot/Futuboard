@@ -1,8 +1,15 @@
+import { Typography } from "@mui/material"
 
+interface columnProps {
+  
+}
 
-const Column = () => {
+const Column = ({column}) => {
+  console.log(column)
   return (
-    <div>Column</div>
+    <>
+    <Typography>{column.title}</Typography>
+    </>
   )
 }
 

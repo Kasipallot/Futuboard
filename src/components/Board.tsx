@@ -1,12 +1,20 @@
+import { Column as ColumnType } from "../types"
+import Column from "./Column"
 
 
-const Board = () => {
-    return(
-        <div>
-            
-        </div>
-    )
-
+interface BoardProps {
+    columns: ColumnType[]
 }
+
+const Board: React.FC<BoardProps> = ({ columns }) => {
+    console.log(columns);
+    return (
+        <>
+            {columns.map((column, index) => (
+                <Column key={column.id} column={column} index = {index} />
+            ))}
+        </>
+    );
+};
 
 export default Board
