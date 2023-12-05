@@ -1,10 +1,11 @@
 import { Typography } from "@mui/material"
+import { Column } from "../types"
 
-interface columnProps {
-  
+interface ColumnProps {
+  column : Column
 }
 
-const Column = ({column}) => {
+const Column : React.FC<ColumnProps> = ({column}) => {
   console.log(column)
   return (
     <>

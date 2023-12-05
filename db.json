@@ -13,6 +13,11 @@
           "id": "2",
           "title": "Column 2",
           "tasks": []
+        },
+        {
+          "id": "3",
+          "title": "Column 3",
+          "tasks": []
         }
       ]
     },
@@ -27,6 +32,7 @@
         }
       ]
     },
+
     {
       "id": "3",
       "title": "Board 3",
