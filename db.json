@@ -7,7 +7,26 @@
         {
           "id": "1",
           "title": "Backlog",
-          "tasks": []
+          "tasks": [
+            {
+              "id": "1",
+              "title": "Task 1",
+              "description": "Complete task 1",
+              "color": "lightblue"
+            },
+            {
+              "id": "2",
+              "title": "Task 2",
+              "description": "Complete task 2",
+              "color": "lightyellow"
+            },
+            {
+              "id": "3",
+              "title": "Task 3",
+              "description": "Complete task 3",
+              "color": "lightgreen"
+            }
+          ]
         },
         {
           "id": "2",
@@ -22,7 +41,20 @@
         {
           "id": "4",
           "title": "Done",
-          "tasks": []
+          "tasks": [
+            {
+              "id": "2",
+              "title": "Task 2",
+              "description": "Complete task 2",
+              "color": "lightyellow"
+            },
+            {
+              "id": "3",
+              "title": "Task 3",
+              "description": "Complete task 3",
+              "color": "lightgreen"
+            }
+          ]
         },
         {
           "id": "5",
