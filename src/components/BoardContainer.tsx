@@ -13,7 +13,44 @@ import {useNavigate} from 'react-router-dom'
 import Board from './Board'
 import { useGetBoardQuery } from '../state/apiSlice';
 
+import { useState } from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import ColumnCreationForm from "./ColumnCreationForm";
+import { Dialog, DialogContent, IconButton } from "@mui/material"
 
+interface ColumnData {
+  columnTitle: string,
+}
+
+const CreateColumnButton:React.FC = () => {
+    const [open, setOpen] = useState(false)
+  
+      const handleOpenDialog = () => {
+        setOpen(true)
+    }
+    const handleCloseDialog = () => {
+        setOpen(false)
+    }
+    const handleSubmit = (data: ColumnData) => {
+      //data holds the task object. send to server. log for now
+      console.log(data)
+      setOpen(false)
+  
+    }
+    return(
+      <Box>
+        <IconButton color="primary" aria-label="add task" onClick = {handleOpenDialog}>
+              <AddIcon />
+        </IconButton>
+        <Dialog open={open} onClose={handleCloseDialog}>
+                <DialogContent>
+                    <ColumnCreationForm onSubmit = {handleSubmit} onCancel = {handleCloseDialog}/>
+                </DialogContent>
+          </Dialog>
+      </Box>
+      
+    )
+  }
 
 const HomeButton = () => {
     const navigate = useNavigate()
@@ -48,6 +85,7 @@ const ToolBar = ({title, boardId}: ToolBarProps) => {
                      Board ID: {boardId}
                 </Typography> 
                 </Box>
+                <CreateColumnButton/>
             </Toolbar>
         </AppBar> 
     
