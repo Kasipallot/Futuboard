@@ -6,15 +6,15 @@ import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { useForm } from "react-hook-form"
 
-interface AddBoardCreationFormProps {
+interface AddColumnCreationFormProps {
     onSubmit: any,
     onCancel: any,
 }
 
-const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
+const ColumnCreationForm : React.FC<AddColumnCreationFormProps> = (props) => {
     const {  register, handleSubmit, formState: {errors} } = useForm({
         defaultValues:{
-            boardTitle : ""
+            ColumnTitle : ""
         }
     });
 
@@ -27,18 +27,18 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing = {1}>
                 <Grid item xs={12}>
-                    <Typography gutterBottom variant="h6" > Create board </Typography>
+                    <Typography gutterBottom variant="h6" > Create Column </Typography>
                     <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField label='Name' helperText = {errors.boardTitle?.message} error = {Boolean(errors.boardTitle)} {...register("boardTitle", {
+                <TextField label='Name' helperText = {errors.ColumnTitle?.message} error = {Boolean(errors.ColumnTitle)} {...register("ColumnTitle", {
                 minLength: {
                     value : 3,
-                    message: "Board name must be at least 3 characters"
+                    message: "Column name must be at least 3 characters"
                 },
                 required: {
                     value: true,
-                    message: "Board name is required"
+                    message: "Column name is required"
                 }
             })} />  
                 </Grid>
@@ -53,4 +53,4 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
 
 
 
-export default BoardCreationForm
+export default ColumnCreationForm

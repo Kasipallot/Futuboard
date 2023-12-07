@@ -2,17 +2,19 @@
 import React, {useState} from 'react';
 import Button from '@mui/material/Button';
 import { Paper, Box, Typography, Dialog, DialogContent } from '@mui/material';
-import BoardCreationForm from './BoardCreationForm.tsx';
-import {getId, addBoard} from './services/Utils.ts'
+import BoardCreationForm from './BoardCreationForm';
+import {getId} from '../services/Utils'
 import {useNavigate} from 'react-router-dom'
+import { Board } from '../types';
+import { useAddBoardMutation } from '../state/apiSlice';
 
 interface CreateBoardButtonProps {
-    onNewBoard: Function; // Replace Function with a more specific type if needed
+    onNewBoard: Function ; // Replace Function with a more specific type if needed
   }
 
 interface FormData {
     // Define the structure of your form data here
-    boardTitle: String
+    boardTitle: string
   }
 
 interface CreateBoardArgs {
@@ -52,27 +54,36 @@ const CreateBoardButton = (props: CreateBoardButtonProps) => {
 
 const Home: React.FC = () => {
     const navigate = useNavigate()
+    const [addBoard] = useAddBoardMutation()
 
+    
     const handleCreateBoard = ({ title }: CreateBoardArgs) => {
-        //send board state to database
+        
         const id = getId()
-        //imitate with mock database
-        addBoard({id, title}, id)
+        const board : Board = {
+            id,
+            title,
+            columns:[]
+        }
+        //send board object to server
+        addBoard(board)
         //redirect to created board page
         navigate(`/board/${id}`)
         }
 
-
-  return (
-    <Box>
-        <Typography>
-            Futuboard home page
-        </Typography>
-        <Paper>
-            <CreateBoardButton onNewBoard = {handleCreateBoard}/>
-        </Paper>
+return (
+    <Box display="flow-root" justifyContent="center" alignItems="center" height="100vh">
+        <Box textAlign="center">
+            <Typography>
+                Futuboard home page
+            </Typography>
+            <Paper>
+                <CreateBoardButton onNewBoard={handleCreateBoard} />
+            </Paper>
+        </Box>
     </Box>
-  );
+);
+    
 };
 
 export default Home;
