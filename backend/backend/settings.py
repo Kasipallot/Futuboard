@@ -36,7 +36,7 @@ REST_FRAMEWORK = {
 # Application definition
 
 INSTALLED_APPS = [
-    'futuboard',
+    'futuboard.apps.FutuboardConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
