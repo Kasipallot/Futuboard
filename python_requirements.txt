@@ -1,2 +1,8 @@
 django
 djangorestframework
+psycopg-binary==3.1.8
+psycopg==3.1.8
+pytest==7.3.1
+pytest-asyncio==0.21.0
+pytest-html==3.2.0
+pytest-metadata==3.0.0
