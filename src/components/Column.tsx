@@ -9,8 +9,7 @@ import TaskCreationForm from "./TaskCreationForm";
 interface FormData {
   taskTitle: string,
   sizeEstimate?: number,
-  corner1?: string,
-  corner2?: string,
+  corners?: string[],
   description?: string,
 }
 
@@ -64,7 +63,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
           />
         ))
       ) : (
-        <Typography><b>"no tasks yet"</b></Typography>
+        <Typography><b>no tasks yet</b></Typography>
       )}
     </div>
   )
@@ -79,16 +78,13 @@ interface ColumnProps {
 
 const Column: React.FC<ColumnProps> = ({ column }) => {
 
-
-  console.log(column);
   return (
     <>
-      <Paper elevation={4} style={{ margin: '25px', width: '250px', height: '1000px', backgroundColor: '#E5DBD9' }}>
+      <Paper elevation={4} style={{ margin: '25px', width: '250px', height: '1000px', backgroundColor: '#E5DBD9', padding: '4px'}}>
         <Typography  variant={'h5'}  gutterBottom>{column.title}</Typography>
         <CreateTaskButton />
         <TaskList column={column} />
       </Paper>
-
     </>
   );
 };

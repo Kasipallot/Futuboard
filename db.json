@@ -66,6 +66,20 @@
           "title": "something",
           "tasks": []
         }
+      ],
+      "users": [
+        {
+          "id": "1",
+          "name": "Matti"
+        },
+        {
+          "id": "2",
+          "name": "Mikko"
+        },
+        {
+          "id": "3",
+          "name": "Teemu"
+        }
       ]
     },
     {
@@ -117,6 +131,11 @@
     },
     {
       "id": "856e984d-7dba-44ef-847d-2b6a891343cf",
+      "title": "test",
+      "columns": []
+    },
+    {
+      "id": "2fe417c4-2c78-4386-a11a-d7505ad208a1",
       "title": "test",
       "columns": []
     }

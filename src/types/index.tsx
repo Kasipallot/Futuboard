@@ -2,7 +2,8 @@ export type Board = {
     id: string;
     title: string;
     columns: Column[];
-}; // add list of users later
+    users: User[];
+}; 
 
 export type Column = {
     id: string;
@@ -16,4 +17,11 @@ export type Task = {
     description: string;
     color?: string;
 };
+
+export type User = {
+    id: string;
+    name: string;
+    color?: string;
+};
+
 

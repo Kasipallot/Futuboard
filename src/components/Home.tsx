@@ -53,17 +53,18 @@ const CreateBoardButton = (props: CreateBoardButtonProps) => {
 }
 
 const Home: React.FC = () => {
+    
     const navigate = useNavigate()
     const [addBoard] = useAddBoardMutation()
 
-    
     const handleCreateBoard = ({ title }: CreateBoardArgs) => {
         
         const id = getId()
         const board : Board = {
             id,
             title,
-            columns:[]
+            columns:[],
+            users:[]
         }
         //send board object to server
         addBoard(board)
