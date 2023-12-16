@@ -1,8 +1,8 @@
 import './App.css'
-import Board from './components/Board.tsx'
-import  {BrowserRouter as Router, 
-Routes, Route}from 'react-router-dom'
-import Home from './components/Home.tsx'
+
+import  {BrowserRouter as Router, Routes, Route}from 'react-router-dom'
+import Home from './components/Home'
+import BoardContainer from './components/BoardContainer'
 
 function App() {
 
@@ -10,7 +10,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home/>}/>
-        <Route path="/board/:id" element={<Board/>} />
+        <Route path="/board/:id" element={<BoardContainer/>} />
       </Routes>
     </Router>
   )
