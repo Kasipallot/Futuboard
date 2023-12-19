@@ -3,10 +3,12 @@ from django.http import Http404
 from .models import Board
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.http import HttpResponse
+
 
 # Create your views here.
 @api_view(['GET'])
-def get_all_boards(request):
+def get_all_boards(request, format=None):
     query_set = Board.objects.all()
     data = serializers.serialize("json", query_set)
     return Response(data)
