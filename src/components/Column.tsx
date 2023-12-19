@@ -5,6 +5,7 @@ import Task from "./Task"
 import AddIcon from '@mui/icons-material/Add';
 import {useState} from 'react'
 import TaskCreationForm from "./TaskCreationForm";
+import { getId } from "../services/Utils";
 
 interface FormData {
   taskTitle: string,
@@ -24,7 +25,15 @@ const CreateTaskButton:React.FC = () => {
   }
   const handleSubmit = (data: FormData) => {
     //data holds the task object. send to server. log for now
-    console.log(data)
+    //task object cant be give type Task yet- problem with caretaker types
+    const taskObject = {
+      id : getId(),
+      title : data.taskTitle,
+      description : data.description,
+      caretakers : data.corners,
+      sizeEstimate : data.sizeEstimate,
+    }
+    console.log(taskObject)
     setOpen(false)
 
   }
@@ -33,7 +42,16 @@ const CreateTaskButton:React.FC = () => {
       <IconButton color="primary" aria-label="add task" onClick = {handleOpenDialog}>
             <AddIcon />
       </IconButton>
-      <Dialog open={open} onClose={handleCloseDialog}>
+      <Dialog open={open} onClose={handleCloseDialog} PaperProps={{
+        style: { 
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          
+        },
+      }}
+      >
               <DialogContent>
                   <TaskCreationForm onSubmit = {handleSubmit} onCancel = {handleCloseDialog}/>
               </DialogContent>

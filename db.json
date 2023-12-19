@@ -12,13 +12,39 @@
               "id": "1",
               "title": "Task 1",
               "description": "Complete task 1",
-              "color": "lightblue"
+              "color": "lightblue",
+              "sizeEstimate": "8",
+              "caretakers": [
+                {
+                  "id": "1",
+                  "name": "Matti"
+                },
+                {
+                  "id": "2",
+                  "name": "Mikko"
+                }
+              ]
             },
             {
               "id": "2",
-              "title": "Task 2",
+              "title": "longer task title longer task title longer longer longer longer",
               "description": "Complete task 2",
-              "color": "lightyellow"
+              "color": "lightyellow",
+              "sizeEstimate": "4",
+              "caretakers": [
+                {
+                  "id": "1",
+                  "name": "Matti"
+                },
+                {
+                  "id": "2",
+                  "name": "Mikko"
+                },
+                {
+                  "id": "3",
+                  "name": "Teemu"
+                }
+              ]
             },
             {
               "id": "3",
@@ -127,16 +153,6 @@
     {
       "id": "7b6af0b1-f43a-4c71-9000-02cf29605080",
       "title": "testboard",
-      "columns": []
-    },
-    {
-      "id": "856e984d-7dba-44ef-847d-2b6a891343cf",
-      "title": "test",
-      "columns": []
-    },
-    {
-      "id": "2fe417c4-2c78-4386-a11a-d7505ad208a1",
-      "title": "test",
       "columns": []
     }
   ]

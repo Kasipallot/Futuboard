@@ -4,11 +4,13 @@ import { useGetBoardQuery } from "../state/apiSlice";
 import { useParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
 import {User} from "../types";
+import {Task as TaskType} from '../types'
 
 
-interface TaskCreationFormProps {
+interface TaskEditFormProps {
     onSubmit: any,
     onCancel: any,
+    task : TaskType
 
 }
 
@@ -20,31 +22,32 @@ interface FormData {
     sizeEstimate: string;
   }
 
-const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
+const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
     const { id = 'default-id' } = useParams() //theres maybe a better way to get the id / save it into the apislice somehow
     const board = useGetBoardQuery(id)
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
-        defaultValues: {
-            taskTitle: "",
-            corners: [],
-            description: "",
-            color: "#ffffff",
-            sizeEstimate: "",
-        }
-    });
-
     const {
         onSubmit,
         onCancel,
+        task,
     } = props;
+
+    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+        defaultValues: {
+            taskTitle: task.title,
+            corners: task.caretakers,
+            description: task.description,
+            color: "#ffffff",
+            sizeEstimate: task.sizeEstimate,
+        }
+    });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Typography gutterBottom variant="h6" > Create task </Typography>
+                    <Typography noWrap gutterBottom variant="h6" > {task.title}</Typography>
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
@@ -109,4 +112,4 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
 
 
-export default TaskCreationForm
+export default TaskEditForm

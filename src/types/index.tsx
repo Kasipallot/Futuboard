@@ -14,8 +14,10 @@ export type Column = {
 export type Task = {
     id: string;
     title: string;
-    description: string;
+    description?: string;
     color?: string;
+    caretakers?: User[];
+    sizeEstimate?: string;
 };
 
 export type User = {
