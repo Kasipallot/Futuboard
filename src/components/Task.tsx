@@ -2,7 +2,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { Task as TaskType, User } from '../types';
 import { IconButton, Paper, Popover, Typography } from '@mui/material';
-import { Edit } from '@mui/icons-material';
+import {  EditNote,  } from '@mui/icons-material';
 import TaskEditForm from './TaskEditForm';
 
 
@@ -19,10 +19,11 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
 }
 interface FormData {
     taskTitle: string,
-    sizeEstimate?: number,
-    corners?: string[],
+    sizeEstimate?: string,
+    corners?: User[],
     description?: string,
-  }
+    color?: string,
+}
 
 const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetStateAction<boolean>> }> = ({ task, setTaskSelected }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -37,7 +38,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
         setAnchorEl(null);
     };
 
-    const handleOnSubmit = (data : FormData) => {
+    const handleOnSubmit = (data: FormData) => {
         console.log(data)
         setTaskSelected(false)
         setAnchorEl(null);
@@ -49,7 +50,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     return (
         <div>
             <IconButton size="small" onClick={handleClick}>
-                <Edit />
+                <EditNote />
             </IconButton>
             <Popover
                 id={id}
@@ -65,8 +66,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                     horizontal: -50,
                 }}
             >
-                <Paper style={{height:"500px", padding:"20px", width:"500px"}}>
-                <TaskEditForm onSubmit = {handleOnSubmit} onCancel = {handleClose} task = {task}/>
+                <Paper style={{ height: "fit-content", padding: "20px", width: "400px" }}>
+                    <TaskEditForm onSubmit={handleOnSubmit} onCancel={handleClose} task={task} />
 
                 </Paper>
             </Popover>
@@ -91,18 +92,18 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         height: "100px",
         marginBottom: "20px",
     }
-    
+
     //temporary styling solutions
     return (
-        <Paper elevation={selected ? 12 : 4} style={taskStyle} >
-            
+        <Paper elevation={selected ? 24 : 4} style={taskStyle} >
+
             <div style={{ display: "flex", justifyContent: 'space-between' }}>
                 <Typography variant={'h6'} gutterBottom noWrap>{task.title}</Typography>
                 <EditTaskButton task={task} setTaskSelected={setSelected} />
             </div>
 
 
-            <div style={{ display: 'flex', height: "60%", justifyContent: 'space-between'}}>
+            <div style={{ display: 'flex', height: "60%", justifyContent: 'space-between' }}>
                 <div style={{ overflow: "hidden" }}>
                     {task.caretakers && task.caretakers.map((caretaker, index) => (
                         <CaretakerComponent key={index} caretaker={caretaker} />

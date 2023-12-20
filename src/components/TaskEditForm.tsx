@@ -8,8 +8,8 @@ import {Task as TaskType} from '../types'
 
 
 interface TaskEditFormProps {
-    onSubmit: any,
-    onCancel: any,
+    onSubmit: (data : FormData) => void,
+    onCancel: () => void,
     task : TaskType
 
 }
@@ -98,11 +98,11 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline rows={6} fullWidth {...register("description", {
+                    <TextField label='Description' multiline minRows={6} maxRows={25} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <Button type="submit" color="primary" variant="contained">Submit</Button>
+                    <Button type="submit" color="primary" variant="contained">Save Changes</Button>
                     <Button onClick={onCancel}>Cancel</Button>
                 </Grid>
             </Grid>

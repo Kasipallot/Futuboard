@@ -9,12 +9,12 @@ import { Board } from '../types';
 import { useAddBoardMutation } from '../state/apiSlice';
 
 interface CreateBoardButtonProps {
-    onNewBoard: Function ; // Replace Function with a more specific type if needed
+    onNewBoard: (data : FormData) => void ; // Replace Function with a more specific type if needed
   }
 
 interface FormData {
     // Define the structure of your form data here
-    boardTitle: string
+    title: string
   }
 
 interface CreateBoardArgs {
@@ -35,7 +35,7 @@ const CreateBoardButton = (props: CreateBoardButtonProps) => {
         //TODO: should only temporarily update the board name. (not in this function though)
         //later should create entirely new board object and send it to database
         //later: get password for board
-        onNewBoard({title: data.boardTitle})
+        onNewBoard({title: data.title})
         setOpen(false)
     }
     return(

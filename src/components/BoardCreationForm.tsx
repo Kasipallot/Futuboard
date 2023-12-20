@@ -14,7 +14,7 @@ interface AddBoardCreationFormProps {
 const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
     const {  register, handleSubmit, formState: {errors} } = useForm({
         defaultValues:{
-            boardTitle : ""
+            title : ""
         }
     });
 
@@ -31,7 +31,7 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
                     <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField label='Name' helperText = {errors.boardTitle?.message} error = {Boolean(errors.boardTitle)} {...register("boardTitle", {
+                <TextField label='Name' helperText = {errors.title?.message} error = {Boolean(errors.title)} {...register("title", {
                 minLength: {
                     value : 3,
                     message: "Board name must be at least 3 characters"

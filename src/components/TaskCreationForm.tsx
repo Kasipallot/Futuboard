@@ -7,8 +7,8 @@ import {User} from "../types";
 
 
 interface TaskCreationFormProps {
-    onSubmit: any,
-    onCancel: any,
+    onSubmit: (data : FormData) => void,
+    onCancel: () => void,
 
 }
 
@@ -95,7 +95,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline rows={6} fullWidth {...register("description", {
+                    <TextField label='Description' multiline minRows={6} maxRows={25} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
