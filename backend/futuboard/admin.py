@@ -1,18 +1,5 @@
 from django.contrib import admin
-from .models import Board
-#from .models import Restaurant
-
-# Register your models here.
-#class RestaurantAdmin(admin.ModelAdmin):
-#    fieldsets = [
-#        (None,               {'fields': ['name']}),
-##        (None,               {'fields': ['address']}),
-#        (None,               {'fields': ['latitude']}),
-##        (None,               {'fields': ['longitude']})
-#    ]
-#    list_display = ('name', 'address', 'latitude', 'longitude')
-#admin.site.register(Restaurant, RestaurantAdmin)
-
+from .models import Board, Column, Ticket
 
 class BoardAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -26,3 +13,32 @@ class BoardAdmin(admin.ModelAdmin):
     ]
     list_display = ('title',)
 admin.site.register(Board, BoardAdmin)
+
+class ColumnAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['columnid']}),
+        (None,               {'fields': ['boardid']}),
+        (None,               {'fields': ['wip_limit']}),
+        (None,               {'fields': ['color']}),
+        (None,               {'fields': ['description']}),
+        (None,               {'fields': ['title']}),
+        (None,               {'fields': ['ordernum']}),
+        (None,               {'fields': ['creation_date']}),
+    ]
+    list_display = ('title',)
+admin.site.register(Column, ColumnAdmin)
+
+class TicketAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['ticketid']}),
+        (None,               {'fields': ['columnid']}),
+        (None,               {'fields': ['title']}),
+        (None,               {'fields': ['description']}),
+        (None,               {'fields': ['color']}),
+        (None,               {'fields': ['storypoints']}),
+        (None,               {'fields': ['size']}),
+        (None,               {'fields': ['order']}),
+        (None,               {'fields': ['creation_date']}),
+    ]
+    list_display = ('title',)
+admin.site.register(Ticket, TicketAdmin)

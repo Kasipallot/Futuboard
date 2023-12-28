@@ -16,4 +16,6 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('boards/', views.get_all_boards, name='get_all_boards'),
     path('boards/<uuid:board_id>/', views.get_board_by_id, name='get_board_by_id'),
+    path('boards/<uuid:board_id>/columns/', views.get_columns_from_board, name='get_columns_from_board'),
+    path('boards/<uuid:board_id>/columns/<uuid:column_id>/tickets', views.get_tickets_from_column, name='get_tickets_from_column'),
 ]
