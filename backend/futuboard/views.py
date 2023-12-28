@@ -24,12 +24,12 @@ def get_board_by_id(request, board_id):
 
 @api_view(['GET'])
 def get_columns_from_board(request, board_id):
-    query_set = Column.objects.filter(boardid=board_id)
+    query_set = Column.objects.filter(boardid=board_id).order_by('ordernum')
     serializer = ColumnSerializer(query_set, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
 def get_tickets_from_column(request, board_id, column_id):
-    query_set = Ticket.objects.filter(columnid=column_id)
+    query_set = Ticket.objects.filter(columnid=column_id).order_by('order')
     serializer = TicketSerializer(query_set, many=True)
     return Response(serializer.data)
