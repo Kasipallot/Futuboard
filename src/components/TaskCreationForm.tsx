@@ -1,13 +1,13 @@
-import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import {  Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useGetBoardQuery } from "../state/apiSlice";
 import { useParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
-import {User} from "../types";
+import { User } from "../types";
 
 
 interface TaskCreationFormProps {
-    onSubmit: (data : FormData) => void,
+    onSubmit: (data: FormData) => void,
     onCancel: () => void,
 
 }
@@ -18,7 +18,7 @@ interface FormData {
     description: string;
     color: string;
     sizeEstimate: string;
-  }
+}
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
@@ -60,7 +60,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField  type="number" placeholder ="size" InputLabelProps={{ shrink: true, }} {...register("sizeEstimate", {})} />
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("sizeEstimate", {})} />
                 </Grid>
                 <Grid item xs={12}>
                     <>
@@ -83,8 +83,9 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                             }}
                                             isOptionEqualToValue={(option, value) => option.id === value.id}
                                             renderInput={(params) => (
-                                                <TextField {...params} label="Assignees"  />
+                                                <TextField {...params} label="Assignees" />
                                             )}
+                                            
                                         />
                                     )}
                                 />

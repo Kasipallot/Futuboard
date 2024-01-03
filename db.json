@@ -5,11 +5,11 @@
       "title": "Board 1",
       "columns": [
         {
-          "id": "1",
+          "id": "backglogcolumnid",
           "title": "Backlog",
           "tasks": [
             {
-              "id": "1",
+              "id": "1333333",
               "title": "Task 1",
               "description": "Complete task 1",
               "color": "lightblue",
@@ -26,7 +26,7 @@
               ]
             },
             {
-              "id": "2",
+              "id": "24444444",
               "title": "longer task title longer task title longer longer longer longer",
               "description": "Complete task 2",
               "color": "lightyellow",
@@ -47,7 +47,7 @@
               ]
             },
             {
-              "id": "3",
+              "id": "task333",
               "title": "Task 3",
               "description": "Complete task 3",
               "color": "lightgreen"
@@ -55,27 +55,27 @@
           ]
         },
         {
-          "id": "2",
+          "id": "progresscolumnid",
           "title": "In progress",
           "tasks": []
         },
         {
-          "id": "3",
+          "id": "katselemassaid",
           "title": "Katselmoinnissa",
           "tasks": []
         },
         {
-          "id": "4",
+          "id": "donecolumnid",
           "title": "Done",
           "tasks": [
             {
-              "id": "2",
+              "id": "34689034680",
               "title": "Task 2",
               "description": "Complete task 2",
               "color": "lightyellow"
             },
             {
-              "id": "3",
+              "id": "3468034680",
               "title": "Task 3",
               "description": "Complete task 3",
               "color": "lightgreen"
@@ -83,12 +83,12 @@
           ]
         },
         {
-          "id": "5",
+          "id": "58023580",
           "title": "something",
           "tasks": []
         },
         {
-          "id": "6",
+          "id": "45789457890",
           "title": "something",
           "tasks": []
         }
@@ -96,11 +96,13 @@
       "users": [
         {
           "id": "1",
-          "name": "Matti"
+          "name": "Matti",
+          "color":"lightblue"
         },
         {
           "id": "2",
-          "name": "Mikko"
+          "name": "Mikko",
+          "color":"lightgreen"
         },
         {
           "id": "3",
@@ -113,18 +115,18 @@
       "title": "Board 2",
       "columns": [
         {
-          "id": "1",
+          "id": "12389012390132",
           "title": "Column 1",
           "tasks": []
         }
       ]
     },
     {
-      "id": "3",
+      "id": "123423232",
       "title": "Board 3",
       "columns": [
         {
-          "id": "1",
+          "id": "580150289",
           "title": "Column 1",
           "tasks": []
         }

@@ -53,6 +53,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                 <EditNote />
             </IconButton>
             <Popover
+            disableRestoreFocus
                 id={id}
                 open={open}
                 anchorEl={anchorEl}
@@ -90,7 +91,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         padding: "4px",
         backgroundColor: task.color,
         height: "100px",
-        marginBottom: "20px",
+        marginBottom: "5px",
     }
 
     //temporary styling solutions
