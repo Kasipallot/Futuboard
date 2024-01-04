@@ -3,12 +3,11 @@ export type Board = {
     title: string;
     columns: Column[];
     users: User[];
-}; 
+};
 
 export type Column = {
-    id: string;
+    columnid: string;
     title: string;
-    tasks: Task[];
 };
 
 export type Task = {

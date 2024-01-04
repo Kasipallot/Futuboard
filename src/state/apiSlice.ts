@@ -1,12 +1,17 @@
+<<<<<<< Updated upstream
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import { Board, Column } from '../types';
+=======
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { Board, Column, Task } from '../types';
+>>>>>>> Stashed changes
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
     baseQuery: fetchBaseQuery({baseUrl: 'http://127.0.0.1:8000/'}), //json server (npm run server)
-    tagTypes: ['Boards'],
+    tagTypes: ['Boards', 'Columns'],
     endpoints: (builder) => ({
-        getBoard : builder.query<Board, string>({
+        getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ['Boards']
         }),
@@ -18,6 +23,7 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: ['Boards']
         }),
+<<<<<<< Updated upstream
         addColumn: builder.mutation<Column, Column>({
             query: (column) => ({
                 url: 'boards/${boardId}/columns/',
@@ -30,3 +36,19 @@ export const boardsApi = createApi({
 })
 
 export const { useGetBoardQuery, useAddBoardMutation, useAddColumnMutation } = boardsApi;
+=======
+        getColumnsByBoardId: builder.query<Column[], string>({
+            query: (boardid) => `boards/${boardid}/columns/`,
+            providesTags: ['Boards']
+        }),
+        getTaskListByColumnId: builder.query<Task[], { boardId: string, columnId: string }>({
+            query: ({ boardId, columnId }) => `boards/${boardId}/columns/${columnId}/tickets`,
+            providesTags: ['Boards']
+        }),
+
+
+    }),
+})
+
+export const { useGetBoardQuery, useAddBoardMutation, useGetColumnsByBoardIdQuery, useGetTaskListByColumnIdQuery } = boardsApi;
+>>>>>>> Stashed changes
