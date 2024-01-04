@@ -3,11 +3,11 @@ import { Board } from '../types';
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://localhost:3001/'}), //json server (npm run server)
+    baseQuery: fetchBaseQuery({baseUrl: 'http://127.0.0.1:8000/'}), //json server (npm run server)
     tagTypes: ['Boards'],
     endpoints: (builder) => ({
         getBoard : builder.query<Board, string>({
-            query: (boardId) => `boards/${boardId}`,
+            query: (boardId) => `boards/${boardId}/`,
             providesTags: ['Boards']
         }),
         addBoard: builder.mutation<Board, Board>({
