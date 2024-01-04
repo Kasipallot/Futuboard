@@ -2,6 +2,7 @@ django
 djangorestframework
 python-decouple
 django-cors-headers
+psycopg2==2.9.9
 psycopg-binary==3.1.8
 psycopg==3.1.8
 pytest==7.3.1
