@@ -1,5 +1,6 @@
 django
 djangorestframework
+python-decouple
 psycopg-binary==3.1.8
 psycopg==3.1.8
 pytest==7.3.1
