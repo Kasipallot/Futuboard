@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import { Board } from '../types';
+import { Board, Column } from '../types';
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
@@ -12,13 +12,21 @@ export const boardsApi = createApi({
         }),
         addBoard: builder.mutation<Board, Board>({
             query: (board) => ({
-                url: 'boards',
+                url: 'boards/',
                 method: 'POST',
                 body: board
+            }),
+            invalidatesTags: ['Boards']
+        }),
+        addColumn: builder.mutation<Column, Column>({
+            query: (column) => ({
+                url: 'boards/${boardId}/columns/',
+                method: 'POST',
+                body: column
             }),
             invalidatesTags: ['Boards']
         })
     }),
 })
 
-export const { useGetBoardQuery, useAddBoardMutation } = boardsApi;
+export const { useGetBoardQuery, useAddBoardMutation, useAddColumnMutation } = boardsApi;
