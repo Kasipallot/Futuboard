@@ -74,19 +74,26 @@ interface TaskListProps {
 
 const TaskList: React.FC<TaskListProps> = ({ column }) => {
 
-  const { id } = useParams()
+  let { id } = useParams()
   //bad code fix later
   if (!id) {
-    return
+    id = 'default-id'
   }
 
   //change to get task data of columnId from server, only give prop for columnId
-  const { data: taskList } = useGetTaskListByColumnIdQuery({ boardId: id, columnId: column.columnid });
+  const { data: taskList, isLoading } = useGetTaskListByColumnIdQuery({ boardId: id, columnId: column.columnid });
 
   const tasks = taskList
-  console.log(tasks)
+  if (isLoading) {
+    return (
+      <Typography variant={'body2'} gutterBottom>
+        Loading tasks...
+      </Typography>
+    )
+  }
 
   return (
+
     <Droppable droppableId={column.columnid} type="task">
       {(provided: DroppableProvided) => {
         return (
@@ -96,7 +103,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
           >
             {tasks && tasks.length ? (
               tasks.map((task: TaskType, index) => (
-                <Draggable key={task.id} draggableId={task.id} index={index}>
+                <Draggable key={task.ticketid} draggableId={task.ticketid} index={index}>
                   {(provided) => {
                     return (
                       <List
@@ -106,7 +113,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
 
                       >
                         <Task
-                          key={task.id}
+                          key={task.ticketid}
                           task={task}
                           index={index}
                         />

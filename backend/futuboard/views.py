@@ -55,8 +55,7 @@ def get_columns_from_board(request, board_id):
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'POST':
         try:
-            #length = len(Column.objects.filter(boardid=board_id))
-            #print(length)
+            length = len(Column.objects.filter(boardid=board_id))
             new_column = Column(
                 columnid = request.data['columnid'],
                 boardid = Board.objects.get(pk=board_id),
@@ -64,7 +63,7 @@ def get_columns_from_board(request, board_id):
                 color = '',
                 description = '',
                 title = request.data['title'],
-                ordernum = 0,
+                ordernum = length + 1,
                 creation_date = timezone.now()
                 )
             new_column.save()

@@ -20,7 +20,7 @@ export const boardsApi = createApi({
         }),
         getColumnsByBoardId: builder.query<Column[], string>({
             query: (boardid) => `boards/${boardid}/columns/`,
-            providesTags: ['Boards']
+            providesTags: ['Columns']
         }),
         getTaskListByColumnId: builder.query<Task[], { boardId: string, columnId: string }>({
             query: ({ boardId, columnId }) => `boards/${boardId}/columns/${columnId}/tickets`,
@@ -32,7 +32,7 @@ export const boardsApi = createApi({
                 method: 'POST',
                 body: column
             }),
-            invalidatesTags: ['Boards']
+            invalidatesTags: ['Columns']
         }),
 
     }),
