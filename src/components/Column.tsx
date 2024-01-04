@@ -84,6 +84,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
   const { data: taskList } = useGetTaskListByColumnIdQuery({ boardId: id, columnId: column.columnid });
 
   const tasks = taskList
+  console.log(tasks)
 
   return (
     <Droppable droppableId={column.columnid} type="task">
