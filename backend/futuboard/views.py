@@ -25,7 +25,7 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
             serializer = BoardSerializer(new_board)
             return JsonResponse(serializer.data, safe=False)
         except:
-            raise Http404("Board does not exist")
+            raise Http404("Cannot create Board")
     if request.method == 'GET':
         query_set = Board.objects.all()
         serializer = BoardSerializer(query_set, many=True)
@@ -65,7 +65,7 @@ def get_columns_from_board(request, board_id):
             serializer = ColumnSerializer(new_column)
             return JsonResponse(serializer.data, safe=False)
         except:
-            raise Http404("Board does not exist")
+            raise Http404("Cannot create Column")
         
     if request.method == 'GET':
         try:
@@ -75,8 +75,33 @@ def get_columns_from_board(request, board_id):
         serializer = ColumnSerializer(query_set, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def get_tickets_from_column(request, board_id, column_id):
-    query_set = Ticket.objects.filter(columnid=column_id).order_by('order')
-    serializer = TicketSerializer(query_set, many=True)
-    return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        try:
+            length = len(Ticket.objects.filter(columnid=column_id))
+            print(length)
+            new_ticket = Ticket(
+                ticketid = request.data['id'],
+                columnid = request.data['id'],
+                title = request.data['title'],
+                description = '',
+                color = 'white',
+                storypoints = 8,
+                size = 1,
+                order = length,
+                creation_date = timezone.now()
+                )
+            new_ticket.save()
+
+            serializer = ColumnSerializer(new_ticket)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            raise Http404("Cannot create Ticket")
+    if request.method == 'GET':
+        try:
+            query_set = Ticket.objects.filter(columnid=column_id).order_by('order')
+            serializer = TicketSerializer(query_set, many=True)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            raise Http404("Error getting tickets.") 
