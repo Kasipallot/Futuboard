@@ -1,10 +1,5 @@
-<<<<<<< Updated upstream
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
-import { Board, Column } from '../types';
-=======
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Board, Column, Task } from '../types';
->>>>>>> Stashed changes
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
@@ -23,20 +18,6 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: ['Boards']
         }),
-<<<<<<< Updated upstream
-        addColumn: builder.mutation<Column, Column>({
-            query: (column) => ({
-                url: 'boards/${boardId}/columns/',
-                method: 'POST',
-                body: column
-            }),
-            invalidatesTags: ['Boards']
-        })
-    }),
-})
-
-export const { useGetBoardQuery, useAddBoardMutation, useAddColumnMutation } = boardsApi;
-=======
         getColumnsByBoardId: builder.query<Column[], string>({
             query: (boardid) => `boards/${boardid}/columns/`,
             providesTags: ['Boards']
@@ -45,10 +26,17 @@ export const { useGetBoardQuery, useAddBoardMutation, useAddColumnMutation } = b
             query: ({ boardId, columnId }) => `boards/${boardId}/columns/${columnId}/tickets`,
             providesTags: ['Boards']
         }),
+        addColumn: builder.mutation<Column, Column>({
+            query: (column) => ({
+                url: 'boards/${boardId}/columns/',
+                method: 'POST',
+                body: column
+            }),
+            invalidatesTags: ['Boards']
+        })
 
 
     }),
 })
 
-export const { useGetBoardQuery, useAddBoardMutation, useGetColumnsByBoardIdQuery, useGetTaskListByColumnIdQuery } = boardsApi;
->>>>>>> Stashed changes
+export const { useGetBoardQuery, useAddBoardMutation, useGetColumnsByBoardIdQuery, useGetTaskListByColumnIdQuery, useAddColumnMutation } = boardsApi;
