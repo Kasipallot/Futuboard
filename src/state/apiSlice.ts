@@ -8,8 +8,8 @@ import { Board, Column, Task } from '../types';
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:8000/' }), //json server (npm run server)
-    tagTypes: ['Boards'],
+    baseQuery: fetchBaseQuery({baseUrl: 'http://127.0.0.1:8000/'}), //json server (npm run server)
+    tagTypes: ['Boards', 'Columns'],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,

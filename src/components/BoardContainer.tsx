@@ -5,7 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-
+import { useAddColumnMutation } from '../state/apiSlice';
 import { useParams } from 'react-router-dom';
 
 import { useNavigate } from 'react-router-dom'
@@ -15,6 +15,7 @@ import { useGetBoardQuery } from '../state/apiSlice';
 
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import { getId } from '../services/Utils';
 import ColumnCreationForm from "./ColumnCreationForm";
 import { Dialog, DialogContent, IconButton, Snackbar } from "@mui/material"
 
@@ -34,6 +35,8 @@ const CreateColumnButton: React.FC = () => {
   const handleSubmit = (data: ColumnData) => {
     //data holds the task object. send to server. log for now
     console.log(data)
+    const [addColumn] = useAddColumnMutation()
+    addColumn({ title: data.columnTitle, id: getId() })
     setOpen(false)
 
   }

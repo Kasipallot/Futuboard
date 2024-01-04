@@ -8,7 +8,6 @@ export type Board = {
 export type Column = {
     columnid: string;
     title: string;
-    tasks: Task[];
 };
 
 export type Task = {
