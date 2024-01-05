@@ -30,3 +30,4 @@ backend/tests/assets
 # Compiled python
 *.py[cod]
 __pycache__
+env

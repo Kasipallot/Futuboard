@@ -17,7 +17,7 @@ import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { getId } from '../services/Utils';
 import ColumnCreationForm from "./ColumnCreationForm";
-import { Dialog, DialogContent, IconButton } from "@mui/material"
+import { Dialog, DialogContent, IconButton, Snackbar } from "@mui/material"
 
 interface ColumnData {
   columnTitle: string,
