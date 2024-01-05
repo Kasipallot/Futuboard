@@ -17,12 +17,14 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    sizeEstimate: string;
+    size: string;
 }
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
     const { id = 'default-id' } = useParams() //theres maybe a better way to get the id / save it into the apislice somehow
+    
+    //get board data to see users to assign as caretakers
     const board = useGetBoardQuery(id)
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
@@ -31,7 +33,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             corners: [],
             description: "",
             color: "#ffffff",
-            sizeEstimate: "",
+            size: "",
         }
     });
 
@@ -60,7 +62,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("sizeEstimate", {})} />
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("size", {})} />
                 </Grid>
                 <Grid item xs={12}>
                     <>

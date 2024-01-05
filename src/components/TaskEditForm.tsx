@@ -3,14 +3,14 @@ import { Controller, useForm } from "react-hook-form";
 import { useGetBoardQuery } from "../state/apiSlice";
 import { useParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
-import {User} from "../types";
-import {Task as TaskType} from '../types'
+import { User } from "../types";
+import { Task as TaskType } from '../types'
 
 
 interface TaskEditFormProps {
-    onSubmit: (data : FormData) => void,
+    onSubmit: (data: FormData) => void,
     onCancel: () => void,
-    task : TaskType
+    task: TaskType
 
 }
 
@@ -19,8 +19,8 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    sizeEstimate: string;
-  }
+    size: string;
+}
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
@@ -34,12 +34,13 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
     } = props;
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+        //set initial values form the task prop
         defaultValues: {
             taskTitle: task.title,
             corners: task.caretakers,
             description: task.description,
             color: "#ffffff",
-            sizeEstimate: task.sizeEstimate,
+            size: task.size,
         }
     });
 
@@ -63,7 +64,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField  type="number" placeholder ="size" InputLabelProps={{ shrink: true, }} {...register("sizeEstimate", {})} />
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("size", {})} />
                 </Grid>
                 <Grid item xs={12}>
                     <>
@@ -86,7 +87,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                                             }}
                                             isOptionEqualToValue={(option, value) => option.id === value.id}
                                             renderInput={(params) => (
-                                                <TextField {...params} label="Assignees"  />
+                                                <TextField {...params} label="Assignees" />
                                             )}
                                         />
                                     )}

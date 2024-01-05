@@ -46,16 +46,22 @@ def get_board_by_id(request, board_id):
 
 @api_view(['GET', 'POST'])
 def get_columns_from_board(request, board_id):
+    if request.method == 'GET':
+        try:
+            query_set = Column.objects.filter(boardid=board_id).order_by('ordernum')
+        except Board.DoesNotExist:
+            raise Http404("Column does not exist") 
+        serializer = ColumnSerializer(query_set, many=True)
+        return JsonResponse(serializer.data, safe=False)
     if request.method == 'POST':
-        print(request.data['id'])
         try:
             length = len(Column.objects.filter(boardid=board_id))
-            print(length)
             new_column = Column(
-                boardid = request.data['id'],
-                wip_limit = 2,
-                color = "white",
-                description = "",
+                columnid = request.data['columnid'],
+                boardid = Board.objects.get(pk=board_id),
+                wip_limit = 0,
+                color = '',
+                description = '',
                 title = request.data['title'],
                 ordernum = length + 1,
                 creation_date = timezone.now()
@@ -65,15 +71,8 @@ def get_columns_from_board(request, board_id):
             serializer = ColumnSerializer(new_column)
             return JsonResponse(serializer.data, safe=False)
         except:
-            raise Http404("Cannot create Column")
-        
-    if request.method == 'GET':
-        try:
-            query_set = Column.objects.filter(boardid=board_id).order_by('ordernum')
-        except Board.DoesNotExist:
-            raise Http404("Column does not exist") 
-        serializer = ColumnSerializer(query_set, many=True)
-        return JsonResponse(serializer.data, safe=False)
+            print("Column creation failed")
+            raise Http404("Column creation failed")
 
 @api_view(['GET', 'POST'])
 def get_tickets_from_column(request, board_id, column_id):

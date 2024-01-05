@@ -1,20 +1,20 @@
 import { Box } from "@mui/material";
 import { DragDropContext, DropResult, ResponderProvided } from '@hello-pangea/dnd';
 import { useParams } from "react-router";
-import { Column as ColumnType } from "../types"
+
 import Column from "./Column"
 import { useGetColumnsByBoardIdQuery } from "../state/apiSlice";
 
 
 
 const Board: React.FC = () => {
-    const { id } = useParams()
+    let { id } = useParams()
     if (!id) {
-        return
+        id = 'default-id'
     }
 
 
-    const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id)
+    const { data: columns, isSuccess } = useGetColumnsByBoardIdQuery(id)
     console.log(columns)
 
     const handleOnDragEnd = (result: DropResult, provided: ResponderProvided) => {

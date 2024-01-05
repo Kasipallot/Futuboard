@@ -11,12 +11,12 @@ export type Column = {
 };
 
 export type Task = {
-    id: string;
+    ticketid: string;
     title: string;
     description?: string;
     color?: string;
     caretakers?: User[];
-    sizeEstimate?: string;
+    size?: string;
 };
 
 export type User = {

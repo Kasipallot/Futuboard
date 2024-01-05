@@ -11,10 +11,10 @@ interface AddColumnCreationFormProps {
     onCancel: any,
 }
 
-const ColumnCreationForm : React.FC<AddColumnCreationFormProps> = (props) => {
-    const {  register, handleSubmit, formState: {errors} } = useForm({
-        defaultValues:{
-            ColumnTitle : ""
+const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        defaultValues: {
+            columnTitle: ""
         }
     });
 
@@ -25,22 +25,22 @@ const ColumnCreationForm : React.FC<AddColumnCreationFormProps> = (props) => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing = {1}>
+            <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Typography gutterBottom variant="h6" > Create Column </Typography>
-                    <Divider/>
+                    <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                <TextField label='Name' helperText = {errors.ColumnTitle?.message} error = {Boolean(errors.ColumnTitle)} {...register("ColumnTitle", {
-                minLength: {
-                    value : 3,
-                    message: "Column name must be at least 3 characters"
-                },
-                required: {
-                    value: true,
-                    message: "Column name is required"
-                }
-            })} />  
+                    <TextField label='Name' helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
+                        minLength: {
+                            value: 3,
+                            message: "Column name must be at least 3 characters"
+                        },
+                        required: {
+                            value: true,
+                            message: "Column name is required"
+                        }
+                    })} />
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>

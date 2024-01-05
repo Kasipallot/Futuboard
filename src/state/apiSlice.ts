@@ -3,7 +3,7 @@ import { Board, Column, Task } from '../types';
 
 export const boardsApi = createApi({
     reducerPath: 'boardsApi',
-    baseQuery: fetchBaseQuery({baseUrl: 'http://127.0.0.1:8000/'}), //json server (npm run server)
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://127.0.0.1:8000/' }), //json server (npm run server)
     tagTypes: ['Boards', 'Columns'],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
@@ -20,21 +20,20 @@ export const boardsApi = createApi({
         }),
         getColumnsByBoardId: builder.query<Column[], string>({
             query: (boardid) => `boards/${boardid}/columns/`,
-            providesTags: ['Boards']
+            providesTags: ['Columns']
         }),
         getTaskListByColumnId: builder.query<Task[], { boardId: string, columnId: string }>({
             query: ({ boardId, columnId }) => `boards/${boardId}/columns/${columnId}/tickets`,
             providesTags: ['Boards']
         }),
-        addColumn: builder.mutation<Column, Column>({
-            query: (column) => ({
-                url: 'boards/${boardId}/columns/',
+        addColumn: builder.mutation<Column, { boardId: string, column: Column }>({
+            query: ({ boardId, column }) => ({
+                url: `boards/${boardId}/columns/`,
                 method: 'POST',
                 body: column
             }),
-            invalidatesTags: ['Boards']
-        })
-
+            invalidatesTags: ['Columns']
+        }),
 
     }),
 })

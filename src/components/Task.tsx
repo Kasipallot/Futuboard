@@ -112,7 +112,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
-                        <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>{task.sizeEstimate}</Typography>
+                        <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>{task.size}</Typography>
                     </div>
                 </div>
             </div>

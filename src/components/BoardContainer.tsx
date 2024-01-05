@@ -23,37 +23,45 @@ interface ColumnData {
   columnTitle: string,
 }
 
-const CreateColumnButton:React.FC = () => {
-    const [open, setOpen] = useState(false)
-  
-      const handleOpenDialog = () => {
-        setOpen(true)
-    }
-    const handleCloseDialog = () => {
-        setOpen(false)
-    }
-    const handleSubmit = (data: ColumnData) => {
-      //data holds the task object. send to server. log for now
-      console.log(data)
-    const [addColumn] = useAddColumnMutation()
-    addColumn({ title: data.columnTitle, id: getId() })
-      setOpen(false)
-  
-    }
-    return(
-      <Box>
-        <IconButton color="primary" aria-label="add task" onClick = {handleOpenDialog}>
-              <AddIcon />
-        </IconButton>
-        <Dialog open={open} onClose={handleCloseDialog}>
-                <DialogContent>
-                    <ColumnCreationForm onSubmit = {handleSubmit} onCancel = {handleCloseDialog}/>
-                </DialogContent>
-          </Dialog>
-      </Box>
-      
-    )
+interface CreateColumnButtonProps {
+  boardId: string;
+}
+const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
+  const [addColumn] = useAddColumnMutation();
+  const [open, setOpen] = useState(false)
+
+  const handleOpenDialog = () => {
+    setOpen(true)
   }
+  const handleCloseDialog = () => {
+    setOpen(false)
+  }
+
+  const handleSubmit = (data: ColumnData) => {
+    console.log(data)
+
+    const column = {
+      columnid: getId(),
+      title: data.columnTitle,
+    }
+    console.log(column)
+    addColumn({ boardId: boardId, column: column });
+    setOpen(false)
+  };
+  return (
+    <Box>
+      <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
+        <AddIcon />
+      </IconButton>
+      <Dialog open={open} onClose={handleCloseDialog}>
+        <DialogContent>
+          <ColumnCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} />
+        </DialogContent>
+      </Dialog>
+    </Box>
+
+  )
+}
 
 const HomeButton = () => {
     const navigate = useNavigate()
@@ -112,7 +120,7 @@ const ToolBar = ({title, boardId}: ToolBarProps) => {
           </Typography>
           <CopyToClipboardButton />
         </Box>
-        <CreateColumnButton />
+        <CreateColumnButton boardId={boardId} />
       </Toolbar>
     </AppBar>
 
