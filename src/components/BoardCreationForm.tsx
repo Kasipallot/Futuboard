@@ -1,27 +1,24 @@
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
-
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import { useForm } from "react-hook-form"
 
+import { NewBoardFormData } from '../types'
+
 interface AddBoardCreationFormProps {
-    onSubmit: any,
-    onCancel: any,
+    onSubmit: (data: NewBoardFormData) => void,
+    onCancel: () => void,
 }
 
-const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
-    const {  register, handleSubmit, formState: {errors} } = useForm({
+const BoardCreationForm : React.FC<AddBoardCreationFormProps> = ({ onSubmit, onCancel }) => {
+    const {  register, handleSubmit, formState: {errors} } = useForm<NewBoardFormData>({
         defaultValues:{
-            title : ""
+            title : "",
+            password : ""
         }
     });
-
-    const {
-        onSubmit,
-        onCancel,
-    } = props;
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -31,7 +28,7 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
                     <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField label='Name' helperText = {errors.title?.message} error = {Boolean(errors.title)} {...register("title", {
+                <TextField label='Name' helperText={errors.title?.message} error={Boolean(errors.title)} {...register("title", {
                 minLength: {
                     value : 3,
                     message: "Board name must be at least 3 characters"
@@ -40,7 +37,13 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = (props) => {
                     value: true,
                     message: "Board name is required"
                 }
-            })} />  
+                })} />  
+                </Grid>
+                <Grid item xs={12}> 
+                    <TextField label='Password' {...register("password")}/>
+                </Grid>
+                <Grid item xs={12}> 
+                    <TextField label='Password' {...register("password")}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
