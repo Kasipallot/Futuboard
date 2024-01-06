@@ -1,6 +1,7 @@
 export type Board = {
     id: string;
     title: string;
+    password: string;
     columns: Column[];
     users: User[];
 };
@@ -27,4 +28,8 @@ export type User = {
     color?: string;
 };
 
+export type NewBoardFormData = {
+    title: string;
+    password: string;
+}
 
