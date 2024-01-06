@@ -1,6 +1,6 @@
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material"
 import { Draggable, Droppable, DroppableProvided } from '@hello-pangea/dnd';
-import { useGetTaskListByColumnIdQuery } from "../state/apiSlice";
+import { useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../state/apiSlice";
 import { Column, Task as TaskType, User } from "../types"
 import Paper from '@mui/material/Paper'
 import Task from "./Task"
@@ -14,12 +14,20 @@ import { useParams } from "react-router";
 
 interface FormData {
   taskTitle: string,
-  sizeEstimate?: string,
+  size?: string,
   corners?: User[],
   description?: string,
 }
 
-const CreateTaskButton: React.FC = () => {
+interface CreateTaskButtonProps {
+  columnid: string
+}
+
+const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({columnid}) => {
+  const { id = "default-id"} = useParams()
+
+  const [addTask] = useAddTaskMutation()
+
   const [open, setOpen] = useState(false)
 
   const handleOpenDialog = () => {
@@ -29,16 +37,24 @@ const CreateTaskButton: React.FC = () => {
     setOpen(false)
   }
   const handleSubmit = (data: FormData) => {
-    //data holds the task object. send to server. log for now
     //task object cant be give type Task yet- problem with caretaker types
+    //the object creation should be refactored to the TaskCreationForm component
     const taskObject = {
-      id: getId(),
+      ticketid: getId(),
       title: data.taskTitle,
       description: data.description,
       caretakers: data.corners,
-      sizeEstimate: data.sizeEstimate,
+      size: data.size,
+      columnid: columnid,
+      boardid: id,
     }
-    console.log(taskObject)
+
+    const add$ = addTask({boardId: id, columnId : columnid, task: taskObject })
+    add$.unwrap().then(() => {
+      setOpen(false)
+    }).catch((error) => {
+      console.log(error);
+    });
     setOpen(false)
 
   }
@@ -53,7 +69,6 @@ const CreateTaskButton: React.FC = () => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-
         },
       }}
       >
@@ -74,14 +89,9 @@ interface TaskListProps {
 
 const TaskList: React.FC<TaskListProps> = ({ column }) => {
 
-  let { id } = useParams()
-  //bad code fix later
-  if (!id) {
-    id = 'default-id'
-  }
-
-  //change to get task data of columnId from server, only give prop for columnId
-  const { data: taskList, isLoading } = useGetTaskListByColumnIdQuery({ boardId: id, columnId: column.columnid });
+  
+  //get task list from server 
+  const { data: taskList, isLoading } = useGetTaskListByColumnIdQuery({ boardId: column.boardid, columnId: column.columnid });
 
   const tasks = taskList
   if (isLoading) {
@@ -93,7 +103,6 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
   }
 
   return (
-
     <Droppable droppableId={column.columnid} type="task">
       {(provided: DroppableProvided) => {
         return (
@@ -138,27 +147,37 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
 }
 
 
+interface ColumnFormData {
+  columnTitle: string,
+}
 
 const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
+  
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const [updateColumn] = useUpdateColumnMutation()
+  
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-
     setAnchorEl(null);
   };
 
-  const handleOnSubmit = () => {
-    // get data send put request
+  const handleOnSubmit = (data : ColumnFormData) => {
+    const columnObject = {
+      columnid: column.columnid,
+      title: data.columnTitle,
+      boardid: column.boardid
+    }
+
+    updateColumn({ column: columnObject })
     setAnchorEl(null);
   }
 
   const open = Boolean(anchorEl);
-  const id = open ? 'popover' : undefined;
+  const popOverid = open ? 'popover' : undefined;
 
   return (
     <div>
@@ -167,7 +186,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
       </IconButton>
       <Popover
         disableRestoreFocus
-        id={id}
+        id={popOverid}
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
@@ -180,7 +199,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
           horizontal: -20,
         }}
       >
-        <Paper style={{ height: "fit-content", padding: "20px", width: "200px" }}>
+        <Paper sx={{ height: "fit-content", padding: "20px", width: "200px" }}>
           <ColumnEditForm onSubmit={handleOnSubmit} onCancel={handleClose} column={column} />
         </Paper>
       </Popover>
@@ -198,13 +217,13 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-      <Paper elevation={4} style={{ margin: '25px 20px', width: '250px', height: '1000px', backgroundColor: '#E5DBD9', padding: '4px' }}>
+      <Paper elevation={4} sx={{ margin: '25px 20px', width: '250px', height: '1000px', backgroundColor: '#E5DBD9', padding: '4px' }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant={'h5'} gutterBottom>{column.title}</Typography>
           <EditColumnButton column={column} />
 
         </div>
-        <CreateTaskButton />
+        <CreateTaskButton columnid = {column.columnid}/>
         <TaskList column={column} />
       </Paper>
     </>

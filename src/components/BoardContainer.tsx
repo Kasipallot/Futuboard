@@ -1,5 +1,3 @@
-
-import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -7,12 +5,9 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { useAddColumnMutation } from '../state/apiSlice';
 import { useParams } from 'react-router-dom';
-
-import {useNavigate} from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
 import Board from './Board'
 import { useGetBoardQuery } from '../state/apiSlice';
-
 import { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { getId } from '../services/Utils';
@@ -38,13 +33,12 @@ const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
   }
 
   const handleSubmit = (data: ColumnData) => {
-    console.log(data)
 
     const column = {
       columnid: getId(),
       title: data.columnTitle,
+      boardid: boardId
     }
-    console.log(column)
     addColumn({ boardId: boardId, column: column });
     setOpen(false)
   };
@@ -64,14 +58,13 @@ const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
 }
 
 const HomeButton = () => {
-    const navigate = useNavigate()
-    return(
-        <Button onClick={() => navigate('/')}>
-            <Typography>Home</Typography>
-        </Button>
-    )
+  const navigate = useNavigate()
+  return (
+    <Button onClick={() => navigate('/')}>
+      <Typography>Home</Typography>
+    </Button>
+  )
 }
-
 
 const CopyToClipboardButton = () => {
   const [open, setOpen] = useState(false)
@@ -96,12 +89,12 @@ const CopyToClipboardButton = () => {
 
 
 interface ToolBarProps {
-    title: string;
-    boardId: string; // Assuming boardId is also a string
-  }
-  
+  title: string;
+  boardId: string; // Assuming boardId is also a string
+}
+
 //refactor later
-const ToolBar = ({title, boardId}: ToolBarProps) => {
+const ToolBar = ({ title, boardId }: ToolBarProps) => {
 
   return (
     <AppBar position="fixed" sx={{ background: "white" }}>
@@ -128,18 +121,10 @@ const ToolBar = ({title, boardId}: ToolBarProps) => {
 }
 
 
-//use boardContainer to initialize board state (maybe implement droppable drag and drop here around <Board/>)
 const BoardContainer: React.FC = () => {
-  let id = useParams().id
-  //hacky way to get rid of undefined error
-  if (!id) {
-    id = "defaultId"
-  }
+  const { id = 'default-id' } = useParams()
 
   const { data: board, isLoading, isSuccess } = useGetBoardQuery(id);
-
-  console.log(board)
-
 
   return (
     <>

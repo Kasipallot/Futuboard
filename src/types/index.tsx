@@ -8,6 +8,7 @@ export type Board = {
 export type Column = {
     columnid: string;
     title: string;
+    boardid: string;
 };
 
 export type Task = {
@@ -17,6 +18,7 @@ export type Task = {
     color?: string;
     caretakers?: User[];
     size?: string;
+    columnid: string;
 };
 
 export type User = {

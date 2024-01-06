@@ -63,7 +63,7 @@ def get_columns_from_board(request, board_id):
                 color = '',
                 description = '',
                 title = request.data['title'],
-                ordernum = length + 1,
+                ordernum = length,
                 creation_date = timezone.now()
                 )
             new_column.save()
@@ -79,21 +79,21 @@ def get_tickets_from_column(request, board_id, column_id):
     if request.method == 'POST':
         try:
             length = len(Ticket.objects.filter(columnid=column_id))
-            print(length)
             new_ticket = Ticket(
-                ticketid = request.data['id'],
-                columnid = request.data['id'],
+                ticketid = request.data['ticketid'],
+                columnid = Column.objects.get(pk=column_id),
                 title = request.data['title'],
-                description = '',
+                description = request.data['description'],
                 color = 'white',
                 storypoints = 8,
-                size = 1,
+                size = int(request.data['size']) if request.data['size'] != '' else 0,
                 order = length,
                 creation_date = timezone.now()
                 )
+            
             new_ticket.save()
 
-            serializer = ColumnSerializer(new_ticket)
+            serializer = TicketSerializer(new_ticket)
             return JsonResponse(serializer.data, safe=False)
         except:
             raise Http404("Cannot create Ticket")
@@ -104,3 +104,41 @@ def get_tickets_from_column(request, board_id, column_id):
             return JsonResponse(serializer.data, safe=False)
         except:
             raise Http404("Error getting tickets.") 
+@api_view(['PUT'])
+def update_ticket(request, column_id, ticket_id):
+    try:
+        ticket = Ticket.objects.get(pk=ticket_id, columnid=column_id)
+    except Ticket.DoesNotExist:
+        raise Http404("Ticket not found")
+
+    if request.method == 'PUT':
+        try:
+            ticket.title = request.data.get('title', ticket.title)
+            ticket.description = request.data.get('description', ticket.description)
+            ticket.color = request.data.get('color', ticket.color)
+            ticket.storypoints = request.data.get('storypoints', ticket.storypoints)
+            ticket.size = request.data.get('size', ticket.size)
+            ticket.save()
+
+            serializer = TicketSerializer(ticket)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            raise Http404("Cannot update Ticket")
+        
+@api_view(['PUT'])
+def update_column(request, board_id, column_id):
+    try:
+        column = Column.objects.get(pk=column_id, boardid=board_id)
+    except Column.DoesNotExist:
+        raise Http404("Column not found")
+
+    if request.method == 'PUT':
+        try:
+            column.title = request.data.get('title', column.title)
+            column.save()
+
+            serializer = ColumnSerializer(column)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            raise Http404("Cannot update Column")
+

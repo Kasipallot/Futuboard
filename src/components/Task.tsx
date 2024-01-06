@@ -1,25 +1,25 @@
-
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Task as TaskType, User } from '../types';
 import { IconButton, Paper, Popover, Typography } from '@mui/material';
-import {  EditNote,  } from '@mui/icons-material';
+import { EditNote, } from '@mui/icons-material';
 import TaskEditForm from './TaskEditForm';
+import { useUpdateTaskMutation } from '../state/apiSlice';
 
 
 
 const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     return (
-
-        <div style={{ padding: "1px" }}>
-            <Paper variant="outlined" style={{ backgroundColor: caretaker.color || "lightgrey", padding: "0px 12px" }}>
+        <div>
+            <Paper variant="outlined" sx={{ backgroundColor: caretaker.color || "lightgrey", padding: "0px 12px" }}>
                 <Typography>{caretaker.name}</Typography>
             </Paper>
         </div>
     )
 }
+
 interface FormData {
     taskTitle: string,
-    sizeEstimate?: string,
+    size?: string,
     corners?: User[],
     description?: string,
     color?: string,
@@ -27,6 +27,7 @@ interface FormData {
 
 const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetStateAction<boolean>> }> = ({ task, setTaskSelected }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [updateTask] = useUpdateTaskMutation()
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setTaskSelected(true)
@@ -39,13 +40,25 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     };
 
     const handleOnSubmit = (data: FormData) => {
-        console.log(data)
+        const taskObject = {
+            ticketid: task.ticketid,
+            title: data.taskTitle,
+            description: data.description,
+            caretakers: data.corners,
+            size: data.size,
+            color: data.color,
+            columnid: task.columnid,
+        }
+
+
+        updateTask({ task: taskObject })
+
         setTaskSelected(false)
         setAnchorEl(null);
     }
 
     const open = Boolean(anchorEl);
-    const id = open ? 'popover' : undefined;
+    const popOverid = open ? 'popover' : undefined;
 
     return (
         <div>
@@ -53,8 +66,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                 <EditNote />
             </IconButton>
             <Popover
-            disableRestoreFocus
-                id={id}
+                disableRestoreFocus
+                id={popOverid}
                 open={open}
                 anchorEl={anchorEl}
                 onClose={handleClose}
@@ -67,7 +80,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                     horizontal: -50,
                 }}
             >
-                <Paper style={{ height: "fit-content", padding: "20px", width: "400px" }}>
+                <Paper sx={{ height: "fit-content", padding: "20px", width: "400px" }}>
                     <TaskEditForm onSubmit={handleOnSubmit} onCancel={handleClose} task={task} />
 
                 </Paper>
@@ -85,7 +98,7 @@ interface TaskProps {
 
 const Task: React.FC<TaskProps> = ({ task }) => {
 
-    const [selected, setSelected] = React.useState(false);
+    const [selected, setSelected] = useState(false);
 
     const taskStyle = {
         padding: "4px",
@@ -96,14 +109,12 @@ const Task: React.FC<TaskProps> = ({ task }) => {
 
     //temporary styling solutions
     return (
-        <Paper elevation={selected ? 24 : 4} style={taskStyle} >
+        <Paper elevation={selected ? 24 : 4} sx={taskStyle} >
 
             <div style={{ display: "flex", justifyContent: 'space-between' }}>
                 <Typography variant={'h6'} gutterBottom noWrap>{task.title}</Typography>
                 <EditTaskButton task={task} setTaskSelected={setSelected} />
             </div>
-
-
             <div style={{ display: 'flex', height: "60%", justifyContent: 'space-between' }}>
                 <div style={{ overflow: "hidden" }}>
                     {task.caretakers && task.caretakers.map((caretaker, index) => (
@@ -112,7 +123,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                     <div>
-                        <Typography style={{ fontWeight: 'bold', fontSize: '20px' }}>{task.size}</Typography>
+                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>{task.size}</Typography>
                     </div>
                 </div>
             </div>

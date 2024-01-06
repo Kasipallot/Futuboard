@@ -24,7 +24,7 @@ interface FormData {
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
-    const { id = 'default-id' } = useParams() //theres maybe a better way to get the id / save it into the apislice somehow
+    const { id = 'default-id' } = useParams() 
     const board = useGetBoardQuery(id)
 
     const {
@@ -99,7 +99,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline minRows={6} maxRows={25} fullWidth {...register("description", {
+                    <TextField label='Description' multiline minRows={6} maxRows={15} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>

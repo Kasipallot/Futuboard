@@ -1,8 +1,7 @@
-import {  Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { useGetBoardQuery } from "../state/apiSlice";
 import { useParams } from "react-router-dom";
-import Autocomplete from "@mui/material/Autocomplete";
 import { User } from "../types";
 
 
@@ -22,8 +21,8 @@ interface FormData {
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
-    const { id = 'default-id' } = useParams() //theres maybe a better way to get the id / save it into the apislice somehow
-    
+    const { id = 'default-id' } = useParams()
+
     //get board data to see users to assign as caretakers
     const board = useGetBoardQuery(id)
 
@@ -87,7 +86,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Assignees" />
                                             )}
-                                            
+
                                         />
                                     )}
                                 />
@@ -98,7 +97,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline minRows={6} maxRows={25} fullWidth {...register("description", {
+                    <TextField label='Description' multiline minRows={6} maxRows={15} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
