@@ -1,18 +1,20 @@
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import { useAddColumnMutation } from '../state/apiSlice';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom'
-import Board from './Board'
-import { useGetBoardQuery } from '../state/apiSlice';
-import { useState } from 'react';
-import AddIcon from '@mui/icons-material/Add';
-import { getId } from '../services/Utils';
-import ColumnCreationForm from "./ColumnCreationForm";
+import AddIcon from "@mui/icons-material/Add";
 import { Dialog, DialogContent, IconButton, Snackbar } from "@mui/material"
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
+import { getId } from "../services/Utils";
+import { useAddColumnMutation } from "../state/apiSlice";
+import { useGetBoardQuery } from "../state/apiSlice";
+
+import Board from "./Board"
+import ColumnCreationForm from "./ColumnCreationForm";
+
 
 interface ColumnData {
   columnTitle: string,
@@ -60,7 +62,7 @@ const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
 const HomeButton = () => {
   const navigate = useNavigate()
   return (
-    <Button onClick={() => navigate('/')}>
+    <Button onClick={() => navigate("/")}>
       <Typography>Home</Typography>
     </Button>
   )
@@ -122,7 +124,7 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
 
 
 const BoardContainer: React.FC = () => {
-  const { id = 'default-id' } = useParams()
+  const { id = "default-id" } = useParams()
 
   const { data: board, isLoading, isSuccess } = useGetBoardQuery(id);
 

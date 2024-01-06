@@ -1,16 +1,21 @@
+import { Draggable, Droppable, DroppableProvided } from "@hello-pangea/dnd";
+import { Edit } from "@mui/icons-material";
+import AddIcon from "@mui/icons-material/Add";
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material"
-import { Draggable, Droppable, DroppableProvided } from '@hello-pangea/dnd';
+import Paper from "@mui/material/Paper"
+import { useState } from "react"
+import { useParams } from "react-router";
+
+import { getId } from "../services/Utils";
 import { useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../state/apiSlice";
 import { Column, Task as TaskType, User } from "../types"
-import Paper from '@mui/material/Paper'
-import Task from "./Task"
-import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react'
-import TaskCreationForm from "./TaskCreationForm";
-import { getId } from "../services/Utils";
-import { Edit } from "@mui/icons-material";
+
+
 import ColumnEditForm from "./ColumnEditForm";
-import { useParams } from "react-router";
+import Task from "./Task"
+import TaskCreationForm from "./TaskCreationForm";
+
+
 
 interface FormData {
   taskTitle: string,
@@ -23,8 +28,8 @@ interface CreateTaskButtonProps {
   columnid: string
 }
 
-const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({columnid}) => {
-  const { id = "default-id"} = useParams()
+const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
+  const { id = "default-id" } = useParams()
 
   const [addTask] = useAddTaskMutation()
 
@@ -49,11 +54,11 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({columnid}) => {
       boardid: id,
     }
 
-    const add$ = addTask({boardId: id, columnId : columnid, task: taskObject })
+    const add$ = addTask({ boardId: id, columnId : columnid, task: taskObject })
     add$.unwrap().then(() => {
       setOpen(false)
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
     setOpen(false)
 
@@ -65,10 +70,10 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({columnid}) => {
       </IconButton>
       <Dialog disableRestoreFocus open={open} onClose={handleCloseDialog} PaperProps={{
         style: {
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         },
       }}
       >
@@ -96,7 +101,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
   const tasks = taskList
   if (isLoading) {
     return (
-      <Typography variant={'body2'} gutterBottom>
+      <Typography variant={"body2"} gutterBottom>
         Loading tasks...
       </Typography>
     )
@@ -132,7 +137,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
                 </Draggable>
               ))
             ) : (
-              <Typography variant={'body2'} gutterBottom>
+              <Typography variant={"body2"} gutterBottom>
                 No tasks yet
               </Typography>
             )}
@@ -177,7 +182,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
   }
 
   const open = Boolean(anchorEl);
-  const popOverid = open ? 'popover' : undefined;
+  const popOverid = open ? "popover" : undefined;
 
   return (
     <div>
@@ -191,8 +196,8 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
+          vertical: "center",
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: 50,
@@ -217,13 +222,13 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-      <Paper elevation={4} sx={{ margin: '25px 20px', width: '250px', height: '1000px', backgroundColor: '#E5DBD9', padding: '4px' }}>
+      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", height: "1000px", backgroundColor: "#E5DBD9", padding: "4px" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant={'h5'} gutterBottom>{column.title}</Typography>
+          <Typography variant={"h5"} gutterBottom>{column.title}</Typography>
           <EditColumnButton column={column} />
 
         </div>
-        <CreateTaskButton columnid = {column.columnid}/>
+        <CreateTaskButton columnid={column.columnid}/>
         <TaskList column={column} />
       </Paper>
     </>

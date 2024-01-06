@@ -1,14 +1,13 @@
-import Typography from '@mui/material/Typography'
-import Button from '@mui/material/Button'
-
-import TextField from '@mui/material/TextField'
-import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
+import Button from "@mui/material/Button"
+import Divider from "@mui/material/Divider"
+import Grid from "@mui/material/Grid"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
 import { useForm } from "react-hook-form"
 
 interface AddColumnCreationFormProps {
-    onSubmit: any,
-    onCancel: any,
+    onSubmit: ({ columnTitle }: { columnTitle: string }) => void,
+    onCancel: () => void,
 }
 
 const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
@@ -31,7 +30,7 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label='Name' helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
+                    <TextField label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
                         minLength: {
                             value: 3,
                             message: "Column name must be at least 3 characters"

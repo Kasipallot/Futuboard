@@ -1,9 +1,12 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { Task as TaskType, User } from '../types';
-import { IconButton, Paper, Popover, Typography } from '@mui/material';
-import { EditNote, } from '@mui/icons-material';
-import TaskEditForm from './TaskEditForm';
-import { useUpdateTaskMutation } from '../state/apiSlice';
+import { EditNote, } from "@mui/icons-material";
+import { IconButton, Paper, Popover, Typography } from "@mui/material";
+import React, { Dispatch, SetStateAction, useState } from "react";
+
+import { useUpdateTaskMutation } from "../state/apiSlice";
+import { Task as TaskType, User } from "../types";
+
+import TaskEditForm from "./TaskEditForm";
+
 
 
 
@@ -58,7 +61,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     }
 
     const open = Boolean(anchorEl);
-    const popOverid = open ? 'popover' : undefined;
+    const popOverid = open ? "popover" : undefined;
 
     return (
         <div>
@@ -72,8 +75,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{
-                    vertical: 'center',
-                    horizontal: 'right',
+                    vertical: "center",
+                    horizontal: "right",
                 }}
                 transformOrigin={{
                     vertical: 100,
@@ -111,19 +114,19 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     return (
         <Paper elevation={selected ? 24 : 4} sx={taskStyle} >
 
-            <div style={{ display: "flex", justifyContent: 'space-between' }}>
-                <Typography variant={'h6'} gutterBottom noWrap>{task.title}</Typography>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Typography variant={"h6"} gutterBottom noWrap>{task.title}</Typography>
                 <EditTaskButton task={task} setTaskSelected={setSelected} />
             </div>
-            <div style={{ display: 'flex', height: "60%", justifyContent: 'space-between' }}>
+            <div style={{ display: "flex", height: "60%", justifyContent: "space-between" }}>
                 <div style={{ overflow: "hidden" }}>
                     {task.caretakers && task.caretakers.map((caretaker, index) => (
                         <CaretakerComponent key={index} caretaker={caretaker} />
                     ))}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
-                        <Typography sx={{ fontWeight: 'bold', fontSize: '20px' }}>{task.size}</Typography>
+                        <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
                     </div>
                 </div>
             </div>

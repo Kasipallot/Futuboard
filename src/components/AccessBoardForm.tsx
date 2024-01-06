@@ -1,13 +1,13 @@
-import React from 'react';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Divider from '@mui/material/Divider';
-import { useForm } from 'react-hook-form';
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 interface AccessBoardFormProps {
-  onSubmit: (data: FormData) => void;
+  onSubmit: (_: FormData) => void;
   onCancel: () => void;
 }
 
@@ -22,7 +22,7 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({ onSubmit, onCancel })
     formState: { errors },
   } = useForm<FormData>({
     defaultValues: {
-      password: '',
+      password: "",
     },
   });
 
@@ -46,14 +46,14 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({ onSubmit, onCancel })
             type="password"
             helperText={errors.password?.message}
             error={Boolean(errors.password)}
-            {...register('password', {
+            {...register("password", {
               minLength: {
                 value: 3,
-                message: 'Password must be at least 3 characters',
+                message: "Password must be at least 3 characters",
               },
               required: {
                 value: true,
-                message: 'Password is required',
+                message: "Password is required",
               },
               // Add any additional validation rules here
             })}

@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import { Paper, Box, Typography, Dialog, DialogContent } from '@mui/material';
-import BoardCreationForm from './BoardCreationForm';
-import { getId } from '../services/Utils'
-import { useNavigate } from 'react-router-dom'
-import { Board } from '../types';
-import { useAddBoardMutation } from '../state/apiSlice';
-import { NewBoardFormData } from '../types';
+import { Paper, Box, Typography, Dialog, DialogContent } from "@mui/material";
+import Button from "@mui/material/Button";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"
+
+import { getId } from "../services/Utils"
+import { useAddBoardMutation } from "../state/apiSlice";
+import { Board } from "../types";
+import { NewBoardFormData } from "../types";
+
+import BoardCreationForm from "./BoardCreationForm";
 
 interface CreateBoardButtonProps {
-    onNewBoard: (data: FormData) => void;
+    onNewBoard: (data: NewBoardFormData) => Promise<void>;
 }
 
 const CreateBoardButton = ({ onNewBoard }: CreateBoardButtonProps) => {

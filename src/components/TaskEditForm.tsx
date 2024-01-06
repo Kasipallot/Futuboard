@@ -1,10 +1,11 @@
 import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
-import { Controller, useForm } from "react-hook-form";
-import { useGetBoardQuery } from "../state/apiSlice";
-import { useParams } from "react-router-dom";
 import Autocomplete from "@mui/material/Autocomplete";
+import { Controller, useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+
+import { useGetBoardQuery } from "../state/apiSlice";
 import { User } from "../types";
-import { Task as TaskType } from '../types'
+import { Task as TaskType } from "../types"
 
 
 interface TaskEditFormProps {
@@ -24,7 +25,7 @@ interface FormData {
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
-    const { id = 'default-id' } = useParams() 
+    const { id = "default-id" } = useParams() 
     const board = useGetBoardQuery(id)
 
     const {
@@ -52,7 +53,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label='Name' helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
+                    <TextField label="Name" helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
                         minLength: {
                             value: 3,
                             message: "Task name must be at least 3 characters"
@@ -99,7 +100,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline minRows={6} maxRows={15} fullWidth {...register("description", {
+                    <TextField label="Description" multiline minRows={6} maxRows={15} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
