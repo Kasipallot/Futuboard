@@ -1,61 +1,64 @@
-import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import { Box, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
+import { Box, Typography } from "@mui/material";
+import { DragDropContext, DropResult } from '@hello-pangea/dnd';
+import Column from "./Column"
+import { boardsApi, useGetColumnsByBoardIdQuery, useUpdateTaskListByColumnIdMutation } from "../../state/apiSlice";
+import { Task } from "../../types";
+import { produce } from 'immer'
+import { store } from "../../state/store";
 
-import { boardsApi } from "../../state/apiSlice";
-import { useGetColumnsByBoardIdQuery, useUpdateColumnMutation } from "../../state/apiSlice";
-import { AppDispatch, store } from "../../state/store";
-
-import Column from "./Column";
 
 const Board: React.FC = () => {
-    const { id = "default-id" } = useParams();
-    const [updateColumn] = useUpdateColumnMutation();
-    const dispatch: AppDispatch = useDispatch();
+    const { id = 'default-id' } = useParams()
 
-    const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id);
+    const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id)
+
+    const [updateTaskList] = useUpdateTaskListByColumnIdMutation()
 
     const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
 
     const handleOnDragEnd = async (result: DropResult) => {
-        const { source, destination, draggableId } = result;
+        const { source, destination, type } = result
 
         if (!destination) return;
+        if (destination.droppableId === source.droppableId && destination.index === source.index) return;
 
         const state = store.getState();
-        const selectSourceTasks = selectTasksByColumnId({ boardId: id, columnId: source.droppableId });
+
         const selectDestinationTasks = selectTasksByColumnId({ boardId: id, columnId: destination.droppableId });
-        const sourceTasks = selectSourceTasks(state).data || [];
         const destinationTasks = selectDestinationTasks(state).data || [];
 
-        const task = sourceTasks.find(task => task.ticketid === draggableId);
-        const column = columns?.find(column => column.columnid === destination.droppableId);
+        const selectSourceTasks = selectTasksByColumnId({ boardId: id, columnId: source.droppableId });
+        const sourceTasks = selectSourceTasks(state).data || [];
 
-        // return if task or column is undefined
-        if (!task?.ticketid || !column?.columnid) return;
+        if (type === 'task') {
+            //dragging tasks in the same column
+            if (destination.droppableId === source.droppableId) {
+                const dataCopy = [...destinationTasks ?? []]
+                const newOrdered = reorder<Task>(dataCopy, source.index, destination.index)
+                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered })
+            }
+            //dragging tasks to different columns
+            if (destination.droppableId !== source.droppableId) {
 
-        const newDestinationColumnTicketIds = [...destinationTasks.map(task => task.ticketid), task.ticketid];
+                //remove task from source column
+                const nextSourceTasks = produce(sourceTasks, (draft) => {
+                    draft?.splice(source.index, 1)
+                })
 
-        // optimistic update the task list in the source and destination columns to prevent flickering
-        dispatch(
-            boardsApi.util.updateQueryData("getTaskListByColumnId", { boardId: id, columnId: source.droppableId }, draftTasks =>
-                draftTasks.filter(task => task.ticketid !== draggableId)
-            )
-        );
-        dispatch(
-            boardsApi.util.updateQueryData("getTaskListByColumnId", { boardId: id, columnId: destination.droppableId }, draftTasks => {
-                const newTask = draftTasks.find(task => task.ticketid === draggableId);
-                if (!newTask) {
-                    draftTasks.push(task);
-                }
-            })
-        );
-        updateColumn({ column, ticketIds: newDestinationColumnTicketIds });
-    };
+                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] })
+
+                //add task to destination column
+                const nextDestinationTasks = produce(destinationTasks, (draft) => {
+                    draft?.splice(destination!.index, 0, sourceTasks![source.index])
+                })
+                updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] })
+            }
+        }
+    }
 
     if (isLoading) {
-        return <Typography>Loading columns...</Typography>;
+        return <Typography>Loading columns...</Typography>
     }
 
     return (
@@ -70,4 +73,12 @@ const Board: React.FC = () => {
     );
 };
 
-export default Board;
+function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
+    const result = Array.from(list) as T[];
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+
+    return result;
+}
+
+export default Board
