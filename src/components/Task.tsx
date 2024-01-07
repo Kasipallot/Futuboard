@@ -7,9 +7,6 @@ import { Task as TaskType, User } from "../types";
 
 import TaskEditForm from "./TaskEditForm";
 
-
-
-
 const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     return (
         <div>
@@ -17,8 +14,8 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
                 <Typography>{caretaker.name}</Typography>
             </Paper>
         </div>
-    )
-}
+    );
+};
 
 interface FormData {
     taskTitle: string,
@@ -30,15 +27,15 @@ interface FormData {
 
 const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetStateAction<boolean>> }> = ({ task, setTaskSelected }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const [updateTask] = useUpdateTaskMutation()
+    const [updateTask] = useUpdateTaskMutation();
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setTaskSelected(true)
+        setTaskSelected(true);
         setAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
-        setTaskSelected(false)
+        setTaskSelected(false);
         setAnchorEl(null);
     };
 
@@ -51,14 +48,13 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             size: data.size,
             color: data.color,
             columnid: task.columnid,
-        }
+        };
 
+        updateTask({ task: taskObject });
 
-        updateTask({ task: taskObject })
-
-        setTaskSelected(false)
+        setTaskSelected(false);
         setAnchorEl(null);
-    }
+    };
 
     const open = Boolean(anchorEl);
     const popOverid = open ? "popover" : undefined;
@@ -90,9 +86,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             </Popover>
         </div>
 
-    )
-}
-
+    );
+};
 
 interface TaskProps {
     task: TaskType
@@ -108,7 +103,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
         backgroundColor: task.color,
         height: "100px",
         marginBottom: "5px",
-    }
+    };
 
     //temporary styling solutions
     return (

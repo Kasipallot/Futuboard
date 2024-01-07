@@ -1,9 +1,9 @@
-import Button from "@mui/material/Button"
-import Grid from "@mui/material/Grid"
-import TextField from "@mui/material/TextField"
-import { useForm } from "react-hook-form"
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import { useForm } from "react-hook-form";
 
-import { Column } from "../types"
+import { Column } from "../types";
 
 interface AddColumnCreationFormProps {
     onSubmit: (data : FormData) => void,
@@ -30,7 +30,6 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
         }
     });
 
-    
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
@@ -44,7 +43,7 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
                     value: true,
                     message: "Column name is required"
                 }
-            })} />  
+            })} />
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
@@ -53,8 +52,6 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default ColumnEditForm
+export default ColumnEditForm;

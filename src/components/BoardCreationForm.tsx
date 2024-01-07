@@ -1,11 +1,11 @@
-import Button from "@mui/material/Button"
-import Divider from "@mui/material/Divider"
-import Grid from "@mui/material/Grid"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
-import { useForm } from "react-hook-form"
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useForm } from "react-hook-form";
 
-import { NewBoardFormData } from "../types"
+import { NewBoardFormData } from "../types";
 
 interface AddBoardCreationFormProps {
     onSubmit: (_: NewBoardFormData) => void,
@@ -37,12 +37,9 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = ({ onSubmit, onC
                     value: true,
                     message: "Board name is required"
                 }
-                })} />  
+                })} />
                 </Grid>
-                <Grid item xs={12}> 
-                    <TextField label="Password" {...register("password")}/>
-                </Grid>
-                <Grid item xs={12}> 
+                <Grid item xs={12}>
                     <TextField label="Password" {...register("password")}/>
                 </Grid>
                 <Grid item xs={12}>
@@ -52,8 +49,6 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = ({ onSubmit, onC
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default BoardCreationForm
+export default BoardCreationForm;

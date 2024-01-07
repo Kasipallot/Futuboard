@@ -18,7 +18,10 @@ module.exports = {
     "jsx-quotes": ["error", "prefer-double"], // Enforce double quotes in JSX
     "react/jsx-props-no-spreading": "off", // Allow props spreading in JSX
     "react/jsx-curly-spacing": ["error", "never"],
-    'react/jsx-equals-spacing': ['error', 'never'], // Disallow spaces around equal signs in JSX attributes
+    "react/jsx-equals-spacing": ["error", "never"], // Disallow spaces around equal signs in JSX attributes
+    "semi": ["error", "always"], // Enforce semicolons
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1, "maxBOF": 0 }], // Enforce max 1 empty line
+    "no-trailing-spaces": "error", // Disallow trailing spaces
     // File Naming and Folder Structure
     "unicorn/filename-case": [
       "error",

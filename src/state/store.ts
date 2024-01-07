@@ -7,7 +7,7 @@ export const store = configureStore({
         [boardsApi.reducerPath]: boardsApi.reducer,
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(boardsApi.middleware)
+        return getDefaultMiddleware().concat(boardsApi.middleware);
     }
 });
 

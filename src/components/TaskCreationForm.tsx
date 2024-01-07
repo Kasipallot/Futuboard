@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import { useGetBoardQuery } from "../state/apiSlice";
 import { User } from "../types";
 
-
 interface TaskCreationFormProps {
     onSubmit: (data: FormData) => void,
     onCancel: () => void,
@@ -22,10 +21,10 @@ interface FormData {
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
-    const { id = "default-id" } = useParams()
+    const { id = "default-id" } = useParams();
 
     //get board data to see users to assign as caretakers
-    const board = useGetBoardQuery(id)
+    const board = useGetBoardQuery(id);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
         defaultValues: {
@@ -93,7 +92,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                 />
                             </>
 
-
                         )}
                     </>
                 </Grid>
@@ -108,8 +106,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default TaskCreationForm
+export default TaskCreationForm;

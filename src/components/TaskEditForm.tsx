@@ -5,8 +5,7 @@ import { useParams } from "react-router-dom";
 
 import { useGetBoardQuery } from "../state/apiSlice";
 import { User } from "../types";
-import { Task as TaskType } from "../types"
-
+import { Task as TaskType } from "../types";
 
 interface TaskEditFormProps {
     onSubmit: (data: FormData) => void,
@@ -25,8 +24,8 @@ interface FormData {
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
-    const { id = "default-id" } = useParams() 
-    const board = useGetBoardQuery(id)
+    const { id = "default-id" } = useParams();
+    const board = useGetBoardQuery(id);
 
     const {
         onSubmit,
@@ -95,7 +94,6 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                                 />
                             </>
 
-
                         )}
                     </>
                 </Grid>
@@ -110,8 +108,6 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default TaskEditForm
+export default TaskEditForm;

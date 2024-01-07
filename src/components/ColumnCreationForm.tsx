@@ -1,9 +1,9 @@
-import Button from "@mui/material/Button"
-import Divider from "@mui/material/Divider"
-import Grid from "@mui/material/Grid"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
-import { useForm } from "react-hook-form"
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useForm } from "react-hook-form";
 
 interface AddColumnCreationFormProps {
     onSubmit: ({ columnTitle }: { columnTitle: string }) => void,
@@ -48,8 +48,6 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default ColumnCreationForm
+export default ColumnCreationForm;

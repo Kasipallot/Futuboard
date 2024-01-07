@@ -1,5 +1,5 @@
 import AddIcon from "@mui/icons-material/Add";
-import { Dialog, DialogContent, IconButton, Snackbar } from "@mui/material"
+import { Dialog, DialogContent, IconButton, Snackbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,9 +12,8 @@ import { getId } from "../services/Utils";
 import { useAddColumnMutation } from "../state/apiSlice";
 import { useGetBoardQuery } from "../state/apiSlice";
 
-import Board from "./Board"
+import Board from "./Board";
 import ColumnCreationForm from "./ColumnCreationForm";
-
 
 interface ColumnData {
   columnTitle: string,
@@ -25,14 +24,14 @@ interface CreateColumnButtonProps {
 }
 const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
   const [addColumn] = useAddColumnMutation();
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const handleOpenDialog = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
   const handleCloseDialog = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleSubmit = (data: ColumnData) => {
 
@@ -40,9 +39,9 @@ const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
       columnid: getId(),
       title: data.columnTitle,
       boardid: boardId
-    }
+    };
     addColumn({ boardId: boardId, column: column });
-    setOpen(false)
+    setOpen(false);
   };
   return (
     <Box>
@@ -56,24 +55,24 @@ const CreateColumnButton: React.FC<CreateColumnButtonProps> = ({ boardId }) => {
       </Dialog>
     </Box>
 
-  )
-}
+  );
+};
 
 const HomeButton = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <Button onClick={() => navigate("/")}>
       <Typography>Home</Typography>
     </Button>
-  )
-}
+  );
+};
 
 const CopyToClipboardButton = () => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const handleClick = () => {
-    setOpen(true)
-    navigator.clipboard.writeText(window.location.toString())
-  }
+    setOpen(true);
+    navigator.clipboard.writeText(window.location.toString());
+  };
 
   return (
     <>
@@ -85,10 +84,8 @@ const CopyToClipboardButton = () => {
         message="Copied to clipboard"
       />
     </>
-  )
-}
-
-
+  );
+};
 
 interface ToolBarProps {
   title: string;
@@ -119,12 +116,11 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
       </Toolbar>
     </AppBar>
 
-  )
-}
-
+  );
+};
 
 const BoardContainer: React.FC = () => {
-  const { id = "default-id" } = useParams()
+  const { id = "default-id" } = useParams();
 
   const { data: board, isLoading, isSuccess } = useGetBoardQuery(id);
 
@@ -138,6 +134,6 @@ const BoardContainer: React.FC = () => {
       }
     </>
   );
-}
+};
 
 export default BoardContainer;
