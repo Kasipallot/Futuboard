@@ -1,4 +1,4 @@
-import { TagDescription, createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+import { TagDescription, createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 import { Board, Column, Task } from "../types";
 
@@ -28,20 +28,20 @@ export const boardsApi = createApi({
 
         getTaskListByColumnId: builder.query<Task[], { boardId: string, columnId: string }>({
             query: ({ boardId, columnId }) => {
-                return `boards/${boardId}/columns/${columnId}/tickets`
+                return `boards/${boardId}/columns/${columnId}/tickets`;
             },
             providesTags: (result, _error, args) => {
                 const tags: TagDescription<"Ticket">[] = [];
                 if (result) {
                     const tasks: Task[] = result;
                     tasks.forEach(task => {
-                        tags.push({ type: "Ticket", id: task.ticketid })
-                    })
+                        tags.push({ type: "Ticket", id: task.ticketid });
+                    });
                 }
                 return [
                     { type: "Columns", id: args.columnId },
                     ...tags
-                ]
+                ];
             }
 
         }),
@@ -73,15 +73,15 @@ export const boardsApi = createApi({
             invalidatesTags: (_result, _error, { task }) => [{ type: "Ticket", id: task.ticketid }]
         }),
 
-        updateColumn: builder.mutation<Column, { column: Column }>({
-            query: ({ column }) => ({
+        updateColumn: builder.mutation<Column, { column: Column, ticketIds?: string[] }>({
+            query: ({ column, ticketIds }) => ({
                 url: `boards/${column.boardid}/columns/${column.columnid}/`,
                 method: "PUT",
-                body: column
+                body: { ...column, ticket_ids: ticketIds }
             }),
             invalidatesTags: ["Columns"]
         }),
     }),
-})
+});
 
 export const { useGetBoardQuery, useAddBoardMutation, useGetColumnsByBoardIdQuery, useGetTaskListByColumnIdQuery, useAddColumnMutation, useAddTaskMutation, useUpdateTaskMutation, useUpdateColumnMutation } = boardsApi;
