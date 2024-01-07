@@ -3,9 +3,9 @@ import { Box, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 
-import { boardsApi } from "../state/apiSlice";
-import { useGetColumnsByBoardIdQuery, useUpdateColumnMutation } from "../state/apiSlice";
-import { AppDispatch, store } from "../state/store";
+import { boardsApi } from "../../state/apiSlice";
+import { useGetColumnsByBoardIdQuery, useUpdateColumnMutation } from "../../state/apiSlice";
+import { AppDispatch, store } from "../../state/store";
 
 import Column from "./Column";
 
@@ -60,7 +60,7 @@ const Board: React.FC = () => {
 
     return (
         <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Box sx={{ display: "inline-flex", height: "100vh", width: "fit-content", margin: "25px" }} >
+            <Box sx={{ display: "inline-flex", height: "100vh", width: "fit-content", margin: "4rem 25px 25px 25px" }} >
                 {isSuccess && columns.map((column, index) => (
                     <Column key={column.columnid} column={column} index={index} />
                 ))}

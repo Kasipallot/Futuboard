@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 
-import { NewBoardFormData } from "../types";
+import { NewBoardFormData } from "../../types";
 
 interface AddBoardCreationFormProps {
     onSubmit: (_: NewBoardFormData) => void,

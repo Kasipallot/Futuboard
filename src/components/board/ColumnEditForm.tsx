@@ -3,7 +3,7 @@ import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useForm } from "react-hook-form";
 
-import { Column } from "../types";
+import { Column } from "../../types";
 
 interface AddColumnCreationFormProps {
     onSubmit: (data : FormData) => void,

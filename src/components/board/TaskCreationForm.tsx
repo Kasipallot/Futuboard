@@ -2,8 +2,8 @@ import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
-import { useGetBoardQuery } from "../state/apiSlice";
-import { User } from "../types";
+import { useGetBoardQuery } from "../../state/apiSlice";
+import { User } from "../../types";
 
 interface TaskCreationFormProps {
     onSubmit: (data: FormData) => void,

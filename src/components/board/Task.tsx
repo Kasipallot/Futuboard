@@ -2,8 +2,8 @@ import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
-import { useUpdateTaskMutation } from "../state/apiSlice";
-import { Task as TaskType, User } from "../types";
+import { useUpdateTaskMutation } from "../../state/apiSlice";
+import { Task as TaskType, User } from "../../types";
 
 import TaskEditForm from "./TaskEditForm";
 

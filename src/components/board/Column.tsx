@@ -6,9 +6,9 @@ import Paper from "@mui/material/Paper";
 import { useState } from "react";
 import { useParams } from "react-router";
 
-import { getId } from "../services/Utils";
-import { useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../state/apiSlice";
-import { Column, Task as TaskType, User } from "../types";
+import { getId } from "../../services/Utils";
+import { useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../../state/apiSlice";
+import { Column, Task as TaskType, User } from "../../types";
 
 import ColumnEditForm from "./ColumnEditForm";
 import Task from "./Task";

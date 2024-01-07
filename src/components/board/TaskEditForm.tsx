@@ -3,9 +3,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
-import { useGetBoardQuery } from "../state/apiSlice";
-import { User } from "../types";
-import { Task as TaskType } from "../types";
+import { useGetBoardQuery } from "../../state/apiSlice";
+import { User } from "../../types";
+import { Task as TaskType } from "../../types";
 
 interface TaskEditFormProps {
     onSubmit: (data: FormData) => void,

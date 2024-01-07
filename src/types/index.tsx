@@ -12,6 +12,10 @@ export type Column = {
     boardid: string;
 };
 
+export type ColumnData = {
+    columnTitle: string;
+};
+
 export type Task = {
     ticketid: string;
     title: string;
