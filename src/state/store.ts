@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+
 import { boardsApi } from "./apiSlice";
 
 export const store = configureStore({
@@ -6,7 +7,7 @@ export const store = configureStore({
         [boardsApi.reducerPath]: boardsApi.reducer,
     },
     middleware: (getDefaultMiddleware) => {
-        return getDefaultMiddleware().concat(boardsApi.middleware)
+        return getDefaultMiddleware().concat(boardsApi.middleware);
     }
 });
 

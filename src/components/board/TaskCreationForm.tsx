@@ -1,9 +1,9 @@
 import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-import { useGetBoardQuery } from "../state/apiSlice";
 import { useParams } from "react-router-dom";
-import { User } from "../types";
 
+import { useGetBoardQuery } from "../../state/apiSlice";
+import { User } from "../../types";
 
 interface TaskCreationFormProps {
     onSubmit: (data: FormData) => void,
@@ -21,10 +21,10 @@ interface FormData {
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
-    const { id = 'default-id' } = useParams()
+    const { id = "default-id" } = useParams();
 
     //get board data to see users to assign as caretakers
-    const board = useGetBoardQuery(id)
+    const board = useGetBoardQuery(id);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
         defaultValues: {
@@ -49,7 +49,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label='Name' helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
+                    <TextField label="Name" helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
                         minLength: {
                             value: 3,
                             message: "Task name must be at least 3 characters"
@@ -92,12 +92,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                 />
                             </>
 
-
                         )}
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label='Description' multiline minRows={6} maxRows={15} fullWidth {...register("description", {
+                    <TextField label="Description" multiline minRows={6} maxRows={15} fullWidth {...register("description", {
                     })} />
                 </Grid>
                 <Grid item xs={12}>
@@ -107,8 +106,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             </Grid>
         </form>
     );
-}
+};
 
-
-
-export default TaskCreationForm
+export default TaskCreationForm;

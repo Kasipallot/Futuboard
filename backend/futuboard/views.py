@@ -135,6 +135,15 @@ def update_column(request, board_id, column_id):
     if request.method == 'PUT':
         try:
             column.title = request.data.get('title', column.title)
+            
+            ticket_ids = request.data.get('ticket_ids')
+            
+            if ticket_ids is not None and len(ticket_ids) > 0:
+                tickets = Ticket.objects.filter(ticketid__in=ticket_ids)
+                # TODO: fix this, so that we don't create N queries
+                for ticket in tickets:
+                    ticket.columnid = column
+                    ticket.save()
             column.save()
 
             serializer = ColumnSerializer(column)

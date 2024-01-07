@@ -1,19 +1,9 @@
-import './App.css'
+import "./App.css";
 
-import  {BrowserRouter as Router, Routes, Route}from 'react-router-dom'
-import Home from './components/Home'
-import BoardContainer from './components/BoardContainer'
+import Router from "./Router";
 
-function App() {
+const App = () => {
+  return <Router />;
+};
 
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home/>}/>
-        <Route path="/board/:id" element={<BoardContainer/>} />
-      </Routes>
-    </Router>
-  )
-}
-
-export default App
+export default App;
