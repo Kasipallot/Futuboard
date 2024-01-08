@@ -80,30 +80,13 @@ def get_tickets_from_column(request, board_id, column_id):
         try:
             tickets_data = request.data
 
-            #if ticket is in database, but not in request data, delete it
-            tickets_from_database = Ticket.objects.filter(columnid=column_id)
-            # Get IDs of tickets from request data
-            tickets_data_ids = [ticket['ticketid'] for ticket in tickets_data]
-
-            # Delete tickets that are in the database but not in the request data (ticket was moved from column)
-            tickets_from_database.exclude(ticketid__in=tickets_data_ids).delete()
-
-            #vice versa, if ticket is in request data but not in database, create it
-            for ticket_data in tickets_data:
-                if not Ticket.objects.filter(ticketid=ticket_data['ticketid']).exists():
-                    new_ticket = Ticket(
-                        ticketid = ticket_data['ticketid'],
-                        columnid = Column.objects.get(pk=column_id),
-                        title = ticket_data['title'],
-                        description = ticket_data['description'],
-                        color = ticket_data['color'],
-                        storypoints = ticket_data['storypoints'],
-                        size = ticket_data['size'],
-                        order = ticket_data['order'],
-                        creation_date = ticket_data['creation_date']
-                        )
-                    new_ticket.save()
-          
+            # if ticket has a columnid that is not the same as the columnid from the ticket in the database, change it
+            for ticket in tickets_data:
+                ticket_from_database = Ticket.objects.get(ticketid=ticket['ticketid'])
+                if ticket_from_database.columnid != Column.objects.get(pk=column_id):
+                    ticket_from_database.columnid = Column.objects.get(pk=column_id)
+                    ticket_from_database.save()
+                    
             #update order of tickets
             for index, ticket_data in enumerate(tickets_data):
                 task = Ticket.objects.get(ticketid=ticket_data['ticketid'])

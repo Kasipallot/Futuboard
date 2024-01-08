@@ -46,7 +46,9 @@ const Board: React.FC = () => {
                     draft?.splice(source.index, 1)
                 })
 
+                //TODO: source tasks, dont need to be sent to server, just updated in cache 
                 updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] })
+                
 
                 //add task to destination column
                 const nextDestinationTasks = produce(destinationTasks, (draft) => {
