@@ -23,5 +23,11 @@ coverage/
 *.njsproj
 *.sln
 *.sw?
-*__pycache__
 backend/tests/assets
+.env
+.venv/
+
+# Compiled python
+*.py[cod]
+__pycache__
+env

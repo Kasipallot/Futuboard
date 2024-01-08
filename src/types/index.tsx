@@ -1,19 +1,39 @@
 export type Board = {
     id: string;
     title: string;
+    password: string;
     columns: Column[];
-}; // add list of users later
+    users: User[];
+};
 
 export type Column = {
-    id: string;
+    columnid: string;
     title: string;
-    tasks: Task[];
+    boardid: string;
+};
+
+export type ColumnData = {
+    columnTitle: string;
 };
 
 export type Task = {
-    id: string;
+    ticketid: string;
     title: string;
-    description: string;
+    description?: string;
+    color?: string;
+    caretakers?: User[];
+    size?: string;
+    columnid: string;
+};
+
+export type User = {
+    id: string;
+    name: string;
     color?: string;
 };
+
+export type NewBoardFormData = {
+    title: string;
+    password: string;
+}
 
