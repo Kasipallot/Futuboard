@@ -6,6 +6,7 @@ from .models import Board, Column, Ticket
 from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer
 import rest_framework.request
 from django.utils import timezone
+from .verification import new_password
 
 # Create your views here.
 @api_view(['GET', 'POST'])
@@ -18,7 +19,7 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
                             title = request.data['title'],
                             creator = '',
                             creation_date = timezone.now(),
-                            passwordhash = '',
+                            passwordhash = new_password(request.data['password']),
                             salt = '')
             new_board.save()
 
