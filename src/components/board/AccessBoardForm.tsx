@@ -5,17 +5,26 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "@/state/apiSlice";
 
 interface AccessBoardFormProps {
-  onSubmit: (_: FormData) => void;
-  onCancel: () => void;
+  //onSubmit: (_: FormData) => void;
+  //onCancel: () => void;
+  id: string;
+  passfunc: (_: string) => void;
+  login: (_: boolean) => void;
 }
 
 interface FormData {
   password: string;
 }
 
-const AccessBoardForm: React.FC<AccessBoardFormProps> = ({ onSubmit, onCancel }) => {
+const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
+  id,
+  passfunc,
+  login,
+}) => {
   const {
     register,
     handleSubmit,
@@ -25,6 +34,17 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({ onSubmit, onCancel })
       password: "",
     },
   });
+  const navigate = useNavigate();
+  const [tryLogin] = useLoginMutation();
+  const onSubmit = async (data: FormData) => {
+    console.log(id);
+    const islogged = await tryLogin({ boardId: id, password: data.password });
+    console.log(islogged);
+    //login(islogged.data.success);
+  };
+  const onCancel = () => {
+    navigate(`/`);
+  };
 
   const handleFormSubmit = (data: FormData) => {
     // Perform password validation or authentication here
