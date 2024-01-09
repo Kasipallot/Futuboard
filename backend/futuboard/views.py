@@ -37,8 +37,13 @@ def get_board_by_id(request, board_id):
     if request.method == 'POST':
         # Get password from request
         password = request.data['password']
+        # Get board from database
+        try:
+            board = Board.objects.get(pk=board_id)
+        except Board.DoesNotExist:
+            raise Http404("Board does not exist")
         # verify password
-        if verify_password(password, board_id):
+        if verify_password(password, board_id, board.passwordhash):
             return JsonResponse({'success': True})
         else:
             return JsonResponse({'success': False})        
