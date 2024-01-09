@@ -37,10 +37,13 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
   const navigate = useNavigate();
   const [tryLogin] = useLoginMutation();
   const onSubmit = async (data: FormData) => {
-    console.log(id);
     const islogged = await tryLogin({ boardId: id, password: data.password });
-    console.log(islogged);
-    //login(islogged.data.success);
+    const success = islogged.data.success;
+    if (success) {
+      login(true);
+    } else {
+      alert("Wrong password");
+    }
   };
   const onCancel = () => {
     navigate(`/`);
