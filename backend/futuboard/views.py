@@ -6,6 +6,7 @@ from .models import Board, Column, Ticket
 from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer
 import rest_framework.request
 from django.utils import timezone
+from .verification import new_password, verify_password
 
 # Create your views here.
 @api_view(['GET', 'POST'])
@@ -18,7 +19,7 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
                             title = request.data['title'],
                             creator = '',
                             creation_date = timezone.now(),
-                            passwordhash = '',
+                            passwordhash = new_password(request.data['password']),
                             salt = '')
             new_board.save()
 
@@ -34,7 +35,18 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
 @api_view(['GET', 'POST'])
 def get_board_by_id(request, board_id):
     if request.method == 'POST':
-        print("Got POST")         
+        # Get password from request
+        password = request.data['password']
+        # Get board from database
+        try:
+            board = Board.objects.get(pk=board_id)
+        except Board.DoesNotExist:
+            raise Http404("Board does not exist")
+        # verify password
+        if verify_password(password, board_id, board.passwordhash):
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False})        
     if request.method == 'GET':
         try:
             query_set = Board.objects.get(pk=board_id)
