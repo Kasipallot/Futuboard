@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
 import { useLoginMutation } from "@/state/apiSlice";
 
 interface AccessBoardFormProps {
@@ -38,7 +39,7 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
       alert("Hmm we got an error");
       return;
     }
-    
+
     const success = loginResponse.data.success;
     if (success) {
       login(true);
@@ -47,7 +48,7 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
     }
   };
   const onCancel = () => {
-    navigate(`/`);
+    navigate("/");
   };
 
   const handleFormSubmit = (data: FormData) => {

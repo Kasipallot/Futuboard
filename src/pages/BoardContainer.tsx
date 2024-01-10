@@ -1,11 +1,11 @@
 import ToolBar from "@components/board/Toolbar";
 import Typography from "@mui/material/Typography";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
+import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { useGetBoardQuery } from "../state/apiSlice";
-import AccessBoardForm from "../components/board/AccessBoardForm";
 
 const BoardContainer: React.FC = () => {
   const [islogged, setLogin] = useState(false);
@@ -16,7 +16,7 @@ const BoardContainer: React.FC = () => {
     isLoading: loading,
     status
   } = useGetBoardQuery(id);
-  
+
   if (status === "fulfilled" || islogged) {
     return (
       <>

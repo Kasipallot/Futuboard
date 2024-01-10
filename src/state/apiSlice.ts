@@ -1,3 +1,4 @@
+import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import {
     TagDescription,
     createApi,
@@ -5,7 +6,6 @@ import {
 } from "@reduxjs/toolkit/query/react";
 
 import { Board, Column, Task } from "../types";
-import { PatchCollection } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
@@ -78,7 +78,6 @@ export const boardsApi = createApi({
             ],
         }),
 
-
         updateColumn: builder.mutation<Column, { column: Column, ticketIds?: string[] }>({
             query: ({ column, ticketIds }) => ({
                 url: `boards/${column.boardid}/columns/${column.columnid}/`,
@@ -91,17 +90,17 @@ export const boardsApi = createApi({
         updateTaskListByColumnId: builder.mutation<Task[], { boardId: string, columnId: string, tasks: Task[] }>({
             query: ({ boardId, columnId, tasks }) => ({
                 url: `boards/${boardId}/columns/${columnId}/tickets`,
-                method: 'PUT',
+                method: "PUT",
                 body: tasks
             }),
 
             async onQueryStarted(patchArgs: { boardId: string, columnId: string, tasks: Task[] }, apiActions) {
-                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: 'Columns', id: patchArgs.columnId }]);
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Columns", id: patchArgs.columnId }]);
                 const patchResults: PatchCollection[] = [];
                 cacheList.forEach((cache) => {
-                    if (cache.endpointName === 'getTaskListByColumnId') {
+                    if (cache.endpointName === "getTaskListByColumnId") {
                         const patchResult = apiActions.dispatch(
-                            boardsApi.util.updateQueryData('getTaskListByColumnId', cache.originalArgs, () => {
+                            boardsApi.util.updateQueryData("getTaskListByColumnId", cache.originalArgs, () => {
                                 const updatedTasks = patchArgs.tasks.map(task => ({
                                     ...task,
                                     columnid: patchArgs.columnId
@@ -120,7 +119,7 @@ export const boardsApi = createApi({
                     patchResults.forEach((patchResult) => {
                         patchResult.undo();
                     });
-                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: 'Columns', id: patchArgs.columnId }]));
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Columns", id: patchArgs.columnId }]));
                 }
 
             },
@@ -135,7 +134,6 @@ export const boardsApi = createApi({
         }),
     }),
 });
-
 
 export const {
     useGetBoardQuery,
