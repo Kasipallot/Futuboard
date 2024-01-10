@@ -125,7 +125,7 @@ export const boardsApi = createApi({
 
             },
         }),
-        login: builder.mutation<{ data: { data: { success: boolean } } }, { boardId: string; password: string }>({
+        login: builder.mutation<{ success: boolean }, { boardId: string; password: string }>({
             query: ({ boardId, password }) => ({
                 url: `boards/${boardId}/`,
                 method: "POST",
