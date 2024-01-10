@@ -21,6 +21,7 @@ const Home: React.FC = () => {
             columns:[]
         };
         //send board object to server
+        // TODO: add error handling
         await addBoard(board);
         //redirect to created board page
         navigate(`/board/${id}`);
