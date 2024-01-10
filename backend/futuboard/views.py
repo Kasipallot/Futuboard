@@ -86,8 +86,30 @@ def get_columns_from_board(request, board_id):
             print("Column creation failed")
             raise Http404("Column creation failed")
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def get_tickets_from_column(request, board_id, column_id):
+    if request.method == 'PUT':
+        try:
+            tickets_data = request.data
+
+            # if ticket has a columnid that is not the same as the columnid from the ticket in the database, change it
+            for ticket in tickets_data:
+                ticket_from_database = Ticket.objects.get(ticketid=ticket['ticketid'])
+                if ticket_from_database.columnid != Column.objects.get(pk=column_id):
+                    ticket_from_database.columnid = Column.objects.get(pk=column_id)
+                    ticket_from_database.save()
+                    
+            #update order of tickets
+            for index, ticket_data in enumerate(tickets_data):
+                task = Ticket.objects.get(ticketid=ticket_data['ticketid'])
+                task.order = index
+                task.save()
+
+            return JsonResponse({"message": "Tasks order updated successfully"}, status=200)
+        except Ticket.DoesNotExist:
+            raise Http404("Task does not exist")
+        except:
+            raise Http404("Error updating tasks order.")
     if request.method == 'POST':
         try:
             length = len(Ticket.objects.filter(columnid=column_id))
