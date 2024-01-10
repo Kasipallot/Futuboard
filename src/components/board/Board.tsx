@@ -1,24 +1,25 @@
-import { useParams } from "react-router";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { Box, Typography } from "@mui/material";
-import { DragDropContext, DropResult } from '@hello-pangea/dnd';
-import Column from "./Column"
-import { boardsApi, useGetColumnsByBoardIdQuery, useUpdateTaskListByColumnIdMutation } from "../../state/apiSlice";
-import { Task } from "../../types";
-import { produce } from 'immer'
-import { store } from "../../state/store";
+import { produce } from "immer";
+import { useParams } from "react-router";
 
+import { boardsApi, useGetColumnsByBoardIdQuery, useUpdateTaskListByColumnIdMutation } from "../../state/apiSlice";
+import { store } from "../../state/store";
+import { Task } from "../../types";
+
+import Column from "./Column";
 
 const Board: React.FC = () => {
-    const { id = 'default-id' } = useParams()
+    const { id = "default-id" } = useParams();
 
-    const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id)
+    const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id);
 
-    const [updateTaskList] = useUpdateTaskListByColumnIdMutation()
+    const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
 
     const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
 
     const handleOnDragEnd = async (result: DropResult) => {
-        const { source, destination, type } = result
+        const { source, destination, type } = result;
 
         if (!destination) return;
         if (destination.droppableId === source.droppableId && destination.index === source.index) return;
@@ -31,36 +32,35 @@ const Board: React.FC = () => {
         const selectSourceTasks = selectTasksByColumnId({ boardId: id, columnId: source.droppableId });
         const sourceTasks = selectSourceTasks(state).data || [];
 
-        if (type === 'task') {
+        if (type === "task") {
             //dragging tasks in the same column
             if (destination.droppableId === source.droppableId) {
-                const dataCopy = [...destinationTasks ?? []]
-                const newOrdered = reorder<Task>(dataCopy, source.index, destination.index)
-                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered })
+                const dataCopy = [...destinationTasks ?? []];
+                const newOrdered = reorder<Task>(dataCopy, source.index, destination.index);
+                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered });
             }
             //dragging tasks to different columns
             if (destination.droppableId !== source.droppableId) {
 
                 //remove task from source column
                 const nextSourceTasks = produce(sourceTasks, (draft) => {
-                    draft?.splice(source.index, 1)
-                })
+                    draft?.splice(source.index, 1);
+                });
 
-                //TODO: source tasks, dont need to be sent to server, just updated in cache 
-                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] })
-                
+                //TODO: source tasks, dont need to be sent to server, just updated in cache
+                updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] });
 
                 //add task to destination column
                 const nextDestinationTasks = produce(destinationTasks, (draft) => {
-                    draft?.splice(destination!.index, 0, sourceTasks![source.index])
-                })
-                updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] })
+                    draft?.splice(destination!.index, 0, sourceTasks![source.index]);
+                });
+                updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] });
             }
         }
-    }
+    };
 
     if (isLoading) {
-        return <Typography>Loading columns...</Typography>
+        return <Typography>Loading columns...</Typography>;
     }
 
     return (
@@ -83,4 +83,4 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
     return result;
 }
 
-export default Board
+export default Board;
