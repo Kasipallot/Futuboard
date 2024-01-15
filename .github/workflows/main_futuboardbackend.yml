@@ -50,9 +50,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    defaults:
-      run:
-        working-directory: ./backend
 
     environment:
       name: 'Production'
