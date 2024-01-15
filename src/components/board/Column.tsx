@@ -3,11 +3,14 @@ import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 
+import { RootState } from "@/state/store";
+
 import { getId } from "../../services/Utils";
-import { useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../../state/apiSlice";
+import { boardsApi, useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdateColumnMutation } from "../../state/apiSlice";
 import { Column, Task as TaskType, User } from "../../types";
 
 import ColumnEditForm from "./ColumnEditForm";
@@ -212,17 +215,31 @@ interface ColumnProps {
   index: number;
 }
 
+const defaultTasks : TaskType[] = [];
+
 const Column: React.FC<ColumnProps> = ({ column }) => {
+  const { id = "default-id" } = useParams();
+
+  const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
+
+  const tasks = useSelector((state: RootState) => selectTasksByColumnId({ boardId: id, columnId: column.columnid })(state).data || defaultTasks);
+
+  const sizeSum = useMemo(() => tasks.reduce((sum, task) => sum + Number(task.size), 0), [tasks]);
+
+  const taskNum = useMemo(() => tasks.length, [tasks]);
 
   return (
     <>
       <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", height: "1000px", backgroundColor: "#E5DBD9", padding: "4px" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant={"h5"} gutterBottom>{column.title}</Typography>
+          <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
           <EditColumnButton column={column} />
-
         </div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
         <CreateTaskButton columnid={column.columnid}/>
+        <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
+        <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
+        </div>
         <TaskList column={column} />
       </Paper>
     </>

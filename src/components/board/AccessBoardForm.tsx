@@ -6,13 +6,11 @@ import Typography from "@mui/material/Typography";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+
 import { useLoginMutation } from "@/state/apiSlice";
 
 interface AccessBoardFormProps {
-  //onSubmit: (_: FormData) => void;
-  //onCancel: () => void;
   id: string;
-  passfunc: (_: string) => void;
   login: (_: boolean) => void;
 }
 
@@ -22,7 +20,6 @@ interface FormData {
 
 const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
   id,
-  passfunc,
   login,
 }) => {
   const {
@@ -37,8 +34,13 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
   const navigate = useNavigate();
   const [tryLogin] = useLoginMutation();
   const onSubmit = async (data: FormData) => {
-    const islogged = await tryLogin({ boardId: id, password: data.password });
-    const success = islogged.data.success;
+    const loginResponse = await tryLogin({ boardId: id, password: data.password });
+    if ("error" in loginResponse) {
+      alert("Hmm we got an error");
+      return;
+    }
+
+    const success = loginResponse.data.success;
     if (success) {
       login(true);
     } else {
@@ -46,7 +48,7 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
     }
   };
   const onCancel = () => {
-    navigate(`/`);
+    navigate("/");
   };
 
   const handleFormSubmit = (data: FormData) => {
@@ -69,17 +71,7 @@ const AccessBoardForm: React.FC<AccessBoardFormProps> = ({
             type="password"
             helperText={errors.password?.message}
             error={Boolean(errors.password)}
-            {...register("password", {
-              minLength: {
-                value: 3,
-                message: "Password must be at least 3 characters",
-              },
-              required: {
-                value: true,
-                message: "Password is required",
-              },
-              // Add any additional validation rules here
-            })}
+            {...register("password")}
           />
         </Grid>
         <Grid item xs={12}>
