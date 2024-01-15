@@ -22,7 +22,7 @@ export type Task = {
     description?: string;
     color?: string;
     caretakers?: User[];
-    size?: string;
+    size?: number;
     columnid: string;
 };
 

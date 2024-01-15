@@ -3,6 +3,7 @@ import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 interface AddColumnCreationFormProps {
@@ -11,11 +12,20 @@ interface AddColumnCreationFormProps {
 }
 
 const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
+
     const { register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             columnTitle: ""
         }
     });
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, []);
 
     const {
         onSubmit,
@@ -30,11 +40,7 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
-                        minLength: {
-                            value: 3,
-                            message: "Column name must be at least 3 characters"
-                        },
+                    <TextField inputRef={inputRef} label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
                         required: {
                             value: true,
                             message: "Column name is required"

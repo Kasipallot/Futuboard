@@ -12,7 +12,7 @@ interface ToolBarProps {
   //refactor later
   const ToolBar = ({ title, boardId }: ToolBarProps) => {
     return (
-      <AppBar position="fixed" sx={{ background: "white" }}>
+      <AppBar position="fixed" sx={{ background: "white",  height: "80px" }}>
         <Toolbar>
           <Box display="flex" alignContent="center">
             <HomeButton />
@@ -23,9 +23,6 @@ interface ToolBarProps {
             </Typography>
           </Box>
           <Box display="flex" flexGrow={1}>
-            <Typography variant="h6" component="div" sx={{ color: "black" }}>
-              Board ID: {boardId}
-            </Typography>
             <CopyToClipboardButton />
           </Box>
           <CreateColumnButton boardId={boardId} />

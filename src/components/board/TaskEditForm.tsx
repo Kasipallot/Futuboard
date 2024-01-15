@@ -19,7 +19,7 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    size: string;
+    size: number;
 }
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
@@ -52,19 +52,49 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
-                        minLength: {
-                            value: 3,
-                            message: "Task name must be at least 3 characters"
-                        },
-                        required: {
-                            value: true,
-                            message: "Task name is required"
-                        }
-                    })} />
+                    <Controller
+                        name="taskTitle"
+                        control={control}
+                        defaultValue={task.title}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: "Task name is required"
+                            }
+                        }}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label="Name"
+                                multiline
+                                maxRows={3}
+                                fullWidth
+                                inputProps={{ spellCheck: "false" }}
+                                helperText={errors.taskTitle?.message}
+                                error={Boolean(errors.taskTitle)}
+                                onKeyDown={(event) => { // the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleSubmit(onSubmit)();
+                                    }
+                                }}
+                            />
+                        )}
+
+                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("size", {})} />
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                        valueAsNumber: true,
+                        min: {
+                            value: 0,
+                            message: "Size must be at least 0"
+                        },
+                        max: {
+                            value: 1000,
+                            message: "Size must be at most 1000"
+                        }
+                    })} />
                 </Grid>
                 <Grid item xs={12}>
                     <>
@@ -98,7 +128,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label="Description" multiline minRows={6} maxRows={15} fullWidth {...register("description", {
+                    <TextField label="Description" multiline rows={15} fullWidth {...register("description", { //rows amount hardcoded due to bug with multiline textAreaAutoSize
                     })} />
                 </Grid>
                 <Grid item xs={12}>
