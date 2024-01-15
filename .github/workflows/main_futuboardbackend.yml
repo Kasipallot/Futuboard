@@ -11,17 +11,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  
   build:
     runs-on: ubuntu-latest
-    
-    defaults:
-      run:
-        working-directory: ./backend
+
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python version
         uses: actions/setup-python@v1
         with:
@@ -31,7 +26,6 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-
       - name: Install dependencies
         run: pip install -r python_requirements.txt
 
@@ -46,11 +40,9 @@ jobs:
           path: |
             release.zip
             !venv/
-
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -62,7 +54,7 @@ jobs:
           name: python-app
 
       - name: Unzip artifact for deployment
-        run: unzip release.zip 
+        run: unzip release.zip
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
