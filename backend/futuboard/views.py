@@ -2,7 +2,7 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
-from .models import Board, Column, Ticket
+from .models import Board, Column, Ticket, Usergroup, User, UsergroupUser
 from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer
 import rest_framework.request
 from django.utils import timezone
@@ -185,3 +185,34 @@ def update_column(request, board_id, column_id):
         except:
             raise Http404("Cannot update Column")
 
+@api_view(['PUT'])
+def get_users_from_board(request, board_id):
+    if request.method == 'GET':
+        try:
+            query_set = Usergroup.objects.get(pk=board_id)
+            print(query_set)
+
+        except Board.DoesNotExist:
+            raise Http404("Column does not exist") 
+        serializer = ColumnSerializer(query_set, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'POST':
+        try:
+            length = len(Column.objects.filter(boardid=board_id))
+            new_column = Column(
+                columnid = request.data['columnid'],
+                boardid = Board.objects.get(pk=board_id),
+                wip_limit = 0,
+                color = '',
+                description = '',
+                title = request.data['title'],
+                ordernum = length,
+                creation_date = timezone.now()
+                )
+            new_column.save()
+
+            serializer = ColumnSerializer(new_column)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            print("Column creation failed")
+            raise Http404("Column creation failed")
