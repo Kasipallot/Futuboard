@@ -1,4 +1,5 @@
 import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
@@ -16,12 +17,21 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    size: string;
+    size: number;
 }
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
     const { id = "default-id" } = useParams();
+
+    //focus on the title field when the form is opened
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, []);
 
     //get board data to see users to assign as caretakers
     const board = useGetBoardQuery(id);
@@ -32,7 +42,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             corners: [],
             description: "",
             color: "#ffffff",
-            size: "",
+            size: 0,
         }
     });
 
@@ -45,23 +55,37 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Typography gutterBottom variant="h6" > Create task </Typography>
+                    <Typography gutterBottom variant="h6" > Create Card </Typography>
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
-                        minLength: {
-                            value: 3,
-                            message: "Task name must be at least 3 characters"
-                        },
+                    <TextField label="Name" inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
                         required: {
                             value: true,
                             message: "Task name is required"
                         }
-                    })} />
+                    })}
+                    //the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            handleSubmit(onSubmit)();
+                        }
+                    }}
+                    />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} {...register("size", {})} />
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                        valueAsNumber: true,
+                        min: {
+                            value: 0,
+                            message: "Size must be at least 0"
+                        },
+                        max: {
+                            value: 1000,
+                            message: "Size must be at most 1000"
+                        }
+                    })} />
                 </Grid>
                 <Grid item xs={12}>
                     <>

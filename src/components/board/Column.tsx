@@ -19,7 +19,7 @@ import TaskCreationForm from "./TaskCreationForm";
 
 interface FormData {
   taskTitle: string,
-  size?: string,
+  size?: number,
   corners?: User[],
   description?: string,
 }
@@ -112,6 +112,8 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
             ref={provided.innerRef}
             style={{
               backgroundColor: snapshot.isDraggingOver ? "lightblue" : "transparent",
+              minHeight: "1000px",
+              height: "auto",
              }}
             {...provided.droppableProps}
           >
@@ -230,7 +232,7 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", height: "1000px", backgroundColor: "#E5DBD9", padding: "4px" }}>
+      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
           <EditColumnButton column={column} />

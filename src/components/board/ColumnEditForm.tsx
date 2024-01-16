@@ -1,6 +1,7 @@
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import { Column } from "../../types";
@@ -18,6 +19,14 @@ interface FormData {
 
 const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, []);
+
     const {
         onSubmit,
         onCancel,
@@ -34,7 +43,7 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
-                <TextField label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
+                <TextField inputRef={inputRef} label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
                 minLength: {
                     value : 3,
                     message: "Column name must be at least 3 characters"
