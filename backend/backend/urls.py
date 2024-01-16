@@ -22,5 +22,5 @@ urlpatterns = [
     path('api/columns/<uuid:column_id>/tickets/<uuid:ticket_id>/', views.update_ticket, name='update_ticket'),
 
     path('api/boards/<uuid:board_id>/users/', views.get_users_from_board, name='get_users_from_board'),
-    path('api/boards/<uuid:board_id>/users/<uuid:user_id>', views.update_user, name='update_user'),
+    path('api/users/<uuid:user_id>', views.update_user, name='update_user'),
 ]

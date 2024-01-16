@@ -1,4 +1,4 @@
-from .models import Board, Column, Ticket
+from .models import Board, Column, Ticket, User
 from rest_framework import serializers
 
 
@@ -17,3 +17,8 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = ['ticketid', 'columnid', 'title', 'description', 'color', 'storypoints', 'size', 'order', 'creation_date']
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['userid', 'name']

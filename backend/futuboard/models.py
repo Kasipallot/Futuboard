@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+import uuid
 
 
 class Board(models.Model):
@@ -67,7 +68,7 @@ class Ticket(models.Model):
 
 
 class User(models.Model):
-    userid = models.UUIDField(db_column='userID', primary_key=True)  # Field name made lowercase.
+    userid = models.UUIDField(db_column='userID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
     name = models.TextField(blank=True, null=True)
 
     class Meta:
@@ -76,7 +77,7 @@ class User(models.Model):
 
 
 class Usergroup(models.Model):
-    usergroupid = models.UUIDField(db_column='usergroupID', primary_key=True)  # Field name made lowercase.
+    usergroupid = models.UUIDField(db_column='usergroupID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
     boardid = models.ForeignKey(Board, models.DO_NOTHING, db_column='boardID', blank=True, null=True)  # Field name made lowercase.
     ticketid = models.ForeignKey(Ticket, models.DO_NOTHING, db_column='ticketID', blank=True, null=True)  # Field name made lowercase.
     type = models.TextField(blank=True, null=True)
@@ -87,7 +88,7 @@ class Usergroup(models.Model):
 
 
 class UsergroupUser(models.Model):
-    usergroupid = models.OneToOneField(Usergroup, models.DO_NOTHING, db_column='usergroupID', primary_key=True)  # Field name made lowercase. The composite primary key (usergroupID, userID) found, that is not supported. The first column is selected.
+    usergroupid = models.OneToOneField(Usergroup, models.DO_NOTHING, db_column='usergroupID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase. The composite primary key (usergroupID, userID) found, that is not supported. The first column is selected.
     userid = models.ForeignKey(User, models.DO_NOTHING, db_column='userID')  # Field name made lowercase.
 
     class Meta:

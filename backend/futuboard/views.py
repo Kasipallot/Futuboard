@@ -3,10 +3,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
 from .models import Board, Column, Ticket, Usergroup, User, UsergroupUser
-from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer
+from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
 import rest_framework.request
 from django.utils import timezone
 from .verification import new_password, verify_password
+import uuid
 
 # Create your views here.
 @api_view(['GET', 'POST'])
@@ -22,6 +23,9 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
                             passwordhash = new_password(request.data['password']),
                             salt = '')
             new_board.save()
+
+            new_usergroup = Usergroup(boardid = new_board, type = 'board')
+            new_usergroup.save()
 
             serializer = BoardSerializer(new_board)
             return JsonResponse(serializer.data, safe=False)
@@ -191,34 +195,31 @@ def update_column(request, board_id, column_id):
         except:
             raise Http404("Cannot update Column")
 
-@api_view(['PUT'])
+@api_view(['GET', 'POST'])
 def get_users_from_board(request, board_id):
     if request.method == 'GET':
         try:
-            query_set = Usergroup.objects.get(pk=board_id)
-            print(query_set)
-
+            query_set = Usergroup.objects.get(boardid=board_id)
+            query_set2 = UsergroupUser.objects.filter(usergroupid=query_set.usergroupid)
+            users = [user.userid for user in query_set2]
+            serializer = UserSerializer(users, many=True)
         except Board.DoesNotExist:
-            raise Http404("Column does not exist") 
-        serializer = ColumnSerializer(query_set, many=True)
+            raise Http404("Error getting users") 
         return JsonResponse(serializer.data, safe=False)
     if request.method == 'POST':
         try:
-            length = len(Column.objects.filter(boardid=board_id))
-            new_column = Column(
-                columnid = request.data['columnid'],
-                boardid = Board.objects.get(pk=board_id),
-                wip_limit = 0,
-                color = '',
-                description = '',
-                title = request.data['title'],
-                ordernum = length,
-                creation_date = timezone.now()
-                )
-            new_column.save()
+            usergroup = Usergroup.objects.get(boardid=board_id)
+            new_user = User(name = request.data['name'],)
+            new_user.save()
 
-            serializer = ColumnSerializer(new_column)
+            new_UsergroupUser = UsergroupUser(usergroupid = usergroup, userid = new_user)
+            new_UsergroupUser.save()
+
+            serializer = UserSerializer(new_user)
             return JsonResponse(serializer.data, safe=False)
         except:
-            print("Column creation failed")
-            raise Http404("Column creation failed")
+            raise Http404("User creation failed")
+        
+@api_view(['PUT'])
+def update_user(request):
+    print("TO BE IMPLEMENTED")
