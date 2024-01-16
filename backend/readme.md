@@ -12,7 +12,7 @@ activate
 
 Install the python_requirements.txt located in the root of the project. First navigate to the root folder and then run the following command:
 ```
-pip install -r python_requirements.txt
+pip install -r requirements.txt
 ```
 
 Next, you need to install .env file from our team member that contains the username and passwords for connecting to the database. Copy the .env file to the root of the project.

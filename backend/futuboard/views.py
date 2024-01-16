@@ -49,12 +49,18 @@ def get_board_by_id(request, board_id):
             return JsonResponse({'success': False})        
     if request.method == 'GET':
         try:
-            query_set = Board.objects.get(pk=board_id)
+            board = Board.objects.get(pk=board_id)
+
+            # TODO: only return the board if the user is authorized
+            # (password is empty of the user has entered the password previously)
+            if verify_password("", board_id, board.passwordhash):
+                serializer = BoardSerializer(board)
+                return JsonResponse(serializer.data, safe=False)
+            else:
+                # return a 401 if the user does not have access to the board   
+                return HttpResponse(status=401)
         except Board.DoesNotExist:
             raise Http404("Board does not exist")
-            
-        serializer = BoardSerializer(query_set)
-        return JsonResponse(serializer.data, safe=False)
 
 @api_view(['GET', 'POST'])
 def get_columns_from_board(request, board_id):
