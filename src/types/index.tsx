@@ -27,7 +27,7 @@ export type Task = {
 };
 
 export type User = {
-    id: string;
+    userid: string;
     name: string;
     color?: string;
 };

@@ -130,7 +130,7 @@ def get_tickets_from_column(request, board_id, column_id):
                 description = request.data['description'],
                 color = 'white',
                 storypoints = 8,
-                size = int(request.data['size']) if request.data['size'] != '' else 0,
+                size = int(request.data['size']) if request.data['size'] else 0,
                 order = length,
                 creation_date = timezone.now()
                 )

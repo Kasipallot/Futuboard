@@ -5,12 +5,12 @@ import {
     fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { Board, Column, Task } from "../types";
+import { Board, Column, Task, User } from "../types";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
     baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/api/" }),
-    tagTypes: ["Boards", "Columns", "Ticket"],
+    tagTypes: ["Boards", "Columns", "Ticket", "Users"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
@@ -124,6 +124,18 @@ export const boardsApi = createApi({
 
             },
         }),
+        getUsersByBoardId: builder.query<User[], string>({
+            query: (boardId) => `boards/${boardId}/users/`,
+            providesTags: [{ type: "Users", id: "LIST" }],
+        }),
+        postUserToBoard: builder.mutation<User, { boardId: string; user: Omit<User, "userid"> }>({
+            query: ({ boardId, user }) => ({
+                url: `boards/${boardId}/users/`,
+                method: "POST",
+                body: user,
+            }),
+            invalidatesTags: ["Users"],
+        }),
         login: builder.mutation<{ success: boolean }, { boardId: string; password: string }>({
             query: ({ boardId, password }) => ({
                 url: `boards/${boardId}/`,
@@ -136,6 +148,7 @@ export const boardsApi = createApi({
 });
 
 export const {
+    useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
     useGetColumnsByBoardIdQuery,
@@ -146,4 +159,5 @@ export const {
     useUpdateColumnMutation,
     useLoginMutation,
     useUpdateTaskListByColumnIdMutation,
+    usePostUserToBoardMutation
 } = boardsApi;
