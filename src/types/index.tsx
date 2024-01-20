@@ -17,3 +17,12 @@ export type Task = {
     color?: string;
 };
 
+export type Record = {
+    id: string;
+    title: string;
+    description?: string;
+    caption?: string;
+    color?: string;
+    createdAt?: string;
+  };
+
