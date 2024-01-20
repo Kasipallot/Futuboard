@@ -9,4 +9,3 @@ pytest-asyncio==0.21.0
 pytest-html==3.2.0
 pytest-metadata==3.0.0
 argon2-cffi==23.1.0
-uuid==1.30
