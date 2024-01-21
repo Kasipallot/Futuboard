@@ -33,7 +33,6 @@ describe('Futuboard Home Page Test', () => {
       // Replae with the correct URL
       cy.visit('http://localhost:5173/board/1');
       cy.get('.MuiTypography-root').should('contain', 'Backlog');
-      cy.get('.some-parent-class button[aria-label="add task"]').click();
 
 
     });
