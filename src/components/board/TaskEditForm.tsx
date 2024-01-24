@@ -91,8 +91,8 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                             message: "Size must be at least 0"
                         },
                         max: {
-                            value: 1000,
-                            message: "Size must be at most 1000"
+                            value: 99,
+                            message: "Size must be at smaller than 100"
                         }
                     })} />
                 </Grid>
