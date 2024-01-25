@@ -220,6 +220,13 @@ def get_users_from_board(request, board_id):
         except:
             raise Http404("User creation failed")
         
-@api_view(['PUT'])
-def update_user(request):
-    print("TO BE IMPLEMENTED")
+@api_view(['DELETE'])
+def update_user(request, user_id):
+    if request.method == 'DELETE':
+        try:
+            user = User.objects.get(pk=user_id)
+            response = u'Successful deleted user: {}'.format(user_id)
+            user.delete()
+            return HttpResponse(response)
+        except:
+            raise Http404("User deletion failed")
