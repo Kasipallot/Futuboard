@@ -10,7 +10,7 @@ interface UserListProps {
 
 const UserList: React.FC<UserListProps> = ({ users }) => {
     return (
-        <Droppable droppableId="user-list" type="user" direction="horizontal">
+        <Droppable droppableId="user-list" type="user" direction="horizontal" >
             {(provided: DroppableProvided) => {
                 return(
                     <div
@@ -23,7 +23,7 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
                         }}
                     >
                         {users && users.map((user, index) => (
-                            <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                            <Draggable key={user.userid} draggableId={user.userid} index={index} >
                                 {(provided) => {
                                     return (
                                         <div

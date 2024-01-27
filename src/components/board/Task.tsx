@@ -1,12 +1,13 @@
-import { Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
+import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
-import { useUpdateTaskMutation } from "../../state/apiSlice";
+import { useGetUsersByTicketIdQuery, useUpdateTaskMutation } from "../../state/apiSlice";
 import { Task as TaskType, User } from "../../types";
 
 import TaskEditForm from "./TaskEditForm";
+import UserMagnet from "./UserMagnet";
 
 const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     return (
@@ -14,6 +15,30 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
             <Paper variant="outlined" sx={{ backgroundColor: caretaker.color || "lightgrey", padding: "0px 12px" }}>
                 <Typography>{caretaker.name}</Typography>
             </Paper>
+        </div>
+    );
+};
+
+const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
+
+    return (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {users.map((user, index) => (
+                <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                    {(provided) => {
+                        return (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                            >
+                                <UserMagnet user={user} />
+                            </div>
+                        );
+                    }
+                    }
+                </Draggable>
+            ))}
         </div>
     );
 };
@@ -97,11 +122,13 @@ interface TaskProps {
 
 const Task: React.FC<TaskProps> = ({ task }) => {
 
+    const { data : users } = useGetUsersByTicketIdQuery(task.ticketid);
+
     const [selected, setSelected] = useState(false);
 
     //temporary styling solutions
     return (
-        <Droppable droppableId={task.ticketid} type="user">
+        <Droppable droppableId={task.ticketid} type="user" direction="horizontal" ignoreContainerClipping>
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                 return (
                     <div ref={provided.innerRef}>
@@ -133,6 +160,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                             <CaretakerComponent key={index} caretaker={caretaker} />
                                         ))}
                                     </div>
+                                    <div style={{ overflow:"hidden", width:"80%" }}>
+                                        {provided.placeholder}
+                                        {users && <UserMagnetList users={users}/>}
+                                    </div>
                                     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
                                         <div>
                                             <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
@@ -140,7 +171,6 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                     </div>
                                 </div>
                             </div>
-                            <span style={{ display: "none" }}>{provided.placeholder}</span>
                         </Paper>
                     </div>
                 );
