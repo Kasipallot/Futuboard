@@ -65,7 +65,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                         }
                     })}
                     //the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
-                    onKeyDown={(event) => {
+                    onKeyDown={(event: { key: string; preventDefault: () => void; }) => {
                         if (event.key === "Enter") {
                             event.preventDefault();
                             handleSubmit(onSubmit)();

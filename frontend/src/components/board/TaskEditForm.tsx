@@ -72,7 +72,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                                 inputProps={{ spellCheck: "false" }}
                                 helperText={errors.taskTitle?.message}
                                 error={Boolean(errors.taskTitle)}
-                                onKeyDown={(event) => { // the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
+                                onKeyDown={(event: { key: string; preventDefault: () => void; }) => { // the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
                                     if (event.key === "Enter") {
                                         event.preventDefault();
                                         handleSubmit(onSubmit)();
