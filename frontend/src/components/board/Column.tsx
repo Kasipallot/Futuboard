@@ -99,7 +99,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
   if (isLoading) {
     return (
       <Typography variant={"body2"} gutterBottom>
-        Loading tasks...
+        Loading cards...
       </Typography>
     );
   }
@@ -140,7 +140,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
               ))
             ) : (
               <Typography variant={"body2"} gutterBottom>
-                No tasks yet
+                No cards yet
               </Typography>
             )}
             {provided.placeholder}
