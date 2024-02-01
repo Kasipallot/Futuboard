@@ -1,4 +1,4 @@
-import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
+import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
@@ -19,18 +19,31 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     );
 };
 
+const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) =>  {
+    if (!snapshot.isDropAnimating) {
+      return style;
+    }
+
+    return {
+      ...style,
+      transform: "scale(0)",
+      transition: `all  ${0.01}s`,
+    };
+  };
+
 const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
 
     return (
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
             {users.map((user, index) => (
                 <Draggable key={user.userid} draggableId={user.userid} index={index}>
-                    {(provided) => {
+                    {(provided, snapshot) => {
                         return (
                             <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
+                                style={dropStyle(provided.draggableProps.style, snapshot)}
                             >
                                 <UserMagnet user={user} />
                             </div>
@@ -128,7 +141,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
 
     //temporary styling solutions
     return (
-        <Droppable droppableId={task.ticketid} type="user" direction="horizontal" ignoreContainerClipping>
+        <Droppable droppableId={task.ticketid} type="user"  direction="vertical" >
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                 return (
                     <div ref={provided.innerRef}>
@@ -160,8 +173,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                             <CaretakerComponent key={index} caretaker={caretaker} />
                                         ))}
                                     </div>
-                                    <div style={{ overflow:"hidden", width:"80%" }}>
-                                        {provided.placeholder}
+                                    <div style={{ overflow:"hidden", width:"90%" }}>
                                         {users && <UserMagnetList users={users}/>}
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
@@ -171,6 +183,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                     </div>
                                 </div>
                             </div>
+                            {provided.placeholder}
                         </Paper>
                     </div>
                 );
