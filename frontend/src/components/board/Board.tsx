@@ -3,17 +3,18 @@ import { Box, Typography } from "@mui/material";
 import { produce } from "immer";
 import { useParams } from "react-router";
 
+
+
 import { boardsApi, useGetColumnsByBoardIdQuery, useUpdateTaskListByColumnIdMutation } from "../../state/apiSlice";
 import { store } from "../../state/store";
 import { Task } from "../../types";
 
 import Column from "./Column";
 
-const Board: React.FC = () => {
+const Board: React.FC = (socket) => {
     const { id = "default-id" } = useParams();
-
     const { data: columns, isLoading, isSuccess } = useGetColumnsByBoardIdQuery(id);
-
+    
     const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
 
     const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
@@ -55,6 +56,7 @@ const Board: React.FC = () => {
                     draft?.splice(destination!.index, 0, sourceTasks![source.index]);
                 });
                 updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] });
+                socket.sendMessage('ticket relocation')
             }
         }
     };

@@ -13,7 +13,10 @@ export const boardsApi = createApi({
     tagTypes: ["Boards", "Columns", "Ticket"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
-            query: (boardId) => `boards/${boardId}/`,
+            query: (boardId) => {
+                console.log("Refreshing Board")
+                return `boards/${boardId}/`
+            },
             providesTags: ["Boards"],
         }),
 
