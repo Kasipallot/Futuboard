@@ -23,4 +23,5 @@ urlpatterns = [
 
     path('api/boards/<uuid:board_id>/users/', views.get_users_from_board, name='get_users_from_board'),
     path('api/users/<uuid:user_id>', views.update_user, name='update_user'),
+    path('api/tickets/<uuid:ticket_id>/users/', views.get_users_from_ticket, name='get_users_from_ticket'),
 ]
