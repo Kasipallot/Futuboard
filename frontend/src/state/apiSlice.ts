@@ -126,7 +126,7 @@ export const boardsApi = createApi({
         }),
         getUsersByBoardId: builder.query<User[], string>({
             query: (boardId) => `boards/${boardId}/users/`,
-            providesTags: [{ type: "Users", id: "LIST" }],
+            providesTags: [{ type: "Users", id: "USERLIST" }],
         }),
         postUserToBoard: builder.mutation<User, { boardId: string; user: Omit<User, "userid"> }>({
             query: ({ boardId, user }) => ({
@@ -134,7 +134,7 @@ export const boardsApi = createApi({
                 method: "POST",
                 body: user,
             }),
-            invalidatesTags: ["Users"],
+            invalidatesTags: [{ type: "Users", id: "USERLIST" }],
         }),
         login: builder.mutation<{ success: boolean }, { boardId: string; password: string }>({
             query: ({ boardId, password }) => ({
@@ -167,6 +167,14 @@ export const boardsApi = createApi({
                 { type: "Users", id: ticketId },
             ],
         }),
+        deleteUser: builder.mutation<User, { userId: string }>({
+            query: ({ userId }) => ({
+                url: `users/${userId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [{ type: "Users", id: "USERLIST" }],
+        }),
+
         updateUserListByTicketId: builder.mutation<User[], { ticketId: string; users: User[]}>({
             query: ({ ticketId, users }) => ({
                 url: `tickets/${ticketId}/users/`,
@@ -222,4 +230,5 @@ export const {
     useGetUsersByTicketIdQuery,
     usePostUserToTicketMutation,
     useUpdateUserListByTicketIdMutation,
+    useDeleteUserMutation,
 } = boardsApi;

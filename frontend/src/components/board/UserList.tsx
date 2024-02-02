@@ -1,4 +1,6 @@
 import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided } from "@hello-pangea/dnd";
+import { Switch } from "@mui/material";
+import { useState } from "react";
 
 import { User } from "@/types";
 
@@ -21,7 +23,12 @@ const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSn
   };
 
 const UserList: React.FC<UserListProps> = ({ users }) => {
+
+    const [showEditable, setShowEditable] = useState(false);
+
     return (
+        <div>
+
         <Droppable droppableId="user-list" type="user" direction="horizontal" >
             {(provided: DroppableProvided) => {
                 return(
@@ -44,18 +51,22 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
                                             {...provided.dragHandleProps}
                                             style={dropStyle(provided.draggableProps.style, snapshot)}
                                         >
-                                            <UserMagnet user={user} />
+                                            <UserMagnet user={user} editable={showEditable}/>
                                         </div>
                                     );
                                 }}
                             </Draggable>
                         ))}
                         {provided.placeholder}
+                        <div title="Toggle Delete"style={{ marginLeft: "auto" }}>
+                            <Switch onClick={() => setShowEditable(!showEditable)} />
+                        </div>
                     </div>
                 );
 
             }}
         </Droppable>
+        </div>
     );
 };
 

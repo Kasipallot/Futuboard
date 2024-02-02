@@ -45,7 +45,7 @@ const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
                                 {...provided.dragHandleProps}
                                 style={dropStyle(provided.draggableProps.style, snapshot)}
                             >
-                                <UserMagnet user={user} />
+                                <UserMagnet user={user} editable={false}/>
                             </div>
                         );
                     }
