@@ -144,6 +144,65 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: ["Boards"],
         }),
+        getUsersByTicketId: builder.query<User[], string>({
+            query: (ticketId) => `tickets/${ticketId}/users/`,
+            providesTags: (result, _error, args) => {
+                const tags: TagDescription<"Users">[] = [];
+                if (result) {
+                    const users: User[] = result;
+                    users.forEach((user) => {
+                        tags.push({ type: "Users", id: user.userid });
+                    });
+                }
+                return [{ type: "Users", id: args }, ...tags];
+            },
+        }),
+        postUserToTicket: builder.mutation<User, { ticketId: string; user: User }>({
+            query: ({ ticketId, user }) => ({
+                url: `tickets/${ticketId}/users/`,
+                method: "POST",
+                body: user,
+            }),
+            invalidatesTags: (_result, _error, { ticketId }) => [
+                { type: "Users", id: ticketId },
+            ],
+        }),
+        updateUserListByTicketId: builder.mutation<User[], { ticketId: string; users: User[]}>({
+            query: ({ ticketId, users }) => ({
+                url: `tickets/${ticketId}/users/`,
+                method: "PUT",
+                body: users
+            }),
+            async onQueryStarted(patchArgs: { ticketId: string, users: User[] }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Users", id: patchArgs.ticketId }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getUsersByTicketId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getUsersByTicketId", cache.originalArgs, () => {
+                                const updatedUsers = patchArgs.users.map(user => ({
+                                    ...user,
+                                    ticketId: patchArgs.ticketId
+                                }));
+                                return updatedUsers;
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.ticketId }]));
+                }
+
+            },
+        }),
     }),
 });
 
@@ -159,5 +218,8 @@ export const {
     useUpdateColumnMutation,
     useLoginMutation,
     useUpdateTaskListByColumnIdMutation,
-    usePostUserToBoardMutation
+    usePostUserToBoardMutation,
+    useGetUsersByTicketIdQuery,
+    usePostUserToTicketMutation,
+    useUpdateUserListByTicketIdMutation,
 } = boardsApi;
