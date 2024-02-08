@@ -1,14 +1,16 @@
-import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui/material";
-import { useEffect, useRef } from "react";
+import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
 import { useGetUsersByBoardIdQuery } from "../../state/apiSlice";
 import { User } from "../../types";
+import { Task as TaskType } from "../../types";
 
-interface TaskCreationFormProps {
+interface TaskEditFormProps {
     onSubmit: (data: FormData) => void,
     onCancel: () => void,
+    task: TaskType
 
 }
 
@@ -17,60 +19,68 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    size: number | undefined;
+    size: number;
 }
 
-const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
+const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
     const { id = "default-id" } = useParams();
-
-    //focus on the title field when the form is opened
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
-    }, []);
-
     const { data: users, isSuccess } = useGetUsersByBoardIdQuery(id);
-
-    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
-        defaultValues: {
-            taskTitle: "",
-            corners: [],
-            description: "",
-            color: "#ffffff",
-            size: undefined,
-        }
-    });
 
     const {
         onSubmit,
         onCancel,
+        task,
     } = props;
+
+    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+        //set initial values form the task prop
+        defaultValues: {
+            taskTitle: task.title,
+            corners: task.caretakers,
+            description: task.description,
+            color: "#ffffff",
+            size: task.size,
+        }
+    });
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
-                    <Typography gutterBottom variant="h6" > Create Card </Typography>
+                    <Typography noWrap gutterBottom variant="h6" > {task.title}</Typography>
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
-                        required: {
-                            value: true,
-                            message: "Task name is required"
-                        }
-                    })}
-                    //the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                            event.preventDefault();
-                            handleSubmit(onSubmit)();
-                        }
-                    }}
+                    <Controller
+                        name="taskTitle"
+                        control={control}
+                        defaultValue={task.title}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: "Task name is required"
+                            }
+                        }}
+                        render={({ field }) => (
+                            <TextField
+                                {...field}
+                                label="Name"
+                                multiline
+                                maxRows={3}
+                                fullWidth
+                                inputProps={{ spellCheck: "false" }}
+                                helperText={errors.taskTitle?.message}
+                                error={Boolean(errors.taskTitle)}
+                                onKeyDown={(event: { key: string; preventDefault: () => void; }) => { // the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleSubmit(onSubmit)();
+                                    }
+                                }}
+                            />
+                        )}
+
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -88,7 +98,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                     <>
-                        { (!users && isSuccess) ? (
+                        {!users && isSuccess ? (
                             <p>no users, add users to assign caretakers (button to add users)</p>
                         ) : (
                             <>
@@ -114,7 +124,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Assignees" />
                                             )}
-
                                         />
                                     )}
                                 />
@@ -124,11 +133,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label="Description" multiline minRows={6} maxRows={15} fullWidth {...register("description", {
+                    <TextField label="Description" multiline rows={15} fullWidth {...register("description", { //rows amount hardcoded due to bug with multiline textAreaAutoSize
                     })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <Button type="submit" color="primary" variant="contained">Submit</Button>
+                    <Button type="submit" color="primary" variant="contained">Save Changes</Button>
                     <Button onClick={onCancel}>Cancel</Button>
                 </Grid>
             </Grid>
@@ -136,4 +145,4 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
     );
 };
 
-export default TaskCreationForm;
+export default TaskEditForm;

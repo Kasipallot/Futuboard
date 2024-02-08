@@ -268,6 +268,59 @@ def get_users_from_ticket(request, ticket_id):
         except:
             raise Http404("User creation failed")
         
-@api_view(['PUT'])
-def update_user(request):
-    print("TO BE IMPLEMENTED")
+@api_view(['DELETE'])
+def update_user(request, user_id):
+    if request.method == 'DELETE':
+        try:
+            user = User.objects.get(pk=user_id)
+            response = u'Successful deleted user: {}'.format(user_id)
+            user.delete()
+            return HttpResponse(response)
+        except:
+            raise Http404("User deletion failed")
+        
+
+@api_view(['GET','POST', 'PUT'])
+def get_users_from_ticket(request, ticket_id):
+    if request.method == 'GET':
+        try:
+            query_set = Usergroup.objects.get(ticketid=ticket_id)
+            query_set2 = UsergroupUser.objects.filter(usergroupid=query_set.usergroupid)
+            users = [user.userid for user in query_set2]
+            serializer = UserSerializer(users, many=True)
+        except Board.DoesNotExist:
+            raise Http404("Error getting users") 
+        return JsonResponse(serializer.data, safe=False)
+    if request.method == 'PUT':
+        try: 
+            usergroup = Usergroup.objects.get(ticketid=ticket_id)
+            query_set2 = UsergroupUser.objects.filter(usergroupid=usergroup)
+            users = [user.userid for user in query_set2] #list of users in the new ticket
+            if request.data == []:
+                query_set2.delete()
+            else:
+                old_usergroup = UsergroupUser(usergroupid = usergroup, userid = User.objects.get(pk=request.data[0]['userid']))
+                old_usergroup.delete()
+                for user in request.data:
+                    new_usergroup = UsergroupUser(usergroupid = usergroup, userid = User.objects.get(pk=user['userid']))
+                    new_usergroup.save()
+
+        except:
+            raise Http404("User update failed")
+        #TODO: implement
+        print("TO BE IMPLEMENTED")
+        return JsonResponse({"message": "Users updated successfully"}, status=200)
+    if request.method == 'POST': 
+        #when a user is dragged to a ticket for the first time, just create a new one with a new userid but same other fields, makes it easier to delete etc
+        try:
+            usergroup = Usergroup.objects.get(ticketid=ticket_id)
+            new_user =  User(name = request.data['name'])
+            new_user.save()
+
+            new_UsergroupUser = UsergroupUser(usergroupid = usergroup, userid = new_user)
+            new_UsergroupUser.save()
+
+            serializer = UserSerializer(new_user)
+            return JsonResponse(serializer.data, safe=False)
+        except:
+            raise Http404("User creation failed")

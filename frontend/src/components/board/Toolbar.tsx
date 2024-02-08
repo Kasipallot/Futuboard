@@ -39,7 +39,7 @@ const AddUserButton: React.FC = () => {
 
   return (
     <div>
-      <IconButton title="Add user to team" size="small" onClick={handleClick}>
+      <IconButton size="small" onClick={handleClick}>
         <Add />
       </IconButton>
       <Popover

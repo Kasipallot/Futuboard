@@ -1,4 +1,6 @@
-import { Draggable, Droppable, DroppableProvided } from "@hello-pangea/dnd";
+import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided } from "@hello-pangea/dnd";
+import { Switch } from "@mui/material";
+import { useState } from "react";
 
 import { User } from "@/types";
 
@@ -8,8 +10,25 @@ interface UserListProps {
     users: User[];
 }
 
+const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) =>  {
+    if (!snapshot.isDropAnimating) {
+      return style;
+    }
+    //get rid of drop animation, else it dorps the user to the wrong place
+    return {
+      ...style,
+      transform: "scale(0)",
+      transition: `all ${0.01}s`,
+    };
+  };
+
 const UserList: React.FC<UserListProps> = ({ users }) => {
+
+    const [showEditable, setShowEditable] = useState(false);
+
     return (
+        <div>
+
         <Droppable droppableId="user-list" type="user" direction="horizontal" >
             {(provided: DroppableProvided) => {
                 return(
@@ -24,25 +43,30 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
                     >
                         {users && users.map((user, index) => (
                             <Draggable key={user.userid} draggableId={user.userid} index={index} >
-                                {(provided) => {
+                                {(provided, snapshot) => {
                                     return (
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
                                             {...provided.dragHandleProps}
+                                            style={dropStyle(provided.draggableProps.style, snapshot)}
                                         >
-                                            <UserMagnet user={user} />
+                                            <UserMagnet user={user} editable={showEditable}/>
                                         </div>
                                     );
                                 }}
                             </Draggable>
                         ))}
                         {provided.placeholder}
+                        <div title="Toggle Delete"style={{ marginLeft: "auto" }}>
+                            <Switch onClick={() => setShowEditable(!showEditable)} />
+                        </div>
                     </div>
                 );
 
             }}
         </Droppable>
+        </div>
     );
 };
 
