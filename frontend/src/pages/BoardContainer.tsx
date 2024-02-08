@@ -2,7 +2,7 @@ import ToolBar from "@components/board/Toolbar";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import Typography from "@mui/material/Typography";
 import { produce } from "immer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { store } from "@/state/store";
@@ -10,7 +10,7 @@ import { Task } from "@/types";
 
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
-import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation } from "../state/apiSlice";
+import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation } from "../state/apiSlice";
 
 const BoardContainer: React.FC = () => {
   const [islogged, setLogin] = useState(false);
@@ -19,6 +19,8 @@ const BoardContainer: React.FC = () => {
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
   const [updateUsers] = useUpdateUserListByTicketIdMutation();
+  const [tryLogin] = useLoginMutation();
+  const [defaultLoginCompleted, setDefaultLoginCompleted] = useState(false);
 
   const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
   const selectUsersByBoardId = boardsApi.endpoints.getUsersByBoardId.select;
@@ -99,7 +101,17 @@ const BoardContainer: React.FC = () => {
     data: board,
     isLoading: loading,
     status
-  } = useGetBoardQuery(id);
+  } = useGetBoardQuery(id, { skip: !islogged });
+
+  useEffect(() => {
+    const defaultLogin = tryLogin({ boardId: id, password: "" });
+    defaultLogin.then((res) => {
+      setDefaultLoginCompleted(true);
+      if("data" in res && res.data.success){
+        setLogin(true);
+      }
+    });
+  }, [id, tryLogin]);
 
   if (status === "fulfilled" || islogged) {
     return (
@@ -114,7 +126,7 @@ const BoardContainer: React.FC = () => {
 
   return (
     <>
-      {loading ?
+      {loading || !defaultLoginCompleted ?
         <Typography>Loading...</Typography> :
         <AccessBoardForm id={id} login={setLogin} />}
     </>
