@@ -54,15 +54,18 @@ def get_board_by_id(request, board_id):
     if request.method == 'GET':
         try:
             board = Board.objects.get(pk=board_id)
+            serializer = BoardSerializer(board)
+            return JsonResponse(serializer.data, safe=False)
 
             # TODO: only return the board if the user is authorized
             # (password is empty of the user has entered the password previously)
-            if verify_password("", board_id, board.passwordhash):
-                serializer = BoardSerializer(board)
-                return JsonResponse(serializer.data, safe=False)
-            else:
-                # return a 401 if the user does not have access to the board   
-                return HttpResponse(status=401)
+
+            # if verify_password("", board_id, board.passwordhash):
+            #     serializer = BoardSerializer(board)
+            #     return JsonResponse(serializer.data, safe=False)
+            # else:
+            #     # return a 401 if the user does not have access to the board   
+            #     return HttpResponse(status=401)
         except Board.DoesNotExist:
             raise Http404("Board does not exist")
 
