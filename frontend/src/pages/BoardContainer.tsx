@@ -10,11 +10,12 @@ import { Task } from "@/types";
 
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
-import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation } from "../state/apiSlice";
+import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
 
 const BoardContainer: React.FC = () => {
   const [islogged, setLogin] = useState(false);
   const { id = "default-id" } = useParams();
+  const [ deleteUser ] = useDeleteUserMutation();
 
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
@@ -86,6 +87,12 @@ const BoardContainer: React.FC = () => {
           updateUsers({ ticketId: destination.droppableId, users: nextDestinationUsers ?? [] }); //update destination task users
         }
         //Drop animation?
+        if(destination.droppableId === "user-list"){
+          // DELETE request to remove user from task
+          const user = sourceUsers![source.index];
+          deleteUser({userId: user.userid})
+        }
+          
 
         const nextSourceUsers = produce(sourceUsers, (draft) => {
           draft?.splice(source.index, 1);

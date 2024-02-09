@@ -238,7 +238,7 @@ def update_user(request, user_id):
             raise Http404("User deletion failed")
         
 
-@api_view(['GET','POST', 'PUT'])
+@api_view(['GET','POST', 'PUT', 'DELETE'])
 def get_users_from_ticket(request, ticket_id):
     if request.method == 'GET':
         try:
@@ -254,11 +254,20 @@ def get_users_from_ticket(request, ticket_id):
             usergroup = Usergroup.objects.get(ticketid=ticket_id)
             query_set2 = UsergroupUser.objects.filter(usergroupid=usergroup)
             users = [user.userid for user in query_set2] #list of users in the new ticket
+
+
+
             if request.data == []:
+                for user in query_set2:
+                    user.delete()
                 query_set2.delete()
+                
             else:
                 old_usergroup = UsergroupUser(usergroupid = usergroup, userid = User.objects.get(pk=request.data[0]['userid']))
                 old_usergroup.delete()
+                for user in query_set2:
+                    user.delete()
+                
                 for user in request.data:
                     new_usergroup = UsergroupUser(usergroupid = usergroup, userid = User.objects.get(pk=user['userid']))
                     new_usergroup.save()
@@ -280,5 +289,6 @@ def get_users_from_ticket(request, ticket_id):
 
             serializer = UserSerializer(new_user)
             return JsonResponse(serializer.data, safe=False)
+            
         except:
             raise Http404("User creation failed")
