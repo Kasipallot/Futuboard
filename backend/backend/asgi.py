@@ -14,7 +14,8 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import path
 from futuboard.consumers import BoardConsumer
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'backend.settings')
+settings_module = 'backend.deployment' if 'WEBSITE_HOSTNAME' in os.environ else 'backend.settings'
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
