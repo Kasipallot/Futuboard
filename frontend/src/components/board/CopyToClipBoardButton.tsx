@@ -1,4 +1,4 @@
-import { Button, Snackbar } from "@mui/material";
+import { Button, IconButton, Snackbar } from "@mui/material";
 import { useState } from "react";
 
 const CopyToClipboardButton = () => {
@@ -10,7 +10,11 @@ const CopyToClipboardButton = () => {
 
     return (
       <>
-        <Button onClick={handleClick} color={"primary"}>Copy link</Button>
+        <IconButton onClick={handleClick} color={"primary"}>
+          <svg style={{ width: '1.5rem', height: '1.5rem', color: '#2D3748' }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.2 9.8a3.4 3.4 0 0 0-4.8 0L5 13.2A3.4 3.4 0 0 0 9.8 18l.3-.3m-.3-4.5a3.4 3.4 0 0 0 4.8 0L18 9.8A3.4 3.4 0 0 0 13.2 5l-1 1"/>
+          </svg>
+        </IconButton>
         <Snackbar
           open={open}
           onClose={() => setOpen(false)}

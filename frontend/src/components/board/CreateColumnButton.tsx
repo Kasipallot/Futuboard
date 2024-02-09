@@ -34,7 +34,9 @@ interface CreateColumnButtonProps {
     return (
       <Box>
         <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
-          <AddIcon />
+          <svg style={{ width: '1.5rem', height: '1.5rem', color: '#2D3748' }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v14M9 5v14M4 5h16c.6 0 1 .4 1 1v12c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1V6c0-.6.4-1 1-1Z"/>
+          </svg>
         </IconButton>
         <Dialog open={open} onClose={handleCloseDialog}>
           <DialogContent>
