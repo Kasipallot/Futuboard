@@ -5,9 +5,10 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
-import { store } from "@/state/store";
-import { boardsApi } from "@/state/apiSlice";
 import { useParams } from "react-router-dom";
+
+import { boardsApi } from "@/state/apiSlice";
+import { store } from "@/state/store";
 
 interface AddUserCreationFormProps {
     onSubmit: ({ name }: { name: string }) => void,

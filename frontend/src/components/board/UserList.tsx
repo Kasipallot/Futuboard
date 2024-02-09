@@ -37,7 +37,7 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
                         {...provided.droppableProps}
                         style={{ display: "flex",
                         alignItems: "center",
-                        overflowX: 'auto',
+                        overflowX: "auto",
                         maxWidth: "750px",   //change to something else
                         border: "solid 1px black",
                         borderRadius: "10px",
