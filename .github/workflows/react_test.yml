@@ -22,4 +22,4 @@ jobs:
       working-directory: frontend
     - name: Test with Jest
       run: npx jest
-      working-directory: frontends
+      working-directory: frontend
