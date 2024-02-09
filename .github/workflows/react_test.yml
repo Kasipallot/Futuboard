@@ -19,6 +19,7 @@ jobs:
         node-version: '14'
     - name: Install Dependencies
       run: npm install
+      working-directory: frontend
     - name: Test with Jest
-      run: |
-        npx jest
+      run: npx jest
+      working-directory: frontends
