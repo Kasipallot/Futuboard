@@ -25,7 +25,7 @@ const BoardContainer: React.FC = () => {
   const selectUsersByTaskId = boardsApi.endpoints.getUsersByTicketId.select;
 
   const handleOnDragEnd = async (result: DropResult) => {
-    const { source, destination, type } = result;
+    const { source, destination, type, draggableId } = result;
 
     if (!destination) return;
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
@@ -72,8 +72,27 @@ const BoardContainer: React.FC = () => {
       }
     }
     if (type === "user") {
+      const destinationTaskUsers = selectDestinationTaskUsers(state).data || [];
+      const sourceTaskUsers = selectSourceTaskUsers(state).data || [];
+
+      if (destinationTaskUsers.length >= 3 && destination.droppableId != "user-list") {
+        alert("Destination task already has 3 or more user magnets. Move not allowed.");
+        return;
+      }
+      const sourceTaskList = source.droppableId === "user-list" ? userList : sourceTaskUsers;
+      const movingUserName = sourceTaskList.find(user => user.userid === draggableId)?.name;
+
+      console.log("Moving user: ", movingUserName);
+      // source.index on se listan indexi, josta käyttäjä lähtee
+      // lista voi olla userList, tai jokin taskin käyttäjälista
+
+      const isUnique = !destinationUsers.some(user => user.name === movingUserName);
+      if (!isUnique && destination.droppableId != "user-list") {
+        alert("This member is already working on the task. Move not allowed.");
+        return;
+      }
       //dragging user from user list to a task
-      if (source.droppableId == "user-list" && destination.droppableId !== "user-list") { //when dragging from user list send POST to create a new instance of the user
+      if (source.droppableId == "user-list" && destination.droppableId !== "user-list") { //when dragging from user list send POST to create a new instance of the user 
         postUserToTask({ ticketId: destination.droppableId, user: userList[source.index] });
       }
       if (destination.droppableId !== source.droppableId && source.droppableId !== "user-list") { //when dragging from a task to another task
