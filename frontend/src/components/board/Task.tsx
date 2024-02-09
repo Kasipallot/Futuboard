@@ -1,11 +1,13 @@
+import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState } from "react";
 
-import { useUpdateTaskMutation } from "../../state/apiSlice";
+import { useGetUsersByTicketIdQuery, useUpdateTaskMutation } from "../../state/apiSlice";
 import { Task as TaskType, User } from "../../types";
 
 import TaskEditForm from "./TaskEditForm";
+import UserMagnet from "./UserMagnet";
 
 const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     return (
@@ -13,6 +15,43 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
             <Paper variant="outlined" sx={{ backgroundColor: caretaker.color || "lightgrey", padding: "0px 12px" }}>
                 <Typography>{caretaker.name}</Typography>
             </Paper>
+        </div>
+    );
+};
+
+const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) =>  {
+    if (!snapshot.isDropAnimating) {
+      return style;
+    }
+
+    return {
+      ...style,
+      transform: "scale(0)",
+      transition: `all  ${0.01}s`,
+    };
+  };
+
+const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
+
+    return (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            {users.map((user, index) => (
+                <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                    {(provided, snapshot) => {
+                        return (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={dropStyle(provided.draggableProps.style, snapshot)}
+                            >
+                                <UserMagnet user={user} editable={false}/>
+                            </div>
+                        );
+                    }
+                    }
+                </Draggable>
+            ))}
         </div>
     );
 };
@@ -96,48 +135,62 @@ interface TaskProps {
 
 const Task: React.FC<TaskProps> = ({ task }) => {
 
-    const [selected, setSelected] = useState(false);
+    const { data : users } = useGetUsersByTicketIdQuery(task.ticketid);
 
-    const taskStyle = {
-        padding: "4px",
-        backgroundColor: task.color,
-        height: "100px",
-        marginBottom: "5px",
-    };
+    const [selected, setSelected] = useState(false);
 
     //temporary styling solutions
     return (
-        <Paper elevation={selected ? 24 : 4} sx={taskStyle} >
-            <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
-                    <div style={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 3,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        width: "85%"
-                    }}>
-                        <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+        <Droppable droppableId={task.ticketid} type="user"  direction="vertical" >
+            {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
+                return (
+                    <div ref={provided.innerRef}>
+                        <Paper elevation={selected ? 24 : 4} sx={{
+                            padding: "4px",
+                            backgroundColor: snapshot.isDraggingOver ? "lightblue" : task.color,
+                            height: "100px",
+                            marginBottom: "5px",
+                        }}  >
+                            <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
+                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
+                                    <div style={{
+                                        display: "-webkit-box",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 3,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        width: "85%"
+                                    }}>
+                                        <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                    </div>
+                                    <div>
+                                        <EditTaskButton task={task} setTaskSelected={setSelected} />
+                                    </div>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <div style={{ overflow: "hidden" }}>
+                                        {task.caretakers && task.caretakers.map((caretaker, index) => (
+                                            <CaretakerComponent key={index} caretaker={caretaker} />
+                                        ))}
+                                    </div>
+                                    <div style={{ overflow:"hidden", width:"90%" }}>
+                                        {users && <UserMagnetList users={users}/>}
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
+                                        <div>
+                                            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {provided.placeholder}
+                        </Paper>
                     </div>
-                    <div>
-                        <EditTaskButton task={task} setTaskSelected={setSelected} />
-                    </div>
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <div style={{ overflow: "hidden" }}>
-                        {task.caretakers && task.caretakers.map((caretaker, index) => (
-                            <CaretakerComponent key={index} caretaker={caretaker} />
-                        ))}
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
-                        <div>
-                            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Paper>
+                );
+
+            }}
+
+        </Droppable>
     );
 };
 

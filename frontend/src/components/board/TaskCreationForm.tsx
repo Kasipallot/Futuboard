@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 
-import { useGetBoardQuery } from "../../state/apiSlice";
+import { useGetUsersByBoardIdQuery } from "../../state/apiSlice";
 import { User } from "../../types";
 
 interface TaskCreationFormProps {
@@ -17,7 +17,7 @@ interface FormData {
     corners: User[];
     description: string;
     color: string;
-    size: number;
+    size: number | undefined;
 }
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
@@ -33,8 +33,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
       }
     }, []);
 
-    //get board data to see users to assign as caretakers
-    const board = useGetBoardQuery(id);
+    const { data: users, isSuccess } = useGetUsersByBoardIdQuery(id);
 
     const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
         defaultValues: {
@@ -42,7 +41,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             corners: [],
             description: "",
             color: "#ffffff",
-            size: 0,
+            size: undefined,
         }
     });
 
@@ -66,7 +65,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                         }
                     })}
                     //the multiline field starts a new line when enter is pressed which doesnt make sense for a title, thus just send the form
-                    onKeyDown={(event) => {
+                    onKeyDown={(event: { key: string; preventDefault: () => void; }) => {
                         if (event.key === "Enter") {
                             event.preventDefault();
                             handleSubmit(onSubmit)();
@@ -89,7 +88,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                     <>
-                        {!board.data?.users ? (
+                        { (!users && isSuccess) ? (
                             <p>no users, add users to assign caretakers (button to add users)</p>
                         ) : (
                             <>
@@ -100,13 +99,18 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                                         <Autocomplete
                                             multiple
                                             id="tags-standard"
-                                            options={board.data?.users || []}
+                                            options={users || []}
                                             getOptionLabel={(option) => option.name}
+                                            renderOption={(props, option) => (
+                                                <li {...props} key={option.userid}>
+                                                    <Typography variant="body2">{option.name}</Typography>
+                                                </li>
+                                            )}
                                             value={value || []}
                                             onChange={(_event, newValue) => {
                                                 onChange(newValue);
                                             }}
-                                            isOptionEqualToValue={(option, value) => option.id === value.id}
+                                            isOptionEqualToValue={(option, value) => option.userid === value.userid}
                                             renderInput={(params) => (
                                                 <TextField {...params} label="Assignees" />
                                             )}

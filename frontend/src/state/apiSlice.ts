@@ -5,12 +5,12 @@ import {
     fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { Board, Column, Task } from "../types";
+import { Board, Column, Task, User } from "../types";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://futuboardbackend.azurewebsites.net/api/" }),
-    tagTypes: ["Boards", "Columns", "Ticket"],
+    baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/api/" }),//https://futuboardbackend.azurewebsites.net
+    tagTypes: ["Boards", "Columns", "Ticket", "Users"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
@@ -124,6 +124,18 @@ export const boardsApi = createApi({
 
             },
         }),
+        getUsersByBoardId: builder.query<User[], string>({
+            query: (boardId) => `boards/${boardId}/users/`,
+            providesTags: [{ type: "Users", id: "USERLIST" }],
+        }),
+        postUserToBoard: builder.mutation<User, { boardId: string; user: Omit<User, "userid"> }>({
+            query: ({ boardId, user }) => ({
+                url: `boards/${boardId}/users/`,
+                method: "POST",
+                body: user,
+            }),
+            invalidatesTags: [{ type: "Users", id: "USERLIST" }],
+        }),
         login: builder.mutation<{ success: boolean }, { boardId: string; password: string }>({
             query: ({ boardId, password }) => ({
                 url: `boards/${boardId}/`,
@@ -132,10 +144,78 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: ["Boards"],
         }),
+        getUsersByTicketId: builder.query<User[], string>({
+            query: (ticketId) => `tickets/${ticketId}/users/`,
+            providesTags: (result, _error, args) => {
+                const tags: TagDescription<"Users">[] = [];
+                if (result) {
+                    const users: User[] = result;
+                    users.forEach((user) => {
+                        tags.push({ type: "Users", id: user.userid });
+                    });
+                }
+                return [{ type: "Users", id: args }, ...tags];
+            },
+        }),
+        postUserToTicket: builder.mutation<User, { ticketId: string; user: User }>({
+            query: ({ ticketId, user }) => ({
+                url: `tickets/${ticketId}/users/`,
+                method: "POST",
+                body: user,
+            }),
+            invalidatesTags: (_result, _error, { ticketId }) => [
+                { type: "Users", id: ticketId },
+            ],
+        }),
+        deleteUser: builder.mutation<User, { userId: string }>({
+            query: ({ userId }) => ({
+                url: `users/${userId}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: [{ type: "Users", id: "USERLIST" }],
+        }),
+
+        updateUserListByTicketId: builder.mutation<User[], { ticketId: string; users: User[]}>({
+            query: ({ ticketId, users }) => ({
+                url: `tickets/${ticketId}/users/`,
+                method: "PUT",
+                body: users
+            }),
+            async onQueryStarted(patchArgs: { ticketId: string, users: User[] }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Users", id: patchArgs.ticketId }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getUsersByTicketId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getUsersByTicketId", cache.originalArgs, () => {
+                                const updatedUsers = patchArgs.users.map(user => ({
+                                    ...user,
+                                    ticketId: patchArgs.ticketId
+                                }));
+                                return updatedUsers;
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.ticketId }]));
+                }
+
+            },
+        }),
     }),
 });
 
 export const {
+    useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
     useGetColumnsByBoardIdQuery,
@@ -146,4 +226,9 @@ export const {
     useUpdateColumnMutation,
     useLoginMutation,
     useUpdateTaskListByColumnIdMutation,
+    usePostUserToBoardMutation,
+    useGetUsersByTicketIdQuery,
+    usePostUserToTicketMutation,
+    useUpdateUserListByTicketIdMutation,
+    useDeleteUserMutation,
 } = boardsApi;
