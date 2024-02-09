@@ -7,16 +7,32 @@ import { useParams } from "react-router-dom";
 
 import { store } from "@/state/store";
 import { Task } from "@/types";
-
+import useWebSocket, { SendMessage } from 'react-use-websocket';
+import { useDispatch } from "react-redux";
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
+import { createContext } from "react";
+
+export const WebsocketContext = createContext<SendMessage | null>(null);
+
 
 const BoardContainer: React.FC = () => {
+  const dispatch = useDispatch();
   const [islogged, setLogin] = useState(false);
   const { id = "default-id" } = useParams();
   const [ deleteUser ] = useDeleteUserMutation();
-
+  // websocket object
+  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(`wss://futuboardbackend.azurewebsites.net/board/${id}`, {
+    onOpen: () => console.log('opened'),
+    //Will attempt to reconnect on all close events, such as server shutting down
+    shouldReconnect: (closeEvent) => true,
+    onMessage: (message) => {
+        console.log(message);
+        dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users"]))
+    },
+    share: true
+});
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
   const [updateUsers] = useUpdateUserListByTicketIdMutation();
@@ -54,7 +70,8 @@ const BoardContainer: React.FC = () => {
       if (destination.droppableId === source.droppableId) {
         const dataCopy = [...destinationTasks ?? []];
         const newOrdered = reorder<Task>(dataCopy, source.index, destination.index);
-        updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered });
+        await updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered });
+        sendMessage("Task list updated");
       }
       //dragging tasks to different columns
       if (destination.droppableId !== source.droppableId) {
@@ -65,13 +82,14 @@ const BoardContainer: React.FC = () => {
         });
 
         //TODO: source tasks, dont need to be sent to server, just updated in cache
-        updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] });
+        await updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] });
 
         //add task to destination column
         const nextDestinationTasks = produce(destinationTasks, (draft) => {
           draft?.splice(destination!.index, 0, sourceTasks![source.index]);
         });
-        updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] });
+        await updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] });
+        sendMessage("Task list updated");
       }
     }
     if (type === "user") {
@@ -92,14 +110,16 @@ const BoardContainer: React.FC = () => {
       }
       //dragging user from user list to a task
       if (source.droppableId == "user-list" && destination.droppableId !== "user-list") { //when dragging from user list send POST to create a new instance of the user
-        postUserToTask({ ticketId: destination.droppableId, user: userList[source.index] });
+        await postUserToTask({ ticketId: destination.droppableId, user: userList[source.index] });
+        sendMessage("added user to a ticket")
       }
       if (destination.droppableId !== source.droppableId && source.droppableId !== "user-list") { //when dragging from a task to another task
         const nextDestinationUsers = produce(destinationUsers, (draft) => {
           draft?.splice(destination!.index, 0, sourceUsers![source.index]);
         });
         if (destination.droppableId !== "user-list") {
-          updateUsers({ ticketId: destination.droppableId, users: nextDestinationUsers ?? [] }); //update destination task users
+          await updateUsers({ ticketId: destination.droppableId, users: nextDestinationUsers ?? [] }); //update destination task users
+          sendMessage("User list updated")
         }
         //Drop animation?
         if(destination.droppableId === "user-list"){
@@ -112,7 +132,8 @@ const BoardContainer: React.FC = () => {
         const nextSourceUsers = produce(sourceUsers, (draft) => {
           draft?.splice(source.index, 1);
         });
-        updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] }); //update source task users
+        await updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] }); //update source task users
+        sendMessage("users updated");
         // TODO make source task update optimistically
 
       }
@@ -137,12 +158,14 @@ const BoardContainer: React.FC = () => {
 
   if (status === "fulfilled" || islogged) {
     return (
+      <WebsocketContext.Provider value={sendMessage}>
       <>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <ToolBar boardId={id} title={board?.title || ""} />
           <Board />
         </DragDropContext>
       </>
+      </WebsocketContext.Provider>
     );
   }
 

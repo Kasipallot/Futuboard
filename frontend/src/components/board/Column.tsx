@@ -3,10 +3,9 @@ import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-
 import { RootState } from "@/state/store";
 
 import { getId } from "../../services/Utils";
@@ -16,6 +15,7 @@ import { Column, Task as TaskType, User } from "../../types";
 import ColumnEditForm from "./ColumnEditForm";
 import Task from "./Task";
 import TaskCreationForm from "./TaskCreationForm";
+import { WebsocketContext } from "@/pages/BoardContainer";
 
 interface FormData {
   taskTitle: string,
@@ -30,6 +30,9 @@ interface CreateTaskButtonProps {
 
 const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   const { id = "default-id" } = useParams();
+
+  //function for sending a websocket message
+  const sendMessage = useContext(WebsocketContext);
 
   const [addTask] = useAddTaskMutation();
 
@@ -57,6 +60,10 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
     const add$ = addTask({ boardId: id, columnId : columnid, task: taskObject });
     add$.unwrap().then(() => {
       setOpen(false);
+      if (sendMessage !== null)
+      {
+        sendMessage("Task added"); 
+      }
     }).catch((error) => {
       console.error(error);
     });
@@ -161,7 +168,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [updateColumn] = useUpdateColumnMutation();
-
+  const sendMessage = useContext(WebsocketContext);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -170,14 +177,17 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
     setAnchorEl(null);
   };
 
-  const handleOnSubmit = (data : ColumnFormData) => {
+  const handleOnSubmit = async (data : ColumnFormData) => {
     const columnObject = {
       columnid: column.columnid,
       title: data.columnTitle,
       boardid: column.boardid
     };
 
-    updateColumn({ column: columnObject });
+    await updateColumn({ column: columnObject });
+    if (sendMessage !== null) {
+      sendMessage("Column updated");
+    }
     setAnchorEl(null);
   };
 

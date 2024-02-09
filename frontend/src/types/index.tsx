@@ -36,4 +36,3 @@ export type NewBoardFormData = {
     title: string;
     password: string;
 }
-

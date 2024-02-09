@@ -18,11 +18,14 @@ export const boardsApi = createApi({
         }),
 
         addBoard: builder.mutation<Board, Board>({
-            query: (board) => ({
-                url: "boards/",
-                method: "POST",
-                body: board,
-            }),
+            query: (board) => {
+                
+                return ({
+                    url: "boards/",
+                    method: "POST",
+                    body: board,
+                })
+            },
             invalidatesTags: ["Boards"],
         }),
 

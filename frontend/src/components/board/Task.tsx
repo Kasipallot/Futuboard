@@ -1,11 +1,10 @@
 import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Typography } from "@mui/material";
-import React, { Dispatch, SetStateAction, useState } from "react";
-
+import React, { Dispatch, SetStateAction, useState, useContext } from "react";
 import { useGetUsersByTicketIdQuery, useUpdateTaskMutation } from "../../state/apiSlice";
 import { Task as TaskType, User } from "../../types";
-
+import { WebsocketContext } from "@/pages/BoardContainer";
 import TaskEditForm from "./TaskEditForm";
 import UserMagnet from "./UserMagnet";
 
@@ -67,7 +66,7 @@ interface FormData {
 const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetStateAction<boolean>> }> = ({ task, setTaskSelected }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [updateTask] = useUpdateTaskMutation();
-
+    const sendMessage = useContext(WebsocketContext)
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setTaskSelected(true);
         setAnchorEl(event.currentTarget);
@@ -78,7 +77,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
         setAnchorEl(null);
     };
 
-    const handleOnSubmit = (data: FormData) => {
+    const handleOnSubmit = async (data: FormData) => {
         const taskObject = {
             ticketid: task.ticketid,
             title: data.taskTitle,
@@ -89,8 +88,11 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             columnid: task.columnid,
         };
 
-        updateTask({ task: taskObject });
-
+        await updateTask({ task: taskObject });
+        if (sendMessage !== null) {
+            sendMessage("Task updated");
+        }
+        
         setTaskSelected(false);
         setAnchorEl(null);
     };
