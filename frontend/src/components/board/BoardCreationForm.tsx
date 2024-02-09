@@ -33,6 +33,10 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = ({ onSubmit, onC
                     value : 3,
                     message: "Board name must be at least 3 characters"
                 },
+                maxLength: {
+                    value : 40,
+                    message: "Board name can be up to 40 characters"
+                },
                 required: {
                     value: true,
                     message: "Board name is required"
