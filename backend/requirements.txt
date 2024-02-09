@@ -10,3 +10,4 @@ pytest-html==3.2.0
 pytest-metadata==3.0.0
 argon2-cffi==23.1.0
 channels==4.0.0
+daphne==4.0.0
