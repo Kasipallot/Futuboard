@@ -15,5 +15,14 @@ export default defineConfig({
       "@entities": path.resolve(__dirname, "./src/entities"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ["react", "react-dom", "react-router-dom", "typescript"],
+        },
+      },
+    },
+},
 });
 
