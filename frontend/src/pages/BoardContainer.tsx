@@ -23,10 +23,10 @@ const BoardContainer: React.FC = () => {
   const { id = "default-id" } = useParams();
   const [ deleteUser ] = useDeleteUserMutation();
   // websocket object
-  const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(`wss://futuboardbackend.azurewebsites.net/board/${id}`, {
+  const { sendMessage } = useWebSocket(`wss://futuboardbackend.azurewebsites.net/board/${id}`, {
     onOpen: () => console.log('opened'),
     //Will attempt to reconnect on all close events, such as server shutting down
-    shouldReconnect: (closeEvent) => true,
+    shouldReconnect: () => true,
     onMessage: (message) => {
         console.log(message);
         dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users"]))
