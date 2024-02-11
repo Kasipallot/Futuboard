@@ -26,6 +26,7 @@ describe('Futuboard Home Page Test', () => {
       cy.get('.MuiDialog-root').contains('button', 'Submit').click();
       cy.get('.MuiTypography-root').should('contain', 'Enter Board Password');
       cy.get('.MuiDialog-root').find('label').contains('Password').parent().find('input').type('123');
+      cy.get('.MuiIconButton-root').click();
 
     });
   })
