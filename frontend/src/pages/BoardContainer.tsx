@@ -3,19 +3,22 @@ import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import Typography from "@mui/material/Typography";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
+import { createContext } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import useWebSocket, { SendMessage } from "react-use-websocket";
 
+import { getId } from "@/services/Utils";
 import { store } from "@/state/store";
 import { Task } from "@/types";
-import useWebSocket, { SendMessage } from 'react-use-websocket';
-import { useDispatch } from "react-redux";
+
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
-import { createContext } from "react";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
+const clientId = getId();
 
 const BoardContainer: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,12 +27,15 @@ const BoardContainer: React.FC = () => {
   const [ deleteUser ] = useDeleteUserMutation();
   // websocket object
   const { sendMessage } = useWebSocket(`wss://futuboardbackend.azurewebsites.net/board/${id}`, {
-    onOpen: () => console.log('opened'),
+    onOpen: () => {console.log("opened");
+  },
     //Will attempt to reconnect on all close events, such as server shutting down
     shouldReconnect: () => true,
-    onMessage: (message) => {
-        console.log(message);
-        dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users"]))
+    onMessage: (event) => {
+      const data = JSON.parse(event.data);
+        if (data.message !== clientId) {
+          dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users"]));
+        }
     },
     share: true
 });
@@ -71,7 +77,7 @@ const BoardContainer: React.FC = () => {
         const dataCopy = [...destinationTasks ?? []];
         const newOrdered = reorder<Task>(dataCopy, source.index, destination.index);
         await updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered });
-        sendMessage("Task list updated");
+        sendMessage(clientId);
       }
       //dragging tasks to different columns
       if (destination.droppableId !== source.droppableId) {
@@ -82,14 +88,13 @@ const BoardContainer: React.FC = () => {
         });
 
         //TODO: source tasks, dont need to be sent to server, just updated in cache
-        await updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] });
 
         //add task to destination column
         const nextDestinationTasks = produce(destinationTasks, (draft) => {
           draft?.splice(destination!.index, 0, sourceTasks![source.index]);
         });
-        await updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] });
-        sendMessage("Task list updated");
+        await Promise.all([updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] }), updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] })]);
+        sendMessage(clientId);
       }
     }
     if (type === "user") {
@@ -111,29 +116,26 @@ const BoardContainer: React.FC = () => {
       //dragging user from user list to a task
       if (source.droppableId == "user-list" && destination.droppableId !== "user-list") { //when dragging from user list send POST to create a new instance of the user
         await postUserToTask({ ticketId: destination.droppableId, user: userList[source.index] });
-        sendMessage("added user to a ticket")
+        sendMessage(clientId);
       }
       if (destination.droppableId !== source.droppableId && source.droppableId !== "user-list") { //when dragging from a task to another task
         const nextDestinationUsers = produce(destinationUsers, (draft) => {
           draft?.splice(destination!.index, 0, sourceUsers![source.index]);
         });
+
+        const nextSourceUsers = produce(sourceUsers, (draft) => {
+          draft?.splice(source.index, 1);
+        });
         if (destination.droppableId !== "user-list") {
-          await updateUsers({ ticketId: destination.droppableId, users: nextDestinationUsers ?? [] }); //update destination task users
-          sendMessage("User list updated")
+          await Promise.all([updateUsers({ ticketId: destination.droppableId, users: nextDestinationUsers ?? [] }), updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] }) ]); //update destination task users
         }
         //Drop animation?
         if(destination.droppableId === "user-list"){
           // DELETE request to remove user from task
           const user = sourceUsers![source.index];
-          deleteUser({userId: user.userid})
+          await Promise.all([deleteUser({ userId: user.userid }), updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] })]);
         }
-          
-
-        const nextSourceUsers = produce(sourceUsers, (draft) => {
-          draft?.splice(source.index, 1);
-        });
-        await updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] }); //update source task users
-        sendMessage("users updated");
+        sendMessage(clientId);
         // TODO make source task update optimistically
 
       }

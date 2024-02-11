@@ -9,7 +9,7 @@ import { Board, Column, Task, User } from "../types";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://futuboardbackend.azurewebsites.net/api/" }),//https://futuboardbackend.azurewebsites.net
+    baseQuery: fetchBaseQuery({ baseUrl: "https://futuboardbackend.azurewebsites.net/api/" }), //https://futuboardbackend.azurewebsites.net
     tagTypes: ["Boards", "Columns", "Ticket", "Users"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
@@ -19,12 +19,11 @@ export const boardsApi = createApi({
 
         addBoard: builder.mutation<Board, Board>({
             query: (board) => {
-                
                 return ({
                     url: "boards/",
                     method: "POST",
                     body: board,
-                })
+                });
             },
             invalidatesTags: ["Boards"],
         }),

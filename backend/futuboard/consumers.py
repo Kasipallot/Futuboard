@@ -18,7 +18,7 @@ class BoardConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        message = 'refresh'
+        message = text_data
         await self.channel_layer.group_send(
             str(self.board_id),
             {
