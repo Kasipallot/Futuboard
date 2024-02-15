@@ -9,14 +9,14 @@ import { Board, Column, Task, User } from "../types";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://futuboardbackend.azurewebsites.net/api/" }), //https://futuboardbackend.azurewebsites.net
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_DB_ADDRESS }), //https://futuboardbackend.azurewebsites.net
     tagTypes: ["Boards", "Columns", "Ticket", "Users"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ["Boards"],
         }),
-
+        
         addBoard: builder.mutation<Board, Board>({
             query: (board) => {
                 return ({
