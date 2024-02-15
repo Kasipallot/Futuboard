@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+env:
+  VITE_DB_ADDRESS: https://futuboardbackend.azurewebsites.net/api/
+  VITE_WEBSOCKET_ADDRESS: wss//futuboardbackend.azurewebsites.net/board/
+
 jobs:
   build_and_deploy_job:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
