@@ -8,6 +8,19 @@
 from django.db import models
 import uuid
 
+class Action(models.Model):
+    actionid = models.UUIDField(db_column='actionID', primary_key=True)  # Field name made lowercase.
+    ticketid = models.ForeignKey('Ticket', models.DO_NOTHING, db_column='ticketID', blank=True, null=True)  # Field name made lowercase.
+    swimlanecolumnid = models.ForeignKey('Swimlanecolumn', models.DO_NOTHING, db_column='swimlaneColumnID', blank=True, null=True)  # Field name made lowercase.
+    title = models.TextField(blank=True, null=True)
+    color = models.TextField(blank=True, null=True)
+    order = models.IntegerField()
+    creation_date = models.DateField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'Action'
+
 
 class Board(models.Model):
     boardid = models.UUIDField(db_column='boardID', primary_key=True)  # Field name made lowercase.
@@ -51,6 +64,18 @@ class Event(models.Model):
         db_table = 'Event'
 
 
+class Swimlanecolumn(models.Model):
+    swimlanecolumnid = models.UUIDField(db_column='swimlaneColumnID', primary_key=True)  # Field name made lowercase.
+    columnid = models.ForeignKey(Column, models.DO_NOTHING, db_column='columnID', blank=True, null=True)  # Field name made lowercase.
+    color = models.TextField(blank=True, null=True)
+    title = models.TextField(blank=True, null=True)
+    ordernum = models.IntegerField(db_column='orderNum')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'SwimlaneColumn'
+
+
 class Ticket(models.Model):
     ticketid = models.UUIDField(db_column='ticketID', primary_key=True)  # Field name made lowercase.
     columnid = models.ForeignKey(Column, models.DO_NOTHING, db_column='columnID')  # Field name made lowercase.
@@ -61,6 +86,7 @@ class Ticket(models.Model):
     size = models.IntegerField(blank=True, null=True)
     order = models.IntegerField()
     creation_date = models.DateTimeField(blank=True, null=True)
+    cornernote = models.TextField(db_column='cornerNote', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -70,6 +96,7 @@ class Ticket(models.Model):
 class User(models.Model):
     userid = models.UUIDField(db_column='userID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
     name = models.TextField(blank=True, null=True)
+    color = models.TextField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -80,6 +107,7 @@ class Usergroup(models.Model):
     usergroupid = models.UUIDField(db_column='usergroupID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
     boardid = models.ForeignKey(Board, models.DO_NOTHING, db_column='boardID', blank=True, null=True)  # Field name made lowercase.
     ticketid = models.ForeignKey(Ticket, models.DO_NOTHING, db_column='ticketID', blank=True, null=True)  # Field name made lowercase.
+    actionid = models.ForeignKey(Action, models.DO_NOTHING, db_column='actionID', blank=True, null=True)  # Field name made lowercase.
     type = models.TextField(blank=True, null=True)
 
     class Meta:
