@@ -15,6 +15,7 @@ import { Task } from "@/types";
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
+import { Box, CircularProgress } from "@mui/material";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
@@ -174,9 +175,11 @@ const BoardContainer: React.FC = () => {
 
   return (
     <>
+      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       {loading || !defaultLoginCompleted ?
-        <Typography>Loading...</Typography> :
+        <CircularProgress /> :
         <AccessBoardForm id={id} login={setLogin} />}
+      </Box>
     </>
   );
 };
