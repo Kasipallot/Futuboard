@@ -1,6 +1,5 @@
 import ToolBar from "@components/board/Toolbar";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import Typography from "@mui/material/Typography";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
 import { createContext } from "react";
