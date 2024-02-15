@@ -1,4 +1,4 @@
-from .models import Board, Column, Ticket, User
+from .models import Board, Column, Ticket, User, Swimlanecolumn, Action
 from rest_framework import serializers
 
 
@@ -22,3 +22,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['userid', 'name']
+
+class SwimlaneColumnSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Swimlanecolumn
+        fields = ['swimlanecolumnid', 'columnid', 'color', 'title', 'ordernum']
+
+class ActionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Action
+        fields = ['actionid', 'ticketid', 'swimlanecolumnid', 'title', 'color', 'order', 'creation_date']

@@ -2,11 +2,11 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
-from .models import Board, Column, Ticket, Usergroup, User, UsergroupUser
-from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
+from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser
+from ..serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
 import rest_framework.request
 from django.utils import timezone
-from .verification import new_password, verify_password
+from ..verification import new_password, verify_password
 import uuid
 
 # Create your views here.

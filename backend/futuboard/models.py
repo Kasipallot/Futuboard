@@ -15,7 +15,7 @@ class Action(models.Model):
     title = models.TextField(blank=True, null=True)
     color = models.TextField(blank=True, null=True)
     order = models.IntegerField()
-    creation_date = models.DateField(blank=True, null=True)
+    creation_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False
