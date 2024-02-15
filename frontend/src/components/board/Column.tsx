@@ -3,9 +3,10 @@ import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useMemo, useState, useContext } from "react";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+
 import { RootState } from "@/state/store";
 
 import { getId } from "../../services/Utils";
@@ -15,7 +16,6 @@ import { Column, Task as TaskType, User } from "../../types";
 import ColumnEditForm from "./ColumnEditForm";
 import Task from "./Task";
 import TaskCreationForm from "./TaskCreationForm";
-import { WebsocketContext } from "@/pages/BoardContainer";
 
 interface FormData {
   taskTitle: string,
@@ -30,9 +30,6 @@ interface CreateTaskButtonProps {
 
 const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   const { id = "default-id" } = useParams();
-
-  //function for sending a websocket message
-  const sendMessage = useContext(WebsocketContext);
 
   const [addTask] = useAddTaskMutation();
 
@@ -60,10 +57,6 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
     const add$ = addTask({ boardId: id, columnId : columnid, task: taskObject });
     add$.unwrap().then(() => {
       setOpen(false);
-      if (sendMessage !== null)
-      {
-        sendMessage("Task added"); 
-      }
     }).catch((error) => {
       console.error(error);
     });
@@ -168,7 +161,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
 
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [updateColumn] = useUpdateColumnMutation();
-  const sendMessage = useContext(WebsocketContext);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -177,17 +170,14 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
     setAnchorEl(null);
   };
 
-  const handleOnSubmit = async (data : ColumnFormData) => {
+  const handleOnSubmit = (data : ColumnFormData) => {
     const columnObject = {
       columnid: column.columnid,
       title: data.columnTitle,
       boardid: column.boardid
     };
 
-    await updateColumn({ column: columnObject });
-    if (sendMessage !== null) {
-      sendMessage("Column updated");
-    }
+    updateColumn({ column: columnObject });
     setAnchorEl(null);
   };
 
@@ -214,7 +204,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
           horizontal: -20,
         }}
       >
-        <Paper sx={{ height: "fit-content", padding: "20px", width: "200px" }}>
+        <Paper sx={{ height: "fit-content", padding: "20px", width: "200px"}}>
           <ColumnEditForm onSubmit={handleOnSubmit} onCancel={handleClose} column={column} />
         </Paper>
       </Popover>
@@ -242,15 +232,15 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px" }}>
+      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px"}}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
           <EditColumnButton column={column} />
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <CreateTaskButton columnid={column.columnid}/>
-        <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
-        <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
+          <CreateTaskButton columnid={column.columnid}/>
+          <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
+          <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
         </div>
         <TaskList column={column} />
       </Paper>
