@@ -28,19 +28,7 @@ const Board: React.FC = () => {
                 </Typography>
                 */}
                 <Typography sx={{ marginBottom: 1 }}>
-                    Add a user by clicking:
-                    <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748", verticalAlign: "middle", marginLeft: 5 }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                        <path fillRule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clipRule="evenodd"/>
-                    </svg>
-                </Typography>
-                <Typography sx={{ marginBottom: 1 }}>
-                    Copy board link by clicking:
-                    <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748", marginLeft: 5 }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.2 9.8a3.4 3.4 0 0 0-4.8 0L5 13.2A3.4 3.4 0 0 0 9.8 18l.3-.3m-.3-4.5a3.4 3.4 0 0 0 4.8 0L18 9.8A3.4 3.4 0 0 0 13.2 5l-1 1"/>
-                    </svg>
-                </Typography>
-                <Typography sx={{ marginBottom: 1 }}>
-                    Add a column by clicking:
+                    Add a column:
                     <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748", marginLeft: 5 }} fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                         <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -49,6 +37,18 @@ const Board: React.FC = () => {
                                 <path id="Vector" d="M5 17H8M8 17H11M8 17V14M8 17V20M14 21H15C16.1046 21 17 20.1046 17 19V5C17 3.89543 16.1046 3 15 3H13C11.8954 3 11 3.89543 11 5V11" stroke="#2D3748" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
                             </g>
                         </g>
+                    </svg>
+                </Typography>
+                <Typography sx={{ marginBottom: 1 }}>
+                    Add a users:
+                    <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748", verticalAlign: "middle", marginLeft: 5 }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fillRule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clipRule="evenodd"/>
+                    </svg>
+                </Typography>
+                <Typography sx={{ marginBottom: 1 }}>
+                    Copy board link:
+                    <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748", marginLeft: 5 }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.2 9.8a3.4 3.4 0 0 0-4.8 0L5 13.2A3.4 3.4 0 0 0 9.8 18l.3-.3m-.3-4.5a3.4 3.4 0 0 0 4.8 0L18 9.8A3.4 3.4 0 0 0 13.2 5l-1 1"/>
                     </svg>
                 </Typography>
             </Box>

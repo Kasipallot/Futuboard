@@ -1,7 +1,7 @@
 import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Dialog, DialogContent, IconButton, List, Popover, Typography } from "@mui/material";
+import { Box, Dialog, DialogContent, IconButton, List, Popover, Tooltip, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useMemo, useState, useContext } from "react";
 import { useSelector } from "react-redux";
@@ -72,9 +72,11 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   };
   return (
     <Box>
-      <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
-        <AddIcon />
-      </IconButton>
+      <Tooltip title="Add Column">
+        <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
       <Dialog disableRestoreFocus open={open} onClose={handleCloseDialog} PaperProps={{
         style: {
           position: "absolute",
@@ -196,9 +198,11 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
 
   return (
     <div>
-      <IconButton size="small" onClick={handleClick}>
-        <Edit />
-      </IconButton>
+      <Tooltip title="Edit column">
+        <IconButton size="small" onClick={handleClick}>
+          <Edit />
+        </IconButton>
+      </Tooltip>
       <Popover
         disableRestoreFocus
         id={popOverid}

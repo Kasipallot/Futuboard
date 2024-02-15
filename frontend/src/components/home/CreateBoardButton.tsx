@@ -1,5 +1,5 @@
 import BoardCreationForm from "@components/board/BoardCreationForm";
-import { Box, Typography, Dialog, DialogContent } from "@mui/material";
+import { Typography, Dialog, DialogContent } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
@@ -25,8 +25,8 @@ const CreateBoardButton = ({ onNewBoard }: CreateBoardButtonProps) => {
         setOpen(false);
     };
     return (
-        <Box>
-            <Button sx={{ background: "white" }} onClick={handleOpenDialog}>
+        <div>
+            <Button variant="contained" color="primary" onClick={handleOpenDialog}>
                 <Typography>Create board</Typography>
             </Button>
             <Dialog open={open} onClose={handleCloseDialog}>
@@ -34,7 +34,7 @@ const CreateBoardButton = ({ onNewBoard }: CreateBoardButtonProps) => {
                     <BoardCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog}/>
                 </DialogContent>
             </Dialog>
-        </Box>
+        </div>
     );
 };
 

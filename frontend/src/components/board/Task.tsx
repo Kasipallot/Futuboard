@@ -1,6 +1,6 @@
 import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
-import { IconButton, Paper, Popover, Typography } from "@mui/material";
+import { IconButton, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState, useContext } from "react";
 import { useGetUsersByTicketIdQuery, useUpdateTaskMutation } from "../../state/apiSlice";
 import { Task as TaskType, User } from "../../types";
@@ -102,9 +102,11 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
 
     return (
         <div>
+            <Tooltip title="Edit card">
             <IconButton size="small" onClick={handleClick}>
                 <EditNote />
             </IconButton>
+            </Tooltip>
             <Popover
                 disableRestoreFocus
                 id={popOverid}
