@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Board, Column, Ticket, User, Usergroup, UsergroupUser
+from .models import Board, Column, Ticket, User, Usergroup, UsergroupUser, Action, Swimlanecolumn
 
 class BoardAdmin(admin.ModelAdmin):
     fieldsets = [
@@ -24,6 +24,7 @@ class ColumnAdmin(admin.ModelAdmin):
         (None,               {'fields': ['title']}),
         (None,               {'fields': ['ordernum']}),
         (None,               {'fields': ['creation_date']}),
+        (None,               {'fields': ['swimlane']}),
     ]
     list_display = ('title',)
 admin.site.register(Column, ColumnAdmin)
@@ -39,6 +40,7 @@ class TicketAdmin(admin.ModelAdmin):
         (None,               {'fields': ['size']}),
         (None,               {'fields': ['order']}),
         (None,               {'fields': ['creation_date']}),
+        (None,               {'fields': ['cornernote']}),
     ]
     list_display = ('title',)
 admin.site.register(Ticket, TicketAdmin)
@@ -47,7 +49,7 @@ class UserAdmin(admin.ModelAdmin):
     fieldsets = [
         (None,               {'fields': ['userid']}),
         (None,               {'fields': ['name']}),
-
+        (None,               {'fields': ['color']}),
     ]
     list_display = ('name',)
 admin.site.register(User, UserAdmin)
@@ -57,6 +59,7 @@ class UsergroupAdmin(admin.ModelAdmin):
         (None,               {'fields': ['usergroupid']}),
         (None,               {'fields': ['boardid']}),
         (None,               {'fields': ['ticketid']}),
+        (None,               {'fields': ['actionid']}),
         (None,               {'fields': ['type']}),
     ]
     list_display = ('usergroupid',)
@@ -69,3 +72,27 @@ class UsergroupUserAdmin(admin.ModelAdmin):
     ]
     list_display = ('usergroupid',)
 admin.site.register(UsergroupUser, UsergroupUserAdmin)
+
+class ActionAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['actionid']}),
+        (None,               {'fields': ['ticketid']}),
+        (None,               {'fields': ['swimlanecolumnid']}),
+        (None,               {'fields': ['title']}),
+        (None,               {'fields': ['color']}),
+        (None,               {'fields': ['order']}),
+        (None,               {'fields': ['creation_date']}),
+    ]
+    list_display = ('actionid',)
+admin.site.register(Action, ActionAdmin)
+
+class SwimlanecolumnAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None,               {'fields': ['swimlanecolumnid']}),
+        (None,               {'fields': ['columnid']}),
+        (None,               {'fields': ['color']}),
+        (None,               {'fields': ['title']}),
+        (None,               {'fields': ['ordernum']}),
+    ]
+    list_display = ('swimlanecolumnid',)
+admin.site.register(Swimlanecolumn, SwimlanecolumnAdmin)
