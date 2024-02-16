@@ -89,7 +89,8 @@ def get_columns_from_board(request, board_id):
                 description = '',
                 title = request.data['title'],
                 ordernum = length,
-                creation_date = timezone.now()
+                creation_date = timezone.now(),
+                swimlane = request.data['swimlane'],
                 )
             new_column.save()
 
@@ -299,8 +300,6 @@ def get_users_from_ticket(request, ticket_id):
             usergroup = Usergroup.objects.get(ticketid=ticket_id)
             query_set2 = UsergroupUser.objects.filter(usergroupid=usergroup)
             users = [user.userid for user in query_set2] #list of users in the new ticket
-
-
 
             if request.data == []:
                 for user in query_set2:
