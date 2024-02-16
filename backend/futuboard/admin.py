@@ -24,6 +24,7 @@ class ColumnAdmin(admin.ModelAdmin):
         (None,               {'fields': ['title']}),
         (None,               {'fields': ['ordernum']}),
         (None,               {'fields': ['creation_date']}),
+        (None,               {'fields': ['swimlane']}),
     ]
     list_display = ('title',)
 admin.site.register(Column, ColumnAdmin)
