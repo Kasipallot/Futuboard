@@ -2,11 +2,11 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
-from .models import Board, Column, Ticket, Usergroup, User, UsergroupUser
-from .serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
+from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser
+from ..serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
 import rest_framework.request
 from django.utils import timezone
-from .verification import new_password, verify_password
+from ..verification import new_password, verify_password
 import uuid
 
 # Create your views here.
@@ -89,7 +89,8 @@ def get_columns_from_board(request, board_id):
                 description = '',
                 title = request.data['title'],
                 ordernum = length,
-                creation_date = timezone.now()
+                creation_date = timezone.now(),
+                swimlane = request.data['swimlane'],
                 )
             new_column.save()
 
@@ -299,8 +300,6 @@ def get_users_from_ticket(request, ticket_id):
             usergroup = Usergroup.objects.get(ticketid=ticket_id)
             query_set2 = UsergroupUser.objects.filter(usergroupid=usergroup)
             users = [user.userid for user in query_set2] #list of users in the new ticket
-
-
 
             if request.data == []:
                 for user in query_set2:

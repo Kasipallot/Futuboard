@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from quickstart import views as admin_views
-from futuboard import views
+from futuboard.views import views, swimlaneViews
 from django.contrib import admin
 
 router = routers.DefaultRouter()
@@ -25,4 +25,7 @@ urlpatterns = [
     path('api/tickets/<uuid:ticket_id>/users/', views.get_users_from_ticket, name='get_users_from_ticket'),
     path('api/users/<uuid:user_id>', views.update_user, name='update_user'),
     path('api/tickets/<uuid:ticket_id>/users/', views.get_users_from_ticket, name='get_users_from_ticket'),
+
+    path('api/columns/<uuid:column_id>/swimlanecolumns/', swimlaneViews.swimlanecolumn_view, name='swimlanecolumn_view'),
+    path('api/<uuid:swimlanecolumn_id>/<uuid:ticket_id>/actions/', swimlaneViews.action_view, name='action_view'),
 ]
