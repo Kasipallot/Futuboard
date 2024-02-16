@@ -10,6 +10,7 @@ export type Column = {
     columnid: string;
     title: string;
     boardid: string;
+    swimlane?: boolean;
 };
 
 export type ColumnData = {

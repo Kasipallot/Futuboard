@@ -238,7 +238,7 @@ const defaultTasks: TaskType[] = [];
 const Column: React.FC<ColumnProps> = ({ column }) => {
   const [showSwimlanes, setShowSwimlanes] = useState(false);
 
-  const isSwimlaneColumn = true; // change this to column.swimlane boolean
+  const isSwimlaneColumn = column.swimlane || false; // change this to column.swimlane boolean
   const { id = "default-id" } = useParams();
 
   const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
