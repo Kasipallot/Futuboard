@@ -27,7 +27,8 @@ interface CreateColumnButtonProps {
       const column = {
         columnid: getId(),
         title: data.columnTitle,
-        boardid: boardId
+        boardid: boardId,
+        swimlane: data.swimlane,
       };
       await addColumn({ boardId: boardId, column: column });
       if (sendMessage !== null) {
