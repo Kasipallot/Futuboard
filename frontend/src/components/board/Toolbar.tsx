@@ -1,4 +1,4 @@
-import { AppBar, Box, IconButton, Paper, Popover, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, IconButton, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 
@@ -44,12 +44,14 @@ const AddUserButton: React.FC = () => {
 
   return (
     <div>
-      <IconButton size="small" onClick={handleClick}>
+    <Tooltip title="Add User">
+      <IconButton onClick={handleClick}>
         <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
           <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
         </svg>
       </IconButton>
-      <Popover
+      </Tooltip>
+    <Popover
         disableRestoreFocus
         id={popOverid}
         open={open}
@@ -86,7 +88,7 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
       <Toolbar>
         <Box display="flex" alignContent="center" sx={{ flexGrow: 1 }}>
           <HomeButton />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "black", marginLeft: "10px" }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "#2D3748", marginLeft: "10px", marginTop: "5px" }}>
             {title}
           </Typography>
           <Box sx={{ flexGrow: 1 }}>

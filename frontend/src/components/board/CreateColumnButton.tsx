@@ -1,5 +1,5 @@
 import ColumnCreationForm from "@components/board/ColumnCreationForm";
-import { Dialog, DialogContent, IconButton } from "@mui/material";
+import { Dialog, DialogContent, IconButton, Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import { getId } from "@services/Utils";
 import { useState, useContext } from "react";
@@ -37,11 +37,16 @@ interface CreateColumnButtonProps {
     };
     return (
       <Box>
-        <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
-          <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v14M9 5v14M4 5h16c.6 0 1 .4 1 1v12c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1V6c0-.6.4-1 1-1Z"/>
-          </svg>
-        </IconButton>
+        <Tooltip title="Create Column">
+          <IconButton aria-label="add task" onClick={handleOpenDialog}>
+            <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+              <g id="SVGRepo_iconCarrier"> <g id="Edit / Add_Column"> 
+              <path id="Vector" d="M5 17H8M8 17H11M8 17V14M8 17V20M14 21H15C16.1046 21 17 20.1046 17 19V5C17 3.89543 16.1046 3 15 3H13C11.8954 3 11 3.89543 11 5V11" stroke="#2D3748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g>
+            </svg>
+          </IconButton>
+        </Tooltip>
         <Dialog open={open} onClose={handleCloseDialog}>
           <DialogContent>
             <ColumnCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} />
