@@ -1,6 +1,5 @@
 import ToolBar from "@components/board/Toolbar";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
-import Typography from "@mui/material/Typography";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
 import { createContext } from "react";
@@ -15,6 +14,7 @@ import { Task } from "@/types";
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
+import { Box, CircularProgress } from "@mui/material";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
@@ -174,9 +174,11 @@ const BoardContainer: React.FC = () => {
 
   return (
     <>
+      <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
       {loading || !defaultLoginCompleted ?
-        <Typography>Loading...</Typography> :
+        <CircularProgress /> :
         <AccessBoardForm id={id} login={setLogin} />}
+      </Box>
     </>
   );
 };
