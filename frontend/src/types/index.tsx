@@ -14,6 +14,7 @@ export type Column = {
 
 export type ColumnData = {
     columnTitle: string;
+    swimlane: boolean;
 };
 
 export type Task = {
