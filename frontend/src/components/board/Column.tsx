@@ -1,11 +1,14 @@
 import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Box, Dialog, DialogContent, IconButton, List, Popover, Tooltip, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useMemo, useState, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { RootState } from "@/state/store";
 
 import { getId } from "../../services/Utils";
@@ -13,9 +16,9 @@ import { boardsApi, useAddTaskMutation, useGetTaskListByColumnIdQuery, useUpdate
 import { Column, Task as TaskType, User } from "../../types";
 
 import ColumnEditForm from "./ColumnEditForm";
+import SwimlaneContainer from "./SwimlaneContainer";
 import Task from "./Task";
 import TaskCreationForm from "./TaskCreationForm";
-import { WebsocketContext } from "@/pages/BoardContainer";
 
 interface FormData {
   taskTitle: string,
@@ -57,12 +60,11 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       boardid: id,
     };
 
-    const add$ = addTask({ boardId: id, columnId : columnid, task: taskObject });
+    const add$ = addTask({ boardId: id, columnId: columnid, task: taskObject });
     add$.unwrap().then(() => {
       setOpen(false);
-      if (sendMessage !== null)
-      {
-        sendMessage("Task added"); 
+      if (sendMessage !== null) {
+        sendMessage("Task added");
       }
     }).catch((error) => {
       console.error(error);
@@ -123,7 +125,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
               backgroundColor: snapshot.isDraggingOver ? "lightblue" : "transparent",
               minHeight: "1000px",
               height: "auto",
-             }}
+            }}
             {...provided.droppableProps}
           >
             {tasks && tasks.length ? (
@@ -179,7 +181,7 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
     setAnchorEl(null);
   };
 
-  const handleOnSubmit = async (data : ColumnFormData) => {
+  const handleOnSubmit = async (data: ColumnFormData) => {
     const columnObject = {
       columnid: column.columnid,
       title: data.columnTitle,
@@ -231,9 +233,12 @@ interface ColumnProps {
   index: number;
 }
 
-const defaultTasks : TaskType[] = [];
+const defaultTasks: TaskType[] = [];
 
 const Column: React.FC<ColumnProps> = ({ column }) => {
+  const [showSwimlanes, setShowSwimlanes] = useState(false);
+
+  const isSwimlaneColumn = true; // change this to column.swimlane boolean
   const { id = "default-id" } = useParams();
 
   const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
@@ -246,18 +251,30 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-      <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px"}}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
-          <EditColumnButton column={column} />
-        </div>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <CreateTaskButton columnid={column.columnid}/>
-          <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
-          <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
-        </div>
-        <TaskList column={column} />
-      </Paper>
+
+      <Box sx={{ display: "flex", flexDirection: "row" }}>
+        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
+            <EditColumnButton column={column} />
+            {isSwimlaneColumn && <IconButton color="primary" aria-label="expand swimlane" onClick={() => setShowSwimlanes(!showSwimlanes)}>
+              <ArrowForwardIosIcon />
+            </IconButton>}
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <CreateTaskButton columnid={column.columnid} />
+            <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
+            <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
+          </div>
+          <TaskList column={column} />
+        </Paper>
+        <Box sx={{ overflow: "hidden" }}>
+            <Box sx={{ width: showSwimlanes ? "820px" : "0px", transition: "width 300ms" }}>
+              {showSwimlanes && <SwimlaneContainer column={column} />}
+            </Box>
+
+        </Box>
+      </Box>
     </>
   );
 };
