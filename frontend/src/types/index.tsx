@@ -38,3 +38,20 @@ export type NewBoardFormData = {
     title: string;
     password: string;
 }
+
+export type Action = {
+    actionid: string;
+    ticketid?: string;
+    swimlanecolumnid?: string;
+    title: string;
+    color?: string;
+    order?: number;
+    creation_date?: string;
+};
+
+export type SwimlaneColumn = {
+    swimlanecolumnid: string;
+    title: string;
+    columnid: string;
+    order: number;
+};

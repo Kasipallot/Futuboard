@@ -1,5 +1,6 @@
 import ToolBar from "@components/board/Toolbar";
 import { DragDropContext, DropResult } from "@hello-pangea/dnd";
+import { Box, CircularProgress } from "@mui/material";
 import { produce } from "immer";
 import { useEffect, useState } from "react";
 import { createContext } from "react";
@@ -14,7 +15,6 @@ import { Task } from "@/types";
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
 import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
-import { Box, CircularProgress } from "@mui/material";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
@@ -35,7 +35,7 @@ const BoardContainer: React.FC = () => {
     onMessage: (event) => {
       const data = JSON.parse(event.data);
         if (data.message !== clientId) {
-          dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users"]));
+          dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users", "Action"]));
         }
     },
     share: true

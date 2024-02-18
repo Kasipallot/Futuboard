@@ -5,18 +5,17 @@ import {
     fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 
-import { Board, Column, Task, User } from "../types";
+import { Action, Board, Column, SwimlaneColumn, Task, User } from "../types";
 
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_DB_ADDRESS }), //https://futuboardbackend.azurewebsites.net
-    tagTypes: ["Boards", "Columns", "Ticket", "Users"],
+    baseQuery: fetchBaseQuery({ baseUrl: "https://futuboardbackenddev.azurewebsites.net/api/" }), //remember to change back env before merging to main
+    tagTypes: ["Boards", "Columns", "Ticket", "Users", "Action"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ["Boards"],
         }),
-        
         addBoard: builder.mutation<Board, Board>({
             query: (board) => {
                 return ({
@@ -213,6 +212,22 @@ export const boardsApi = createApi({
 
             },
         }),
+        getSwimlaneColumnsByColumnId: builder.query<SwimlaneColumn[], string>({
+            query: (columnId) => `columns/${columnId}/swimlanecolumns/`,
+            providesTags: [{ type: "Columns", id: "LIST" }],
+        }),
+        getActionListByTaskIdAndSwimlaneColumnId: builder.query<Action[], { taskId: string, swimlaneColumnId: string }>({
+            query: ({ taskId, swimlaneColumnId }) => `${swimlaneColumnId}/${taskId}/actions/`,
+            providesTags: [{ type: "Action", id: "LIST" }],
+        }),
+        postAction: builder.mutation<Action, { taskId: string, swimlaneColumnId: string, action: Action }>({
+            query: ({ taskId, swimlaneColumnId, action }) => ({
+                url: `${swimlaneColumnId}/${taskId}/actions/`,
+                method: "POST",
+                body: action,
+            }),
+            invalidatesTags: [{ type: "Action", id: "LIST" }],
+        }),
     }),
 });
 
@@ -233,4 +248,7 @@ export const {
     usePostUserToTicketMutation,
     useUpdateUserListByTicketIdMutation,
     useDeleteUserMutation,
+    useGetSwimlaneColumnsByColumnIdQuery,
+    useGetActionListByTaskIdAndSwimlaneColumnIdQuery,
+    usePostActionMutation,
 } = boardsApi;
