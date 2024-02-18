@@ -27,12 +27,12 @@ const SwimlaneContainer:React.FC<SwimlaneContainerProps> = ({ column }) => {
             </Box>
             {tasks && isSuccess && tasks.length ? (
                 tasks.map((task) => (
-                    <Swimlane task={task} swimlaneColumns={swimlaneColumns}/>
+                    <Swimlane key={task.ticketid} task={task} swimlaneColumns={swimlaneColumns}/>
                 )
                 )
             ) : (
                 <div>
-                    No tasks
+                    No Cards
                 </div>
             )}
         </Paper>
