@@ -23,7 +23,7 @@ const SwimlaneActionList: React.FC<SwimlaneActionListProps> = ({ taskId, swimlan
         <>
             <Droppable droppableId={swimlanecolumnid +"/"+taskId} type={"SWIMLANE" + "-" + taskId}>
                 {(provided) => (
-                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ display: "flex", flexDirection: "column", flex: "1", padding: "8px", alignContent: "center", overflow: "hidden"  }}>
+                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ display: "flex", flexDirection: "column", flex: "1", padding: "8px", alignContent: "center", borderLeft: "2px solid white", height:"112px", overflow:"auto" }}>
                         {actionList && actionList.map((action, index) => (
                             <Draggable key={action.actionid} draggableId={action.actionid} index={index}>
                                 {(provided) => (

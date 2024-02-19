@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
@@ -38,7 +39,10 @@ const ActionEditForm : React.FC<AddActionCreationFormProps> = (props) => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
-                <TextField inputRef={inputRef} label="Name" helperText={errors.actionTitle?.message} error={Boolean(errors.actionTitle)} {...register("actionTitle", {
+                    <Typography>Add action</Typography>
+                    </Grid>
+                <Grid item xs={12}>
+                <TextField inputRef={inputRef} label="Name" size={"small"} helperText={errors.actionTitle?.message} error={Boolean(errors.actionTitle)} {...register("actionTitle", {
                 required: {
                     value: true,
                     message: "Action name is required"

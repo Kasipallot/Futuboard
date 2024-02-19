@@ -20,7 +20,7 @@ const SwimlaneContainer:React.FC<SwimlaneContainerProps> = ({ column }) => {
 
     return (
         <Paper elevation={4} sx={{ margin: "25px 0px", width: "800px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px" }}>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "30px", padding:"5px 50px" }}>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "30px", padding:"5px 80px" }}>
                 {swimlaneColumns && swimlaneColumns.map((swimlaneColumn, index) => (
                     <Typography key={index} variant={"h5"} noWrap gutterBottom>{swimlaneColumn.title}</Typography>
                 ))}
