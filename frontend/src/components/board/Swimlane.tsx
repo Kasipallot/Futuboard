@@ -17,13 +17,14 @@ interface SwimlaneActionListProps {
 
 const SwimlaneActionList: React.FC<SwimlaneActionListProps> = ({ taskId, swimlanecolumnid }) => {
 
-    const { data: actionList } = useGetActionListByTaskIdAndSwimlaneColumnIdQuery({ taskId, swimlaneColumnId: swimlanecolumnid });
+    const { data: actionList, isLoading } = useGetActionListByTaskIdAndSwimlaneColumnIdQuery({ taskId, swimlaneColumnId: swimlanecolumnid });
 
     return (
         <>
-            <Droppable droppableId={swimlanecolumnid +"/"+taskId} type={"SWIMLANE" + "-" + taskId}>
+            <Droppable droppableId={swimlanecolumnid +"/"+taskId} type={"SWIMLANE" + "/" + taskId}>
                 {(provided) => (
                     <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ display: "flex", flexDirection: "column", flex: "1", padding: "8px", alignContent: "center", borderLeft: "2px solid white", height:"112px", overflow:"auto" }}>
+                      {isLoading && <Typography>Loading actions...</Typography>}
                         {actionList && actionList.map((action, index) => (
                             <Draggable key={action.actionid} draggableId={action.actionid} index={index}>
                                 {(provided) => (

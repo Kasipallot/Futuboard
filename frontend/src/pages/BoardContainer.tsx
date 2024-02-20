@@ -10,11 +10,11 @@ import useWebSocket, { SendMessage } from "react-use-websocket";
 
 import { getId } from "@/services/Utils";
 import { store } from "@/state/store";
-import { Task } from "@/types";
+import { Action, Task } from "@/types";
 
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
-import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation } from "../state/apiSlice";
+import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation, useUpdateActionListMutation } from "../state/apiSlice";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
@@ -28,7 +28,6 @@ const BoardContainer: React.FC = () => {
   // websocket object
   const { sendMessage } = useWebSocket(import.meta.env.VITE_WEBSOCKET_ADDRESS + id, {  //`wss://futuboardbackend.azurewebsites.net/board/${id}`
     onOpen: () => {
-      console.log("opened");
   },
     //Will attempt to reconnect on all close events, such as server shutting down
     shouldReconnect: () => true,
@@ -43,12 +42,14 @@ const BoardContainer: React.FC = () => {
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
   const [updateUsers] = useUpdateUserListByTicketIdMutation();
+  const [updateActions] = useUpdateActionListMutation();
   const [tryLogin] = useLoginMutation();
   const [defaultLoginCompleted, setDefaultLoginCompleted] = useState(false);
 
   const selectTasksByColumnId = boardsApi.endpoints.getTaskListByColumnId.select;
   const selectUsersByBoardId = boardsApi.endpoints.getUsersByBoardId.select;
   const selectUsersByTaskId = boardsApi.endpoints.getUsersByTicketId.select;
+  const selectActions = boardsApi.endpoints.getActionListByTaskIdAndSwimlaneColumnId.select;
 
   const handleOnDragEnd = async (result: DropResult) => {
     const { source, destination, type, draggableId } = result;
@@ -60,17 +61,29 @@ const BoardContainer: React.FC = () => {
 
     const userList = selectUsersByBoardId(id)(state).data || [];
 
+    //user logic:
+
     const selectDestinationTaskUsers = selectUsersByTaskId(destination.droppableId);
     const destinationUsers = selectDestinationTaskUsers(state).data || [];
 
     const selectSourceTaskUsers = selectUsersByTaskId(source.droppableId);
     const sourceUsers = selectSourceTaskUsers(state).data || [];
 
+    //task logic:
+
     const selectDestinationTasks = selectTasksByColumnId({ boardId: id, columnId: destination.droppableId });
     const destinationTasks = selectDestinationTasks(state).data || [];
 
     const selectSourceTasks = selectTasksByColumnId({ boardId: id, columnId: source.droppableId });
     const sourceTasks = selectSourceTasks(state).data || [];
+
+    //action logic:
+
+    const selectDestionationActions = selectActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0] });
+    const destinationActions = selectDestionationActions(state).data || [];
+
+    const selectSourceActions = selectActions({ taskId: source.droppableId.split("/")[1], swimlaneColumnId: source.droppableId.split("/")[0] });
+    const sourceActions = selectSourceActions(state).data || [];
 
     if (type === "task") {
       //dragging tasks in the same column
@@ -139,6 +152,26 @@ const BoardContainer: React.FC = () => {
         sendMessage(clientId);
         // TODO make source task update optimistically
 
+      }
+    }
+    if (type.split("/")[0] === "SWIMLANE") {
+      if(destination.droppableId === source.droppableId && destination.index === source.index) return;
+      if(destination.droppableId === source.droppableId){
+        const dataCopy = [...destinationActions ?? []];
+        const newOrdered = reorder<Action>(dataCopy, source.index, destination.index);
+        await updateActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0], actions: newOrdered });
+        sendMessage(clientId);
+      }
+      if(destination.droppableId !== source.droppableId){
+        const nextSourceActions = produce(sourceActions, (draft) => {
+          draft?.splice(source.index, 1);
+        });
+
+        const nextDestinationActions = produce(destinationActions, (draft) => {
+          draft?.splice(destination!.index, 0, sourceActions![source.index]);
+        });
+        await Promise.all([updateActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0], actions: nextDestinationActions ?? [] }), updateActions({ taskId: source.droppableId.split("/")[1], swimlaneColumnId: source.droppableId.split("/")[0], actions: nextSourceActions ?? [] })]);
+        sendMessage(clientId);
       }
     }
   };
