@@ -24,9 +24,9 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
     const [swimlane, setSwimlane] = useState<boolean>(false);
 
     useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
     }, []);
 
     const {
@@ -38,13 +38,13 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
         setSwimlane(event.target.checked);
     };
 
-    const handleFormSubmit = (data: any) => {
+    const handleFormSubmit = (data: { columnTitle: string }) => {
         onSubmit({ ...data, swimlane });
     };
 
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-            <Grid container spacing={1}>
+            <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Typography gutterBottom variant="h6" > Create Column </Typography>
                     <Divider />
@@ -57,10 +57,16 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
                         }
                     })} />
                 </Grid>
-                <Grid item xs={12}>
-                    <Checkbox checked={swimlane} onChange={handleCheckboxChange} />
+                <Grid item xs={4} >
+                    <Typography variant="h6">Add swimlanes</Typography>
+                </Grid>
+                <Grid item xs={8}>
+                <Checkbox checked={swimlane} onChange={handleCheckboxChange} />
                 </Grid>
                 <Grid item xs={12}>
+                    <Divider />
+                </Grid>
+                <Grid item xs={6}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
                     <Button onClick={onCancel}>Cancel</Button>
                 </Grid>
