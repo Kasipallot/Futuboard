@@ -23,13 +23,13 @@ const SwimlaneActionList: React.FC<SwimlaneActionListProps> = ({ taskId, swimlan
         <>
             <Droppable droppableId={swimlanecolumnid +"/"+taskId} type={"SWIMLANE" + "/" + taskId}>
                 {(provided) => (
-                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ display: "flex", flexDirection: "column", flex: "1", padding: "8px", alignContent: "center", borderLeft: "2px solid white", height:"112px", overflow:"auto" }}>
+                    <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ display: "flex", flexDirection: "column", flex: "1", padding: "4px", alignContent: "center", borderLeft: "2px solid white", height:"112px", overflow:"auto" }}>
                       {isLoading && <Typography>Loading actions...</Typography>}
                         {actionList && actionList.map((action, index) => (
                             <Draggable key={action.actionid} draggableId={action.actionid} index={index}>
                                 {(provided) => (
                                     <Box boxShadow={1} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} sx={{ backgroundColor: "white", padding: "2px", marginBottom: "2px", borderRadius: "4px" }}>
-                                        <Typography variant={"body1"} fontSize={12} noWrap>{action.title}</Typography>
+                                        <Typography variant={"body1"} fontSize={12} >{action.title}</Typography>
                                     </Box>
                                 )}
                             </Draggable>
