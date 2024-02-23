@@ -2,9 +2,12 @@ import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, Droppable
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import React, { Dispatch, SetStateAction, useState, useContext } from "react";
+
+import { WebsocketContext } from "@/pages/BoardContainer";
+
 import { useGetUsersByTicketIdQuery, useUpdateTaskMutation } from "../../state/apiSlice";
 import { Task as TaskType, User } from "../../types";
-import { WebsocketContext } from "@/pages/BoardContainer";
+
 import TaskEditForm from "./TaskEditForm";
 import UserMagnet from "./UserMagnet";
 
@@ -59,6 +62,7 @@ interface FormData {
     taskTitle: string,
     size?: number,
     corners?: User[],
+    cornerNote?: string,
     description?: string,
     color?: string,
 }
@@ -66,7 +70,7 @@ interface FormData {
 const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetStateAction<boolean>> }> = ({ task, setTaskSelected }) => {
     const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [updateTask] = useUpdateTaskMutation();
-    const sendMessage = useContext(WebsocketContext)
+    const sendMessage = useContext(WebsocketContext);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setTaskSelected(true);
         setAnchorEl(event.currentTarget);
@@ -82,6 +86,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             ticketid: task.ticketid,
             title: data.taskTitle,
             description: data.description,
+            cornerNote: data.cornerNote,
             caretakers: data.corners,
             size: data.size,
             color: data.color,
@@ -92,7 +97,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
         if (sendMessage !== null) {
             sendMessage("Task updated");
         }
-        
+
         setTaskSelected(false);
         setAnchorEl(null);
     };

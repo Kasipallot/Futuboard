@@ -2,7 +2,7 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
-from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser
+from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser, Swimlanecolumn
 from ..serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
 import rest_framework.request
 from django.utils import timezone
@@ -93,7 +93,16 @@ def get_columns_from_board(request, board_id):
                 swimlane = request.data['swimlane'],
                 )
             new_column.save()
-
+            if request.data['swimlane']:
+                defaultSwimlaneNames = ["To Do", "In Progress", "In Review", "Done"]
+                for name in defaultSwimlaneNames:
+                    swimlanecolumn = Swimlanecolumn(
+                        columnid = Column.objects.get(pk=request.data['columnid']),
+                        color = "white",
+                        title = name,
+                        ordernum = defaultSwimlaneNames.index(name)
+                    )
+                    swimlanecolumn.save()
             serializer = ColumnSerializer(new_column)
             return JsonResponse(serializer.data, safe=False)
         except:

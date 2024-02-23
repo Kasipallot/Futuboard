@@ -11,7 +11,7 @@ class BoardSerializer(serializers.ModelSerializer):
 class ColumnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Column
-        fields = ['columnid', 'boardid', 'wip_limit', 'color', 'description', 'title', 'ordernum', 'creation_date']
+        fields = ['columnid', 'boardid', 'wip_limit', 'color', 'description', 'title', 'ordernum', 'creation_date', 'swimlane']
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:

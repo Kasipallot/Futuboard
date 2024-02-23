@@ -66,7 +66,7 @@ class Event(models.Model):
 
 
 class Swimlanecolumn(models.Model):
-    swimlanecolumnid = models.UUIDField(db_column='swimlaneColumnID', primary_key=True)  # Field name made lowercase.
+    swimlanecolumnid = models.UUIDField(db_column='swimlaneColumnID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
     columnid = models.ForeignKey(Column, models.DO_NOTHING, db_column='columnID', blank=True, null=True)  # Field name made lowercase.
     color = models.TextField(blank=True, null=True)
     title = models.TextField(blank=True, null=True)
