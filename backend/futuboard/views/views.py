@@ -141,11 +141,12 @@ def get_tickets_from_column(request, board_id, column_id):
                 columnid = Column.objects.get(pk=column_id),
                 title = request.data['title'],
                 description = request.data['description'],
-                color = 'white',
+                color = request.data['color'] if "color" in request.data else "white",
                 storypoints = 8,
                 size = int(request.data['size']) if request.data['size'] else 0,
                 order = length,
-                creation_date = timezone.now()
+                creation_date = timezone.now(),
+                cornernote = request.data['cornernote'] if "cornernote" in request.data else ""
                 )
             
             new_ticket.save()
