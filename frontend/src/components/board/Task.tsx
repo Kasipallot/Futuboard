@@ -62,6 +62,7 @@ interface FormData {
     taskTitle: string,
     size?: number,
     corners?: User[],
+    cornerNote?: string,
     description?: string,
     color?: string,
 }
@@ -85,6 +86,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             ticketid: task.ticketid,
             title: data.taskTitle,
             description: data.description,
+            cornerNote: data.cornerNote,
             caretakers: data.corners,
             size: data.size,
             color: data.color,
