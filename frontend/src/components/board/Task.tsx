@@ -161,20 +161,28 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                             marginBottom: "5px",
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
-                                    <div style={{
-                                        display: "-webkit-box",
-                                        WebkitBoxOrient: "vertical",
-                                        WebkitLineClamp: 3,
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        width: "85%"
-                                    }}>
-                                        <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden"}}>
+                                    <div style={{}}>
+                                        <Typography variant={"body2"} gutterBottom>{task.cornerNote}</Typography>
                                     </div>
                                     <div>
                                         <EditTaskButton task={task} setTaskSelected={setSelected} />
                                     </div>
+                                </div>
+                                <div>
+                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden", textAlign: "center", alignItems: "center"}}>
+                                    <div style={{
+                                        display: "-webkit-box",
+                                        WebkitBoxOrient: "vertical",
+                                        WebkitLineClamp: 2,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        width: "85%",
+                                        padding: "0px 20px 0px 10px"
+                                    }}>
+                                        <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                    </div>
+                                </div>
                                 </div>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div style={{ overflow: "hidden" }}>
