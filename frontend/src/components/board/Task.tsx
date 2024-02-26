@@ -167,6 +167,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
             cornernote: cornernote,
         };
         setIsEditing(false);
+        if (cornernote === task.cornernote) return;
         updateTask({ task: updatedTaskObject });
         //todo: send message to websocket
     };
