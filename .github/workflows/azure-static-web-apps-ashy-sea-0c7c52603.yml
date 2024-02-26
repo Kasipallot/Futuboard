@@ -8,6 +8,9 @@ on:
     types: [opened, synchronize, reopened, closed]
     branches:
       - development
+env:
+  VITE_DB_ADDRESS: https://futuboardbackenddev.azurewebsites.net/api/
+  VITE_WEBSOCKET_ADDRESS: wss//futuboardbackenddev.azurewebsites.net/board/
 
 jobs:
   build_and_deploy_job:
