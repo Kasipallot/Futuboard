@@ -2,6 +2,7 @@ import { AppBar, Box, IconButton, Paper, Popover, Toolbar, Tooltip, Typography }
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetUsersByBoardIdQuery, usePostUserToBoardMutation } from "@/state/apiSlice";
 
 import CopyToClipboardButton from "./CopyToClipBoardButton";
@@ -9,7 +10,6 @@ import CreateColumnButton from "./CreateColumnButton";
 import HomeButton from "./HomeButton";
 import UserCreationForm from "./UserCreationForm";
 import UserList from "./UserList";
-import { WebsocketContext } from "@/pages/BoardContainer";
 
 interface FormData {
   name: string,
@@ -17,7 +17,7 @@ interface FormData {
 
 const AddUserButton: React.FC = () => {
 
-  const sendMessage = useContext(WebsocketContext)
+  const sendMessage = useContext(WebsocketContext);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { id = "default-id" } = useParams();
   const [addUser] = usePostUserToBoardMutation();
@@ -31,7 +31,7 @@ const AddUserButton: React.FC = () => {
   };
 
   const handleOnSubmit = async (data: FormData) => {
-    
+
     await addUser({ boardId: id, user: data });
     if (sendMessage !== null) {
       sendMessage("User added");
@@ -47,7 +47,7 @@ const AddUserButton: React.FC = () => {
     <Tooltip title="Add User">
       <IconButton onClick={handleClick}>
         <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+          <path fillRule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clipRule="evenodd"/>
         </svg>
       </IconButton>
       </Tooltip>

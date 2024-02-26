@@ -17,6 +17,7 @@ interface TaskEditFormProps {
 interface FormData {
     taskTitle: string;
     corners: User[];
+    cornerNote: string;
     description: string;
     color: string;
     size: number;
@@ -38,6 +39,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         defaultValues: {
             taskTitle: task.title,
             corners: task.caretakers,
+            cornerNote: task.cornernote,
             description: task.description,
             color: "#ffffff",
             size: task.size,
@@ -133,7 +135,11 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label="Description" multiline rows={15} fullWidth {...register("description", { //rows amount hardcoded due to bug with multiline textAreaAutoSize
+                    <TextField label="Corner note" fullWidth {...register("cornerNote", {
+                    })} />
+                </Grid>
+                <Grid item xs={240}>
+                    <TextField label="Description" multiline rows={11} fullWidth {...register("description", { //rows amount hardcoded due to bug with multiline textAreaAutoSize
                     })} />
                 </Grid>
                 <Grid item xs={12}>

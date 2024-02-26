@@ -141,11 +141,12 @@ def get_tickets_from_column(request, board_id, column_id):
                 columnid = Column.objects.get(pk=column_id),
                 title = request.data['title'],
                 description = request.data['description'],
-                color = 'white',
+                color = request.data['color'] if "color" in request.data else "white",
                 storypoints = 8,
                 size = int(request.data['size']) if request.data['size'] else 0,
                 order = length,
-                creation_date = timezone.now()
+                creation_date = timezone.now(),
+                cornernote = request.data['cornernote'] if "cornernote" in request.data else ""
                 )
             
             new_ticket.save()
@@ -178,6 +179,7 @@ def update_ticket(request, column_id, ticket_id):
             ticket.color = request.data.get('color', ticket.color)
             ticket.storypoints = request.data.get('storypoints', ticket.storypoints)
             ticket.size = request.data.get('size', ticket.size)
+            ticket.cornernote = request.data.get('cornernote', ticket.cornernote)
             ticket.save()
 
             serializer = TicketSerializer(ticket)

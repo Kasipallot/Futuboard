@@ -14,6 +14,7 @@ interface TaskCreationFormProps {
 
 interface FormData {
     taskTitle: string;
+    cornerNote: string;
     corners: User[];
     description: string;
     color: string;
@@ -39,6 +40,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
         defaultValues: {
             taskTitle: "",
             corners: [],
+            cornerNote: "",
             description: "",
             color: "#ffffff",
             size: undefined,
@@ -122,6 +124,10 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
                         )}
                     </>
+                </Grid>
+                <Grid item xs={240}>
+                    <TextField label="Corner note" fullWidth {...register("cornerNote", {
+                    })} />
                 </Grid>
                 <Grid item xs={240}>
                     <TextField label="Description" multiline minRows={6} maxRows={15} fullWidth {...register("description", {
