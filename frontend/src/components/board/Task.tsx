@@ -2,7 +2,7 @@ import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, Droppable
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import React, { Dispatch, SetStateAction, useState, useContext } from "react";
+import React, { Dispatch, SetStateAction, useState, useContext, useEffect } from "react";
 
 import { WebsocketContext } from "@/pages/BoardContainer";
 
@@ -152,6 +152,10 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const [selected, setSelected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [cornernote, setCornernote] = useState(task.cornernote);
+
+    useEffect(() => {
+        setCornernote(task.cornernote);
+    }, [task]);
 
     const handleDoubleClick = () => {
         setIsEditing(true);
