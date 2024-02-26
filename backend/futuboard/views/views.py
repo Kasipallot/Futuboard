@@ -179,6 +179,7 @@ def update_ticket(request, column_id, ticket_id):
             ticket.color = request.data.get('color', ticket.color)
             ticket.storypoints = request.data.get('storypoints', ticket.storypoints)
             ticket.size = request.data.get('size', ticket.size)
+            ticket.cornernote = request.data.get('cornernote', ticket.cornernote)
             ticket.save()
 
             serializer = TicketSerializer(ticket)

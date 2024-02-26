@@ -86,7 +86,7 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             ticketid: task.ticketid,
             title: data.taskTitle,
             description: data.description,
-            cornerNote: data.cornerNote,
+            cornernote: data.cornerNote,
             caretakers: data.corners,
             size: data.size,
             color: data.color,
@@ -161,16 +161,16 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                             marginBottom: "5px",
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
-                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden"}}>
+                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
                                     <div style={{}}>
-                                        <Typography variant={"body2"} gutterBottom>{task.cornerNote}</Typography>
+                                        <Typography variant={"body2"} gutterBottom>{task.cornernote}</Typography>
                                     </div>
                                     <div>
                                         <EditTaskButton task={task} setTaskSelected={setSelected} />
                                     </div>
                                 </div>
                                 <div>
-                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden", textAlign: "center", alignItems: "center"}}>
+                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden", textAlign: "center", alignItems: "center" }}>
                                     <div style={{
                                         display: "-webkit-box",
                                         WebkitBoxOrient: "vertical",

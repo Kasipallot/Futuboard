@@ -22,7 +22,7 @@ export type Task = {
     ticketid: string;
     title: string;
     description?: string;
-    cornerNote?: string;
+    cornernote?: string;
     color?: string;
     caretakers?: User[];
     size?: number;

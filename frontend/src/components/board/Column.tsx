@@ -25,6 +25,7 @@ interface FormData {
   size?: number,
   corners?: User[],
   description?: string,
+  cornerNote?: string,
 }
 
 interface CreateTaskButtonProps {
@@ -58,6 +59,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       size: data.size,
       columnid: columnid,
       boardid: id,
+      cornernote: data.cornerNote
     };
 
     const add$ = addTask({ boardId: id, columnId: columnid, task: taskObject });
