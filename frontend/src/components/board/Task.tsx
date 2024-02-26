@@ -1,6 +1,7 @@
 import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable, DroppableProvided, DroppableStateSnapshot } from "@hello-pangea/dnd";
 import { EditNote, } from "@mui/icons-material";
 import { IconButton, Paper, Popover, Tooltip, Typography } from "@mui/material";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
 import React, { Dispatch, SetStateAction, useState, useContext } from "react";
 
 import { WebsocketContext } from "@/pages/BoardContainer";
@@ -21,19 +22,19 @@ const CaretakerComponent: React.FC<{ caretaker: User }> = ({ caretaker }) => {
     );
 };
 
-const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) =>  {
+const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) => {
     if (!snapshot.isDropAnimating) {
-      return style;
+        return style;
     }
 
     return {
-      ...style,
-      transform: "scale(0)",
-      transition: `all  ${0.01}s`,
+        ...style,
+        transform: "scale(0)",
+        transition: `all  ${0.01}s`,
     };
-  };
+};
 
-const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
+const UserMagnetList: React.FC<{ users: User[] }> = ({ users }) => {
 
     return (
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -47,7 +48,7 @@ const UserMagnetList: React.FC<{ users : User[] }> = ({ users }) => {
                                 {...provided.dragHandleProps}
                                 style={dropStyle(provided.draggableProps.style, snapshot)}
                             >
-                                <UserMagnet user={user} editable={false}/>
+                                <UserMagnet user={user} editable={false} />
                             </div>
                         );
                     }
@@ -108,9 +109,9 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     return (
         <div>
             <Tooltip title="Edit card">
-            <IconButton size="small" onClick={handleClick}>
-                <EditNote />
-            </IconButton>
+                <IconButton size="small" onClick={handleClick}>
+                    <EditNote />
+                </IconButton>
             </Tooltip>
             <Popover
                 disableRestoreFocus
@@ -144,13 +145,41 @@ interface TaskProps {
 
 const Task: React.FC<TaskProps> = ({ task }) => {
 
-    const { data : users } = useGetUsersByTicketIdQuery(task.ticketid);
+    const { data: users } = useGetUsersByTicketIdQuery(task.ticketid);
+
+    const [updateTask] = useUpdateTaskMutation();
 
     const [selected, setSelected] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [cornernote, setCornernote] = useState(task.cornernote);
 
-    //temporary styling solutions
+    const handleDoubleClick = () => {
+        setIsEditing(true);
+    };
+
+    const handleBlur = () => {
+        const updatedTaskObject = {
+            ...task,
+            cornernote: cornernote,
+        };
+        setIsEditing(false);
+        updateTask({ task: updatedTaskObject });
+        //todo: send message to websocket
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        setCornernote(event.target.value);
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === "Enter") {
+            handleBlur();
+        }
+    };
+
     return (
-        <Droppable droppableId={task.ticketid} type="user"  direction="vertical" >
+        <Droppable droppableId={task.ticketid} type="user" direction="vertical" >
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                 return (
                     <div ref={provided.innerRef}>
@@ -162,29 +191,42 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
-                                    <Typography variant={"body2"} gutterBottom>
-                                        {task.cornernote && task.cornernote.length > 12
-                                        ? `${task.cornernote.slice(0, 12)}...`
-                                        : task.cornernote}
-                                    </Typography>
+                                    <div style={{ overflow: "hidden", flexGrow: 1 }} onDoubleClick={handleDoubleClick}>
+                                        {isEditing ? (
+                                            <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={handleBlur}>
+                                                <input
+                                                    autoFocus
+                                                    type="text"
+                                                    value={cornernote}
+                                                    onBlur={handleBlur}
+                                                    onChange={handleChange}
+                                                    onKeyDown={handleKeyDown}
+                                                />
+                                            </ClickAwayListener>
+                                        ) : (
+                                            <Typography noWrap variant={"body2"} gutterBottom width={"70%"}>
+                                                {cornernote}
+                                            </Typography>
+                                        )}
+                                    </div>
                                     <div>
                                         <EditTaskButton task={task} setTaskSelected={setSelected} />
                                     </div>
                                 </div>
                                 <div>
-                                <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden", textAlign: "center", alignItems: "center" }}>
-                                    <div style={{
-                                        display: "-webkit-box",
-                                        WebkitBoxOrient: "vertical",
-                                        WebkitLineClamp: 2,
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        width: "85%",
-                                        padding: "0px 20px 0px 10px"
-                                    }}>
-                                        <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                    <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden", textAlign: "center", alignItems: "center" }}>
+                                        <div style={{
+                                            display: "-webkit-box",
+                                            WebkitBoxOrient: "vertical",
+                                            WebkitLineClamp: 2,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            width: "85%",
+                                            padding: "0px 20px 0px 10px"
+                                        }}>
+                                            <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                        </div>
                                     </div>
-                                </div>
                                 </div>
                                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                                     <div style={{ overflow: "hidden" }}>
@@ -192,8 +234,8 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                             <CaretakerComponent key={index} caretaker={caretaker} />
                                         ))}
                                     </div>
-                                    <div style={{ overflow:"hidden", width:"90%" }}>
-                                        {users && <UserMagnetList users={users}/>}
+                                    <div style={{ overflow: "hidden", width: "90%" }}>
+                                        {users && <UserMagnetList users={users} />}
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
                                         <div>
