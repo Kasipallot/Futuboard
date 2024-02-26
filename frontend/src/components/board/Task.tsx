@@ -162,9 +162,11 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
-                                    <div style={{}}>
-                                        <Typography variant={"body2"} gutterBottom>{task.cornernote}</Typography>
-                                    </div>
+                                    <Typography variant={"body2"} gutterBottom>
+                                        {task.cornernote && task.cornernote.length > 12
+                                        ? `${task.cornernote.slice(0, 12)}...`
+                                        : task.cornernote}
+                                    </Typography>
                                     <div>
                                         <EditTaskButton task={task} setTaskSelected={setSelected} />
                                     </div>
