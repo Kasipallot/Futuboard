@@ -2,9 +2,10 @@ import { Delete } from "@mui/icons-material";
 import { Card, IconButton, Typography } from "@mui/material";
 import { useContext } from "react";
 
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { useDeleteUserMutation } from "@/state/apiSlice";
 import { User } from "@/types";
-import { WebsocketContext } from "@/pages/BoardContainer";
+
 interface UserMagnetProps {
     user: User;
     editable: boolean;

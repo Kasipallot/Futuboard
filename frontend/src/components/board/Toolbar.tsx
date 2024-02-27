@@ -2,6 +2,7 @@ import { AppBar, Box, IconButton, Paper, Popover, Toolbar, Tooltip, Typography }
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetUsersByBoardIdQuery, usePostUserToBoardMutation } from "@/state/apiSlice";
 
 import CopyToClipboardButton from "./CopyToClipBoardButton";
@@ -9,7 +10,6 @@ import CreateColumnButton from "./CreateColumnButton";
 import HomeButton from "./HomeButton";
 import UserCreationForm from "./UserCreationForm";
 import UserList from "./UserList";
-import { WebsocketContext } from "@/pages/BoardContainer";
 
 interface FormData {
   name: string,
@@ -17,7 +17,7 @@ interface FormData {
 
 const AddUserButton: React.FC = () => {
 
-  const sendMessage = useContext(WebsocketContext)
+  const sendMessage = useContext(WebsocketContext);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { id = "default-id" } = useParams();
   const [addUser] = usePostUserToBoardMutation();
@@ -31,7 +31,7 @@ const AddUserButton: React.FC = () => {
   };
 
   const handleOnSubmit = async (data: FormData) => {
-    
+
     await addUser({ boardId: id, user: data });
     if (sendMessage !== null) {
       sendMessage("User added");

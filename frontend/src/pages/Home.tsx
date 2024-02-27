@@ -1,8 +1,8 @@
 import CreateBoardButton from "@components/home/CreateBoardButton";
 import { Box, Grid, Typography } from "@mui/material";
+import Link from "@mui/material/Link";
 import { getId } from "@services/Utils";
 import { useNavigate } from "react-router-dom";
-import Link from '@mui/material/Link';
 
 import { useAddBoardMutation } from "@/state/apiSlice";
 import { Board, NewBoardFormData } from "@/types";
@@ -47,14 +47,14 @@ const Home: React.FC = () => {
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Typography variant="h5" color={"black"} marginBottom = {1}>
+                    <Typography variant="h5" color={"black"} marginBottom={1}>
                         Workstream management tool for individuals and teams.
                     </Typography>
-                    
+
                 </Grid>
                 <Grid item xs={12}>
-                    <CreateBoardButton onNewBoard={handleCreateBoard} />
-                </Grid> 
+                    <CreateBoardButton onNewBoard={handleCreateBoard}/>
+                </Grid>
                 <Grid item xs={12} marginTop={"20px"}>
                     <Grid item xs={12}>
                         <Typography color={"black"} display="inline">
@@ -64,7 +64,7 @@ const Home: React.FC = () => {
                             GitHub
                         </Link>
                     </Grid>
-                </Grid>  
+                </Grid>
             </Grid>
         </Box>
     );

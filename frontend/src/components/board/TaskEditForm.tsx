@@ -39,7 +39,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         defaultValues: {
             taskTitle: task.title,
             corners: task.caretakers,
-            cornerNote: task.cornerNote,
+            cornerNote: task.cornernote,
             description: task.description,
             color: "#ffffff",
             size: task.size,
@@ -135,7 +135,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label="Corner note" multiline fullWidth {...register("cornerNote", {
+                    <TextField label="Corner note" fullWidth {...register("cornerNote", {
                     })} />
                 </Grid>
                 <Grid item xs={240}>

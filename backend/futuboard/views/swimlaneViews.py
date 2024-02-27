@@ -32,8 +32,29 @@ def swimlanecolumn_view(request, column_id):
         except:
             raise Http404("Cannot create swinlane column")
         
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def action_view(request, swimlanecolumn_id, ticket_id):
+    if request.method == 'PUT':
+        try:
+            actions_data = request.data
+
+            #change action attributes to new swimlanecolumn and ticket
+            for action in actions_data:
+                action_from_database = Action.objects.get(actionid=action['actionid'])
+                action_from_database.ticketid = Ticket.objects.get(pk=ticket_id)
+                action_from_database.swimlanecolumnid = Swimlanecolumn.objects.get(pk=swimlanecolumn_id)
+                action_from_database.save()
+                    
+            #update order of actions
+            for index, action_data in enumerate(actions_data):
+                action = Action.objects.get(actionid=action_data['actionid'])
+                action.order = index
+                action.save()
+            return JsonResponse({"message": "Action order updated successfully"}, status=200)
+
+        except:
+            raise Http404("Cannot update actions")
+
     if request.method == 'GET':
         try:
             query_set = Action.objects.filter(swimlanecolumnid=swimlanecolumn_id, ticketid=ticket_id).order_by('order')

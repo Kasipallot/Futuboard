@@ -126,7 +126,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     </>
                 </Grid>
                 <Grid item xs={240}>
-                    <TextField label="Corner note" multiline fullWidth {...register("cornerNote", {
+                    <TextField label="Corner note" fullWidth {...register("cornerNote", {
                     })} />
                 </Grid>
                 <Grid item xs={240}>
