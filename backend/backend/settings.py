@@ -99,7 +99,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'OPTIONS': {
-            'options': '-c search_path=development'
+            'options': '-c search_path=' + config('DB_SCHEMA')
         },
         'NAME': config('DB_NAME'), 
         'USER': config('DB_USER'),
