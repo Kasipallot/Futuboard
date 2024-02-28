@@ -28,4 +28,5 @@ urlpatterns = [
 
     path('api/columns/<uuid:column_id>/swimlanecolumns/', swimlaneViews.swimlanecolumn_view, name='swimlanecolumn_view'),
     path('api/<uuid:swimlanecolumn_id>/<uuid:ticket_id>/actions/', swimlaneViews.action_view, name='action_view'),
+    path('api/actions/<uuid:action_id>/', swimlaneViews.update_action, name='update_action'),
 ]

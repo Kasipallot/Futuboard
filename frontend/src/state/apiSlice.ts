@@ -237,6 +237,15 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: [{ type: "Action", id: "LIST" }],
         }),
+        //update single action
+        updateAction: builder.mutation<Action, { action: Action }>({
+            query: ({ action }) => ({
+                url: `actions/${action.actionid}/`,
+                method: "PUT",
+                body: action,
+            }),
+            invalidatesTags: [{ type: "Action", id: "LIST" }],
+        }),
         //optimistclly updates swimlane action list
         updateActionList: builder.mutation<Action[], { taskId: string, swimlaneColumnId: string, actions: Action[] }>({
             query: ({ taskId, swimlaneColumnId, actions }) => ({
@@ -299,5 +308,6 @@ export const {
     useGetSwimlaneColumnsByColumnIdQuery,
     useGetActionListByTaskIdAndSwimlaneColumnIdQuery,
     usePostActionMutation,
+    useUpdateActionMutation,
     useUpdateActionListMutation,
 } = boardsApi;
