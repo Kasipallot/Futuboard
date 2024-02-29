@@ -26,7 +26,7 @@ const BoardContainer: React.FC = () => {
   const { id = "default-id" } = useParams();
   const [ deleteUser ] = useDeleteUserMutation();
   // websocket object
-  const { sendMessage } = useWebSocket(import.meta.env.VITE_WEBSOCKET_ADDRESS + id, {  //`wss://futuboardbackend.azurewebsites.net/board/${id}`
+  const { sendMessage: originalSendMessage } = useWebSocket(import.meta.env.VITE_WEBSOCKET_ADDRESS + id, {  //`wss://futuboardbackend.azurewebsites.net/board/${id}`
     onOpen: () => {
   },
     //Will attempt to reconnect on all close events, such as server shutting down
@@ -39,6 +39,12 @@ const BoardContainer: React.FC = () => {
     },
     share: true
 });
+
+//wrap the original sendMessage function to include the clientId with every message, so that client can ignore its own messages
+const updatedSendMessage = () => {
+  originalSendMessage(clientId);
+};
+
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
   const [updateUsers] = useUpdateUserListByTicketIdMutation();
@@ -91,7 +97,7 @@ const BoardContainer: React.FC = () => {
         const dataCopy = [...destinationTasks ?? []];
         const newOrdered = reorder<Task>(dataCopy, source.index, destination.index);
         await updateTaskList({ boardId: id, columnId: source.droppableId, tasks: newOrdered });
-        sendMessage(clientId);
+        updatedSendMessage();
       }
       //dragging tasks to different columns
       if (destination.droppableId !== source.droppableId) {
@@ -108,7 +114,7 @@ const BoardContainer: React.FC = () => {
           draft?.splice(destination!.index, 0, sourceTasks![source.index]);
         });
         await Promise.all([updateTaskList({ boardId: id, columnId: destination.droppableId, tasks: nextDestinationTasks ?? [] }), updateTaskList({ boardId: id, columnId: source.droppableId, tasks: nextSourceTasks ?? [] })]);
-        sendMessage(clientId);
+        updatedSendMessage();
       }
     }
     if (type === "user") {
@@ -130,7 +136,7 @@ const BoardContainer: React.FC = () => {
       //dragging user from user list to a task
       if (source.droppableId == "user-list" && destination.droppableId !== "user-list") { //when dragging from user list send POST to create a new instance of the user
         await postUserToTask({ ticketId: destination.droppableId, user: userList[source.index] });
-        sendMessage(clientId);
+        updatedSendMessage();
       }
       if (destination.droppableId !== source.droppableId && source.droppableId !== "user-list") { //when dragging from a task to another task
         const nextDestinationUsers = produce(destinationUsers, (draft) => {
@@ -149,7 +155,7 @@ const BoardContainer: React.FC = () => {
           const user = sourceUsers![source.index];
           await Promise.all([deleteUser({ userId: user.userid }), updateUsers({ ticketId: source.droppableId, users: nextSourceUsers ?? [] })]);
         }
-        sendMessage(clientId);
+        updatedSendMessage();
         // TODO make source task update optimistically
 
       }
@@ -160,7 +166,7 @@ const BoardContainer: React.FC = () => {
         const dataCopy = [...destinationActions ?? []];
         const newOrdered = reorder<Action>(dataCopy, source.index, destination.index);
         await updateActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0], actions: newOrdered });
-        sendMessage(clientId);
+        updatedSendMessage();
       }
       if(destination.droppableId !== source.droppableId){
         const nextSourceActions = produce(sourceActions, (draft) => {
@@ -171,7 +177,7 @@ const BoardContainer: React.FC = () => {
           draft?.splice(destination!.index, 0, sourceActions![source.index]);
         });
         await Promise.all([updateActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0], actions: nextDestinationActions ?? [] }), updateActions({ taskId: source.droppableId.split("/")[1], swimlaneColumnId: source.droppableId.split("/")[0], actions: nextSourceActions ?? [] })]);
-        sendMessage(clientId);
+        updatedSendMessage();
       }
     }
   };
@@ -194,7 +200,7 @@ const BoardContainer: React.FC = () => {
 
   if (status === "fulfilled" || islogged) {
     return (
-      <WebsocketContext.Provider value={sendMessage}>
+      <WebsocketContext.Provider value={updatedSendMessage}>
       <>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <ToolBar boardId={id} title={board?.title || ""} />
