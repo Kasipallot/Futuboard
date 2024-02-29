@@ -119,12 +119,12 @@ def test_usergroup():
     boardids = [uuid.uuid4() for i in range(n)]
     columnids = [uuid.uuid4() for i in range(n)]
     ticketids = [uuid.uuid4() for i in range(n)]
-    #actionids = [uuid.uuid4() for i in range(n)]
+    actionids = [uuid.uuid4() for i in range(n)]
     for i in range(n):
         md.Usergroup.objects.create(usergroupid = usergroupids[i],
                                     boardid = md.Board.objects.create(boardid = boardids[i], creation_date = timezone.now()),
                                     ticketid = md.Ticket.objects.create(ticketid = ticketids[i], order = i, columnid = md.Column.objects.create(columnid = columnids[i], ordernum = i, boardid = md.Board.objects.get(pk=boardids[i]), creation_date = timezone.now(), swimlane = False)),
-                                    #actionid = md.Action.objects.create(actionid = actionids[i], order = i),
+                                    actionid = md.Action.objects.create(actionid = actionids[i], order = i),
                                     type = f'type{i}'
                                     )
     assert md.Usergroup.objects.count() == n
@@ -134,7 +134,7 @@ def test_usergroup():
         assert usergroup.usergroupid in usergroupids
         assert usergroup.boardid.boardid in boardids
         assert usergroup.ticketid.ticketid in ticketids
-        #assert usergroup.actionid.actionid in actionids
+        assert usergroup.actionid.actionid in actionids
         assert usergroup.type == f'type{i}'
         i += 1
         usergroup.delete()
@@ -232,53 +232,56 @@ def test_swimlanecolumn():
 
 
 
-# TODO: Action migration is not working properly for some reason due to foreign keys, so this test is not working
-# @pytest.mark.django_db
-# def test_action():
-#     n = 10
-#     swimlanecolumnids = [uuid.uuid4() for i in range(n)]
-#     actions = [f'action{i}' for i in range(n)]
-#     for i in range(n):
-#         md.Swimlanecolumn.objects.create(swimlanecolumnid = swimlanecolumnids[i],
-#                                         columnid = md.Column.objects.create(columnid = uuid.uuid4(),
-#                                         boardid = md.Board.objects.create(boardid = uuid.uuid4(),
-#                                         description = f'Test board{i}',
-#                                         title = f"Board{i}",
-#                                         creator = f'John{i}',
-#                                         creation_date = timezone.now(),
-#                                         passwordhash = ver.new_password(f"password{i}"),
-#                                         salt = ''),
-#                                         wip_limit = 5,
-#                                         color = f'color{i}',
-#                                         description = f'description{i}',
-#                                         title = f'title{i}',
-#                                         ordernum = i,
-#                                         creation_date = timezone.now(),
-#                                         swimlane = True),
-#                                         color = f'color{i}',
-#                                         title = f'title{i}',
-#                                         ordernum = i)
-#         md.Action.objects.create(actionid = uuid.uuid4(),
-#                                 swimlanecolumnid = md.Swimlanecolumn.objects.get(swimlanecolumnid=swimlanecolumnids[i]),
-#                                 title = f'title{i}',
-#                                 color = f'color{i}',
-#                                 order = i,
-#                                 creation_date = timezone.now())
-#     assert md.Action.objects.count() == n
-#     i = 0
-#     for action in actions:
-#         action = md.Action.objects.get(title=f'title{i}')
-#         assert action.swimlanecolumnid in swimlanecolumnids
-#         assert action.title == f'title{i}'
-#         assert action.color == f'color{i}'
-#         assert action.order == i
-#         i += 1
-#         action.delete()
-#     assert md.Action.objects.count() == 0
-#     #Clean up swimlanecolumns and columns
-#     for i in range(n):
-#         md.Swimlanecolumn.objects.get(swimlanecolumnid=swimlanecolumnids[i]).delete()
-#         md.Column.objects.get(columnid=swimlanecolumnids[i]).delete()
+@pytest.mark.django_db
+def test_action():
+    n = 10
+    swimlanecolumnids = [uuid.uuid4() for i in range(n)]
+    actionids = [uuid.uuid4() for i in range(n)]
+    columnids = [uuid.uuid4() for i in range(n)]
+    boardids = [uuid.uuid4() for i in range(n)]
+    for i in range(n):
+        md.Swimlanecolumn.objects.create(swimlanecolumnid = swimlanecolumnids[i],
+                                        columnid = md.Column.objects.create(columnid = columnids[i],
+                                        boardid = md.Board.objects.create(boardid = boardids[i],
+                                        description = f'Test board{i}',
+                                        title = f"Board{i}",
+                                        creator = f'John{i}',
+                                        creation_date = timezone.now(),
+                                        passwordhash = ver.new_password(f"password{i}"),
+                                        salt = ''),
+                                        wip_limit = 5,
+                                        color = f'color{i}',
+                                        description = f'description{i}',
+                                        title = f'title{i}',
+                                        ordernum = i,
+                                        creation_date = timezone.now(),
+                                        swimlane = True),
+                                        color = f'color{i}',
+                                        title = f'title{i}',
+                                        ordernum = i)
+        md.Action.objects.create(actionid = actionids[i],
+                                swimlanecolumnid = md.Swimlanecolumn.objects.get(swimlanecolumnid=swimlanecolumnids[i]),
+                                title = f'title{i}',
+                                color = f'color{i}',
+                                order = i,
+                                creation_date = timezone.now())
+    assert md.Action.objects.count() == n
+    i = 0
+    for action in actionids:
+        action = md.Action.objects.get(pk=action)
+        assert action.actionid in actionids
+        assert action.swimlanecolumnid.swimlanecolumnid in swimlanecolumnids
+        assert action.title == f'title{i}'
+        assert action.color == f'color{i}'
+        assert action.order == i
+        i += 1
+        action.delete()
+    assert md.Action.objects.count() == 0
+    #Clean up swimlanecolumns and columns
+    for i in range(n):
+        md.Swimlanecolumn.objects.get(swimlanecolumnid=swimlanecolumnids[i]).delete()
+        md.Column.objects.get(columnid=columnids[i]).delete()
+        md.Board.objects.get(boardid=boardids[i]).delete()
 
 
 
@@ -323,6 +326,9 @@ def test_event():
         md.Board.objects.get(boardid=boardids[i]).delete()
 
 
+"""
+Test that the ticket table is created properly and that tickets can be created and deleted properly.
+"""
 @pytest.mark.django_db
 def test_ticket():
     n = 10

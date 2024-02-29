@@ -14,22 +14,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Action',
-            fields=[
-                ('actionid', models.UUIDField(db_column='actionID', primary_key=True, serialize=False)),
-                #('ticketid', models.ForeignKey('Ticket', models.DO_NOTHING, db_column='ticketID', blank=True, null=True)),
-                #('swimlanecolumnid', models.ForeignKey('Swimlanecolumn', models.DO_NOTHING, db_column='swimlaneColumnID', blank=True, null=True)),
-                ('title', models.TextField(blank=True, null=True)),
-                ('color', models.TextField(blank=True, null=True)),
-                ('order', models.IntegerField()),
-                ('creation_date', models.DateTimeField(blank=True, null=True)),
-            ],
-            options={
-                'db_table': 'Action',
-                'managed': True,
-            },
-        ),
-        migrations.CreateModel(
             name='Board',
             fields=[
                 ('boardid', models.UUIDField(db_column='boardID', primary_key=True, serialize=False)),
@@ -124,10 +108,26 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='Action',
+            fields=[
+                ('actionid', models.UUIDField(db_column='actionID', primary_key=True, serialize=False)),
+                ('ticketid', models.ForeignKey('Ticket', models.DO_NOTHING, db_column='ticketID', blank=True, null=True)),
+                ('swimlanecolumnid', models.ForeignKey('Swimlanecolumn', models.DO_NOTHING, db_column='swimlaneColumnID', blank=True, null=True)),
+                ('title', models.TextField(blank=True, null=True)),
+                ('color', models.TextField(blank=True, null=True)),
+                ('order', models.IntegerField()),
+                ('creation_date', models.DateTimeField(blank=True, null=True)),
+            ],
+            options={
+                'db_table': 'Action',
+                'managed': True,
+            },
+        ),
+        migrations.CreateModel(
             name='Usergroup',
             fields=[
                 ('usergroupid', models.UUIDField(db_column='usergroupID', default=uuid.uuid4, primary_key=True, serialize=False)),
-                ('boardid', models.ForeignKey('Board', models.DO_NOTHING, db_column='boardID')),
+                ('boardid', models.ForeignKey('Board', models.DO_NOTHING, db_column='boardID', blank=True, null=True)),
                 ('ticketid', models.ForeignKey('Ticket', models.DO_NOTHING, db_column='ticketID', blank=True, null=True)),
                 ('actionid', models.ForeignKey('Action', models.DO_NOTHING, db_column='actionID', blank=True, null=True)),
                 ('type', models.TextField(blank=True, null=True)),
@@ -140,12 +140,13 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UsergroupUser',
             fields=[
-                ('usergroupid', models.OneToOneField(db_column='usergroupID', default=uuid.uuid4, on_delete=django.db.models.deletion.DO_NOTHING, primary_key=True, serialize=False, to='futuboard.usergroup')),
+                ('usergroupid', models.ForeignKey('Usergroup', models.DO_NOTHING, db_column='usergroupID', default=uuid.uuid4)),
                 ('userid', models.ForeignKey('User', models.DO_NOTHING, db_column='userID')),
             ],
             options={
                 'db_table': 'UserGroup_User',
                 'managed': True,
+                'unique_together': {('usergroupid', 'userid'),},
             },
         ),
     ]
