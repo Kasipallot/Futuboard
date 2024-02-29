@@ -7,10 +7,11 @@ import {
 
 import { Action, Board, Column, SwimlaneColumn, Task, User } from "../types";
 
+//TODO: refactor
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
     baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_DB_ADDRESS }), //https://futuboardbackend.azurewebsites.net
-    tagTypes: ["Boards", "Columns", "Ticket", "Users", "Action", "ActionList"],
+    tagTypes: ["Boards", "Columns", "Ticket", "Users", "Action", "ActionList", "SwimlaneColumn"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
             query: (boardId) => `boards/${boardId}/`,
@@ -214,8 +215,17 @@ export const boardsApi = createApi({
         }),
         getSwimlaneColumnsByColumnId: builder.query<SwimlaneColumn[], string>({
             query: (columnId) => `columns/${columnId}/swimlanecolumns/`,
-            providesTags: [{ type: "Columns", id: "LIST" }],
+            providesTags: [{ type: "SwimlaneColumn", id: "LIST" }],
         }),
+        updateSwimlaneColumn: builder.mutation<SwimlaneColumn, { swimlaneColumn: SwimlaneColumn }>({
+            query: ({ swimlaneColumn }) => ({
+                url: `swimlanecolumns/${swimlaneColumn.swimlanecolumnid}/`,
+                method: "PUT",
+                body: swimlaneColumn,
+            }),
+            invalidatesTags: [{ type: "SwimlaneColumn", id: "LIST" }]
+        }),
+
         getActionListByTaskIdAndSwimlaneColumnId: builder.query<Action[], { taskId: string, swimlaneColumnId: string }>({
             query: ({ taskId, swimlaneColumnId }) => `${swimlaneColumnId}/${taskId}/actions/`,
             providesTags: (result, _error, args) => {
@@ -244,7 +254,9 @@ export const boardsApi = createApi({
                 method: "PUT",
                 body: action,
             }),
-            invalidatesTags: [{ type: "Action", id: "LIST" }],
+            invalidatesTags: (_result, _error, { action }) => [
+                { type: "Action", id: action.actionid },
+            ],
         }),
         //optimistclly updates swimlane action list
         updateActionList: builder.mutation<Action[], { taskId: string, swimlaneColumnId: string, actions: Action[] }>({
@@ -306,6 +318,7 @@ export const {
     useUpdateUserListByTicketIdMutation,
     useDeleteUserMutation,
     useGetSwimlaneColumnsByColumnIdQuery,
+    useUpdateSwimlaneColumnMutation,
     useGetActionListByTaskIdAndSwimlaneColumnIdQuery,
     usePostActionMutation,
     useUpdateActionMutation,

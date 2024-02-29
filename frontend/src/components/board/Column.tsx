@@ -270,7 +270,7 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
           </div>
           <TaskList column={column} />
         </Paper>
-        <Box sx={{ overflow: "hidden" }}>
+        <Box sx={{ overflowX:"hidden", height:"fit-content" }}>
             <Box sx={{ width: showSwimlanes ? "820px" : "0px", transition: "width 300ms" }}>
               {showSwimlanes && <SwimlaneContainer column={column} />}
             </Box>
