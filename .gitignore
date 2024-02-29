@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 coverage/
+*.coverage
 *report.html
 # Editor directories and files
 .vscode/*
@@ -24,6 +25,7 @@ coverage/
 *.sln
 *.sw?
 backend/tests/assets
+backend/tests/coverage_report
 .env
 .venv/
 
