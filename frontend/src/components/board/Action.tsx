@@ -40,7 +40,7 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
     return (
     <Draggable key={action.actionid} draggableId={action.actionid} index={index}>
         {(provided) => (
-            <Box boxShadow={1} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} sx={{ backgroundColor: "white", padding: "2px", marginBottom: "2px", borderRadius: "4px" }}>
+            <Box boxShadow={1} onDoubleClick={handleDoubleClick} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} sx={{ backgroundColor: "white", padding: "2px", marginBottom: "2px", borderRadius: "4px" }}>
                 {isEditing ? (
                     <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={handleBlur}>
                         <input
@@ -61,7 +61,7 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
                         />
                     </ClickAwayListener>
                 ) : (
-                    <div onDoubleClick={handleDoubleClick}>
+                    <div>
                         <Typography variant={"body1"} fontSize={12}>{currentTitle}</Typography>
                     </div>
                 )}

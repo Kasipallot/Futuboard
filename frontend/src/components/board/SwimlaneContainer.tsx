@@ -38,22 +38,26 @@ const SwimlaneColumnTitleComponent: React.FC<{ swimlanecolumn: SwimlaneColumn }>
     };
 
     return (
-        isEditing ? (
-            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <input
-                  autoFocus
-                  value={currentTitle}
-                  onKeyDown={handleKeyDown}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  style={{ width: "100%", fontSize: "1.5rem", backgroundColor: "transparent" }}
-                />
-            </Box>
-          ) : (
-            <Typography variant={"h5"} noWrap gutterBottom onDoubleClick={handleDoubleClick}>
-              {currentTitle}
-            </Typography>
-          )
+        <Box sx={{ width: swimlanecolumn.title== "" ? "100%" : "fit-content", overflow:"hidden" }} onDoubleClick={handleDoubleClick}>
+            {isEditing ? (
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <input
+                    name="swimlaneColumnTitle"
+                      autoFocus
+                      value={currentTitle}
+                      onKeyDown={handleKeyDown}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      style={{ width: "100%", fontSize: "1.5rem", backgroundColor: "transparent" }}
+                    />
+                </Box>
+              ) : (
+                <Typography variant={"h5"} noWrap gutterBottom>
+                  {currentTitle}
+                </Typography>
+              )
+        }
+        </Box>
     );
   };
 
