@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetSwimlaneColumnsByColumnIdQuery, useGetTaskListByColumnIdQuery, useUpdateSwimlaneColumnMutation } from "@/state/apiSlice";
 import { Column, SwimlaneColumn } from "@/types";
 
@@ -10,9 +11,14 @@ import Swimlane from "./Swimlane";
 const SwimlaneColumnTitleComponent: React.FC<{ swimlanecolumn: SwimlaneColumn }> = ({ swimlanecolumn }) => {
 
     const [updateSwimlaneColumn] = useUpdateSwimlaneColumnMutation();
+    const sendMessage = useContext(WebsocketContext);
 
     const [isEditing, setIsEditing] = useState(false);
     const [currentTitle, setCurrentTitle] = useState(swimlanecolumn.title);
+
+    useEffect(() => {
+        setCurrentTitle(swimlanecolumn.title);
+    }, [swimlanecolumn.title]);
 
     const handleDoubleClick = () => {
       setIsEditing(true);
@@ -25,6 +31,9 @@ const SwimlaneColumnTitleComponent: React.FC<{ swimlanecolumn: SwimlaneColumn }>
       }
       const updatedSwimlaneColumn = { ...swimlanecolumn, title: currentTitle };
         await updateSwimlaneColumn({ swimlaneColumn: updatedSwimlaneColumn });
+        if (sendMessage !== null) {
+            sendMessage("Swimlane column updated");
+        }
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

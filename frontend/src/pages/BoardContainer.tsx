@@ -34,7 +34,7 @@ const BoardContainer: React.FC = () => {
     onMessage: (event) => {
       const data = JSON.parse(event.data);
       if (data.message !== clientId) {
-        dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users", "Action"]));
+        dispatch(boardsApi.util.invalidateTags(["Boards", "Columns", "Ticket", "Users", "Action", "ActionList", "SwimlaneColumn"]));
       }
     },
     share: true

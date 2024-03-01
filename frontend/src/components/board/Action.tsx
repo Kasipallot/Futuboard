@@ -1,7 +1,8 @@
 import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable } from "@hello-pangea/dnd";
 import { Box, ClickAwayListener, Typography } from "@mui/material";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
+import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetUsersByActionIdQuery, useUpdateActionMutation } from "@/state/apiSlice";
 import { Action as ActionType, User } from "@/types";
 
@@ -47,9 +48,14 @@ const ActionUserList: React.FC<{ users: User[] }> = ({ users }) => {
 
 const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index }) => {
 
+    const sendMessage = useContext(WebsocketContext);
     const { data: users } = useGetUsersByActionIdQuery(action.actionid);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTitle, setCurrentTitle] = useState(action.title);
+
+    useEffect(() => {
+        setCurrentTitle(action.title);
+    }, [action.title]);
 
     const [updateAction] = useUpdateActionMutation();
 
@@ -66,6 +72,9 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
 
         const updatedAction = { ...action, title: currentTitle };
         await updateAction({ action: updatedAction });
+        if (sendMessage !== null) {
+            sendMessage("Action updated");
+          }
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +117,7 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
                             {(provided, snapshot) => (
                                 <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ minHeight: "20px", backgroundColor : snapshot.isDraggingOver ? "lightblue" : "transparent", maxHeight:"50px", overflow:"hidden", padding:"2px" }}>
                                 <Box>
-                                <Typography variant={"body1"} noWrap={users && users.length > 0 && true /*if action has users, limit the text into a single row to save space*/} fontSize={12}>{currentTitle}</Typography>
+                                <Typography variant={"body1"} noWrap={users && users.length > 0 /*if action has users, limit the text into a single row to save space*/} fontSize={12}>{currentTitle}</Typography>
                                 {users && users.length > 0 && <ActionUserList users={users} />}
                                 </Box>
                                 {provided.placeholder}

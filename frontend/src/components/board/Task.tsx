@@ -148,27 +148,30 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const { data: users } = useGetUsersByTicketIdQuery(task.ticketid);
 
     const [updateTask] = useUpdateTaskMutation();
-
+    const sendMessage = useContext(WebsocketContext);
     const [selected, setSelected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [cornernote, setCornernote] = useState(task.cornernote);
 
     useEffect(() => {
         setCornernote(task.cornernote);
-    }, [task]);
+    }, [task.cornernote]);
 
     const handleDoubleClick = () => {
         setIsEditing(true);
     };
 
-    const handleBlur = () => {
+    const handleBlur = async () => {
         const updatedTaskObject = {
             ...task,
             cornernote: cornernote,
         };
         setIsEditing(false);
         if (cornernote === task.cornernote) return;
-        updateTask({ task: updatedTaskObject });
+        await updateTask({ task: updatedTaskObject });
+        if (sendMessage !== null) {
+            sendMessage("cornernote updated");
+        }
         //todo: send message to websocket
     };
 
