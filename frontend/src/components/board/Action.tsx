@@ -1,11 +1,53 @@
-import { Draggable } from "@hello-pangea/dnd";
+import { Draggable, DraggableStateSnapshot, DraggableStyle, Droppable } from "@hello-pangea/dnd";
 import { Box, ClickAwayListener, Typography } from "@mui/material";
 import { useState } from "react";
 
-import { useUpdateActionMutation } from "@/state/apiSlice";
-import { Action as ActionType } from "@/types";
+import { useGetUsersByActionIdQuery, useUpdateActionMutation } from "@/state/apiSlice";
+import { Action as ActionType, User } from "@/types";
+
+import UserMagnet from "./UserMagnet";
+
+const dropStyle = (style: DraggableStyle | undefined, snapshot: DraggableStateSnapshot) => {
+    if (!snapshot.isDropAnimating) {
+        return style;
+    }
+
+    return {
+        ...style,
+        transform: "scale(0)",
+        transition: `all  ${0.01}s`,
+    };
+};
+
+const ActionUserList: React.FC<{ users: User[] }> = ({ users }) => {
+
+    return (
+        <div style={{ display: "flex", justifyContent: "flex-end", overflow:"hidden" }}>
+            {users && users.map((user, index) => (
+                <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                    {(provided, snapshot) => {
+                        return (
+                            <div
+                            key={user.userid}
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                style={dropStyle(provided.draggableProps.style, snapshot)}
+                            >
+                                <UserMagnet user={user} editable={false} />
+                            </div>
+                        );
+                    }
+                    }
+                </Draggable>
+            ))}
+        </div>
+    );
+};
 
 const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index }) => {
+
+    const { data: users } = useGetUsersByActionIdQuery(action.actionid);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTitle, setCurrentTitle] = useState(action.title);
 
@@ -40,7 +82,7 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
     return (
     <Draggable key={action.actionid} draggableId={action.actionid} index={index}>
         {(provided) => (
-            <Box boxShadow={1} onDoubleClick={handleDoubleClick} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} sx={{ backgroundColor: "white", padding: "2px", marginBottom: "2px", borderRadius: "4px" }}>
+            <Box boxShadow={1} onDoubleClick={handleDoubleClick} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} sx={{ backgroundColor: "white", marginBottom: "2px", borderRadius: "4px" }}>
                 {isEditing ? (
                     <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={handleBlur}>
                         <input
@@ -62,7 +104,17 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
                     </ClickAwayListener>
                 ) : (
                     <div>
-                        <Typography variant={"body1"} fontSize={12}>{currentTitle}</Typography>
+                        <Droppable droppableId={action.actionid +"/action"} type="user">
+                            {(provided, snapshot) => (
+                                <Box ref={provided.innerRef} {...provided.droppableProps} sx={{ minHeight: "20px", backgroundColor : snapshot.isDraggingOver ? "lightblue" : "transparent", maxHeight:"50px", overflow:"hidden", padding:"2px" }}>
+                                <Box>
+                                <Typography variant={"body1"} noWrap={users && users.length > 0 && true /*if action has users, limit the text into a single row to save space*/} fontSize={12}>{currentTitle}</Typography>
+                                {users && users.length > 0 && <ActionUserList users={users} />}
+                                </Box>
+                                {provided.placeholder}
+                            </Box>
+                            )}
+                        </Droppable>
                     </div>
                 )}
             </Box>
@@ -72,3 +124,4 @@ const Action: React.FC<{ action: ActionType, index: number }> = ({ action, index
 };
 
 export default Action;
+

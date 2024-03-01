@@ -28,10 +28,10 @@ const SwimlaneActionList: React.FC<SwimlaneActionListProps> = ({ taskId, swimlan
             display: "flex",
             flexDirection: "column",
             flex: "1",
-            padding: "4px",
+            padding: "2px",
             alignContent: "center",
             border: snapshot.isDraggingOver ? "1px solid black" : "1px solid white",
-            height: "112px",
+            height: "118px",
             overflowX: "hidden",
             //custom scrollbar has issues with react-beautiful-dnd, remove if it's causing problems
             "&::-webkit-scrollbar": {

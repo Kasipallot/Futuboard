@@ -39,7 +39,7 @@ const UserMagnetList: React.FC<{ users: User[] }> = ({ users }) => {
     return (
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
             {users.map((user, index) => (
-                <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                <Draggable key={user.userid + "/ticket"} draggableId={user.userid} index={index}>
                     {(provided, snapshot) => {
                         return (
                             <div
@@ -184,7 +184,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     };
 
     return (
-        <Droppable droppableId={task.ticketid} type="user" direction="vertical" >
+        <Droppable droppableId={task.ticketid+"/ticket"} type="user" direction="vertical" >
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                 return (
                     <div ref={provided.innerRef}>

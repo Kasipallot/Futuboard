@@ -159,6 +159,19 @@ export const boardsApi = createApi({
                 return [{ type: "Users", id: args }, ...tags];
             },
         }),
+        getUsersByActionId: builder.query<User[], string>({
+            query: (actionId) => `actions/${actionId}/users/`,
+            providesTags: (result, _error, args) => {
+                const tags: TagDescription<"Users">[] = [];
+                if (result) {
+                    const users: User[] = result;
+                    users.forEach((user) => {
+                        tags.push({ type: "Users", id: user.userid });
+                    });
+                }
+                return [{ type: "Users", id: args }, ...tags];
+            },
+        }),
         postUserToTicket: builder.mutation<User, { ticketId: string; user: User }>({
             query: ({ ticketId, user }) => ({
                 url: `tickets/${ticketId}/users/`,
@@ -167,6 +180,16 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: (_result, _error, { ticketId }) => [
                 { type: "Users", id: ticketId },
+            ],
+        }),
+        postUserToAction: builder.mutation<User, { actionId: string; user: User }>({
+            query: ({ actionId, user }) => ({
+                url: `actions/${actionId}/users/`,
+                method: "POST",
+                body: user,
+            }),
+            invalidatesTags: (_result, _error, { actionId }) => [
+                { type: "Users", id: actionId },
             ],
         }),
         deleteUser: builder.mutation<User, { userId: string }>({
@@ -192,7 +215,6 @@ export const boardsApi = createApi({
                             boardsApi.util.updateQueryData("getUsersByTicketId", cache.originalArgs, () => {
                                 const updatedUsers = patchArgs.users.map(user => ({
                                     ...user,
-                                    ticketId: patchArgs.ticketId
                                 }));
                                 return updatedUsers;
                             })
@@ -209,6 +231,41 @@ export const boardsApi = createApi({
                         patchResult.undo();
                     });
                     apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.ticketId }]));
+                }
+
+            },
+        }),
+        updateUserListByActionId: builder.mutation<User[], { actionId: string; users: User[]}>({
+            query: ({ actionId, users }) => ({
+                url: `actions/${actionId}/users/`,
+                method: "PUT",
+                body: users
+            }),
+            async onQueryStarted(patchArgs: { actionId: string, users: User[] }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Users", id: patchArgs.actionId }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getUsersByActionId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getUsersByActionId", cache.originalArgs, () => {
+                                const updatedUsers = patchArgs.users.map(user => ({
+                                    ...user,
+                                }));
+                                return updatedUsers;
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.actionId }]));
                 }
 
             },
@@ -323,4 +380,7 @@ export const {
     usePostActionMutation,
     useUpdateActionMutation,
     useUpdateActionListMutation,
+    useGetUsersByActionIdQuery,
+    usePostUserToActionMutation,
+    useUpdateUserListByActionIdMutation,
 } = boardsApi;

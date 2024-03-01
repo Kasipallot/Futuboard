@@ -76,6 +76,10 @@ def action_view(request, swimlanecolumn_id, ticket_id):
                 creation_date = timezone.now()
                 )
             new_action.save()
+
+            new_usergroup = Usergroup(actionid = new_action, type = 'action')
+            new_usergroup.save()
+
             serializer = ActionSerializer(new_action)
             return JsonResponse(serializer.data, safe=False)
         except:
