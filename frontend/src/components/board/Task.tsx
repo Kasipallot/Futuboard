@@ -39,7 +39,7 @@ const UserMagnetList: React.FC<{ users: User[] }> = ({ users }) => {
     return (
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
             {users.map((user, index) => (
-                <Draggable key={user.userid} draggableId={user.userid} index={index}>
+                <Draggable key={user.userid + "/ticket"} draggableId={user.userid} index={index}>
                     {(provided, snapshot) => {
                         return (
                             <div
@@ -148,27 +148,30 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     const { data: users } = useGetUsersByTicketIdQuery(task.ticketid);
 
     const [updateTask] = useUpdateTaskMutation();
-
+    const sendMessage = useContext(WebsocketContext);
     const [selected, setSelected] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [cornernote, setCornernote] = useState(task.cornernote);
 
     useEffect(() => {
         setCornernote(task.cornernote);
-    }, [task]);
+    }, [task.cornernote]);
 
     const handleDoubleClick = () => {
         setIsEditing(true);
     };
 
-    const handleBlur = () => {
+    const handleBlur = async () => {
         const updatedTaskObject = {
             ...task,
             cornernote: cornernote,
         };
         setIsEditing(false);
         if (cornernote === task.cornernote) return;
-        updateTask({ task: updatedTaskObject });
+        await updateTask({ task: updatedTaskObject });
+        if (sendMessage !== null) {
+            sendMessage("cornernote updated");
+        }
         //todo: send message to websocket
     };
 
@@ -184,7 +187,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
     };
 
     return (
-        <Droppable droppableId={task.ticketid} type="user" direction="vertical" >
+        <Droppable droppableId={task.ticketid+"/ticket"} type="user" direction="vertical" >
             {(provided: DroppableProvided, snapshot: DroppableStateSnapshot) => {
                 return (
                     <div ref={provided.innerRef}>
