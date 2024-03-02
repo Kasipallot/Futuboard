@@ -181,6 +181,31 @@ export const boardsApi = createApi({
             invalidatesTags: (_result, _error, { ticketId }) => [
                 { type: "Users", id: ticketId },
             ],
+            async onQueryStarted(patchArgs: { ticketId: string, user: User }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Users", id: patchArgs.ticketId }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getUsersByTicketId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getUsersByTicketId", cache.originalArgs, (oldData) => {
+                                return [...oldData, { userid:"temp", name: patchArgs.user.name, color: patchArgs.user.color }];
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.ticketId }]));
+                }
+
+            }
         }),
         postUserToAction: builder.mutation<User, { actionId: string; user: User }>({
             query: ({ actionId, user }) => ({
@@ -188,6 +213,34 @@ export const boardsApi = createApi({
                 method: "POST",
                 body: user,
             }),
+            //optimistically updates the user list, however since the new instance of the user gets its id from the server, the optimistically
+            //updated user will have a temporary id, which will be replaced by the server id when the query is fulfilled
+            //this can lead to problems if one tries to drag the user before the query is fulfilled
+            async onQueryStarted(patchArgs: { actionId: string, user: User }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Users", id: patchArgs.actionId }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getUsersByActionId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getUsersByActionId", cache.originalArgs, (oldData) => {
+                                return [...oldData, { userid:"temp", name: patchArgs.user.name, color: patchArgs.user.color }];
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Users", id: patchArgs.actionId }]));
+                }
+
+            },
             invalidatesTags: (_result, _error, { actionId }) => [
                 { type: "Users", id: actionId },
             ],
