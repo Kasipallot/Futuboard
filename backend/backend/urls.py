@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 from quickstart import views as admin_views
-from futuboard.views import views, swimlaneViews
+from futuboard.views import views, swimlaneViews, csv_views
 from django.contrib import admin
 
 router = routers.DefaultRouter()
@@ -32,4 +32,6 @@ urlpatterns = [
     path('api/<uuid:swimlanecolumn_id>/<uuid:ticket_id>/actions/', swimlaneViews.action_view, name='action_view'),
     path('api/actions/<uuid:action_id>/', swimlaneViews.update_action, name='update_action'),
     path('api/swimlanecolumns/<uuid:swimlanecolumn_id>/', swimlaneViews.update_swimlanecolumn, name='update_swimlanecolumn'),
+    path('api/export/<uuid:board_id>/<str:filename>/', csv_views.export_board_data, name='export_board_data'),
+    path('api/import/<uuid:board_id>/', csv_views.import_board_data, name='import_board_data')
 ]
