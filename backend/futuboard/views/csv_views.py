@@ -11,7 +11,7 @@ from django.http import Http404
 from ..verification import new_password
 
 @api_view(['GET'])
-def export_board_data(request, boardid, filename):
+def export_board_data(request, board_id, filename):
     """
     Export board data to a csv file
     """
@@ -21,9 +21,11 @@ def export_board_data(request, boardid, filename):
             response['Content-Disposition'] = 'attachment; filename="' + filename + '.csv"'
             writer = csv.writer(response)
             write_csv_header(writer)
-            write_board_data(writer, boardid)
+            write_board_data(writer, board_id)
+            print("Board data exported")
             return response
-        except:
+        except Exception as e:
+            print(e)
             raise Http404("Error exporting board data")
     return HttpResponse('Invalid request')
         

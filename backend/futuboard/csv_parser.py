@@ -30,10 +30,10 @@ def write_board_data(writer, boardid):
     # Get board usergroups
     usergroup = Usergroup.objects.get(boardid=boardid)
     # Get userids of usergroupuser with usergroupid
-    usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.id)
+    usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
     # Get userids
     for usergroupuser in usergroupusers:
-        user = User.objects.get(id=usergroupuser.userid)
+        user = usergroupuser.userid
         writer.writerow(['User', user.name, user.color])
     writer.writerow([])
     # Get all the columns for the board
@@ -44,38 +44,38 @@ def write_board_data(writer, boardid):
         writer.writerow(['Column', column.wip_limit, column.color, column.description, column.title, column.ordernum, column.swimlane])
         if column.swimlane:
             # Get all the swimlanecolumns for the column
-            swimlanecolumns = Swimlanecolumn.objects.filter(columnid=column.id)
+            swimlanecolumns = Swimlanecolumn.objects.filter(columnid=column.columnid)
             # Write all the swimlanecolumns to the csv file
             for swimlanecolumn in swimlanecolumns:
                 writer.writerow(['Swimlanecolumn', swimlanecolumn.color, swimlanecolumn.title, swimlanecolumn.ordernum])
         # Get all the tickets for the column
-        tickets = Ticket.objects.filter(columnid=column.id)
+        tickets = Ticket.objects.filter(columnid=column.columnid)
         # Write all the tickets in the column to the csv file
         for ticket in tickets:
             writer.writerow(['Ticket', ticket.title, ticket.description, ticket.color, ticket.storypoints, ticket.size, ticket.order, ticket.creation_date, ticket.cornernote])
             # Get usergroups with ticketid and boardid
-            usergroups = Usergroup.objects.get(ticketid=ticket.id)
+            usergroups = Usergroup.objects.filter(ticketid=ticket.ticketid)
             # Get userids of usergroupuser with usergroupid 
             for usergroup in usergroups:
-                usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.id)
+                usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
                 # Get userids
                 for usergroupuser in usergroupusers:
-                    user = User.objects.get(id=usergroupuser.userid)
+                    user = usergroupuser.userid
                     writer.writerow(['User', user.name, user.color])
             if column.swimlane:
                 # Get all the actions for the swimlanecolumn
-                actions = Action.objects.filter(ticketid=ticket.id)
+                actions = Action.objects.filter(ticketid=ticket.ticketid)
                 # Write all the actions in the swimlanecolumn to the csv file
                 for action in actions:
                     writer.writerow(['Action', action.title, action.color, action.order])
                     # Get usergroups with actionid and boardid
-                    usergroups = Usergroup.objects.get(actionid=action.id)
+                    usergroups = Usergroup.objects.filter(actionid=action.actionid)
                     # Get userids of usergroupuser with usergroupid 
                     for usergroup in usergroups:
-                        usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.id)
+                        usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
                         # Get userids
                         for usergroupuser in usergroupusers:
-                            user = User.objects.get(id=usergroupuser.userid)
+                            user = usergroupuser.userid
                             writer.writerow(['User', user.name, user.color])                
         # Split the columns in the csv file with an empty line
         writer.writerow([])
