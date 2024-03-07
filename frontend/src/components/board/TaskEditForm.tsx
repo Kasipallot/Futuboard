@@ -1,9 +1,6 @@
 import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
 import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 
-import { useGetUsersByBoardIdQuery } from "../../state/apiSlice";
 import { User } from "../../types";
 import { Task as TaskType } from "../../types";
 
@@ -25,9 +22,6 @@ interface FormData {
 
 const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
 
-    const { id = "default-id" } = useParams();
-    const { data: users, isSuccess } = useGetUsersByBoardIdQuery(id);
-
     const {
         onSubmit,
         onCancel,
@@ -41,7 +35,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
             corners: task.caretakers,
             cornerNote: task.cornernote,
             description: task.description,
-            color: "#ffffff",
+            color: task.color,
             size: task.size,
         }
     });
@@ -97,42 +91,6 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                             message: "Size must be at smaller than 100"
                         }
                     })} />
-                </Grid>
-                <Grid item xs={12}>
-                    <>
-                        {!users && isSuccess ? (
-                            <p>no users, add users to assign caretakers (button to add users)</p>
-                        ) : (
-                            <>
-                                <Controller
-                                    name="corners"
-                                    control={control}
-                                    render={({ field: { onChange, value } }) => (
-                                        <Autocomplete
-                                            multiple
-                                            id="tags-standard"
-                                            options={users || []}
-                                            getOptionLabel={(option) => option.name}
-                                            renderOption={(props, option) => (
-                                                <li {...props} key={option.userid}>
-                                                    <Typography variant="body2">{option.name}</Typography>
-                                                </li>
-                                            )}
-                                            value={value || []}
-                                            onChange={(_event, newValue) => {
-                                                onChange(newValue);
-                                            }}
-                                            isOptionEqualToValue={(option, value) => option.userid === value.userid}
-                                            renderInput={(params) => (
-                                                <TextField {...params} label="Assignees" />
-                                            )}
-                                        />
-                                    )}
-                                />
-                            </>
-
-                        )}
-                    </>
                 </Grid>
                 <Grid item xs={240}>
                     <TextField label="Corner note" fullWidth {...register("cornerNote", {

@@ -26,6 +26,7 @@ interface FormData {
   corners?: User[],
   description?: string,
   cornerNote?: string,
+  color?: string,
 }
 
 interface CreateTaskButtonProps {
@@ -59,6 +60,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       size: data.size,
       columnid: columnid,
       boardid: id,
+      color: data.color,
       cornernote: data.cornerNote
     };
 
