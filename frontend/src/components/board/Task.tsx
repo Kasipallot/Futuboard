@@ -193,9 +193,18 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                     <div ref={provided.innerRef}>
                         <Paper elevation={selected ? 24 : 4} sx={{
                             padding: "4px",
-                            backgroundColor: snapshot.isDraggingOver ? "lightblue" : task.color,
+                            backgroundColor: snapshot.isDraggingOver ? "lightblue" : "white",
                             height: "100px",
                             marginBottom: "5px",
+                            borderColor: task.color,
+                            borderBottomWidth: "7px", 
+                            borderBottomStyle: "solid", 
+                            borderLeftWidth: "2px",
+                            borderLeftStyle: "solid",
+                            borderRightWidth: "2px", 
+                            borderRightStyle: "solid", 
+                            borderTopWidth: "2px", 
+                            borderTopStyle: "solid", 
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
