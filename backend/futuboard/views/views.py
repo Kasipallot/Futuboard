@@ -152,6 +152,8 @@ def get_tickets_from_column(request, board_id, column_id):
             new_ticket.save()
 
             new_usergroup = Usergroup(ticketid = new_ticket, type = 'ticket')
+            print("NEW USER GROUP")
+            print(new_usergroup.usergroupid)
             new_usergroup.save()
 
             serializer = TicketSerializer(new_ticket)
@@ -165,13 +167,24 @@ def get_tickets_from_column(request, board_id, column_id):
             return JsonResponse(serializer.data, safe=False)
         except:
             raise Http404("Error getting tickets.") 
-@api_view(['PUT'])
+@api_view(['PUT', 'DELETE'])
 def update_ticket(request, column_id, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id, columnid=column_id)
     except Ticket.DoesNotExist:
         raise Http404("Ticket not found")
-
+    if(request.method == 'DELETE'):
+        try:
+            usergroup = Usergroup.objects.get(ticketid=ticket_id)
+            usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+            users = [group.userid for group in usergroupuser]
+            for user in users:
+                user.delete()
+            ticket.delete()
+            return JsonResponse({"message": "Ticket deleted successfully"}, status=200)
+        except:
+            raise Http404("Cannot delete Ticket")
+    
     if request.method == 'PUT':
         try:
             ticket.title = request.data.get('title', ticket.title)
