@@ -76,7 +76,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   };
   return (
     <Box>
-      <Tooltip title="Add Column">
+      <Tooltip title="Add Card">
         <IconButton color="primary" aria-label="add task" onClick={handleOpenDialog}>
           <AddIcon />
         </IconButton>
