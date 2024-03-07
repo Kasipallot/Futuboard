@@ -1,9 +1,7 @@
-import { Autocomplete, Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
-import { useGetUsersByBoardIdQuery } from "../../state/apiSlice";
 import { User } from "../../types";
 
 interface TaskCreationFormProps {
@@ -23,8 +21,6 @@ interface FormData {
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
 
-    const { id = "default-id" } = useParams();
-
     //focus on the title field when the form is opened
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -34,9 +30,9 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
       }
     }, []);
 
-    const { data: users, isSuccess } = useGetUsersByBoardIdQuery(id);
+    //const { data: users, isSuccess } = useGetUsersByBoardIdQuery(id);
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
         defaultValues: {
             taskTitle: "",
             corners: [],
@@ -87,43 +83,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                             message: "Size must be at smaller than 100"
                         }
                     })} />
-                </Grid>
-                <Grid item xs={12}>
-                    <>
-                        { (!users && isSuccess) ? (
-                            <p>no users, add users to assign caretakers (button to add users)</p>
-                        ) : (
-                            <>
-                                <Controller
-                                    name="corners"
-                                    control={control}
-                                    render={({ field: { onChange, value } }) => (
-                                        <Autocomplete
-                                            multiple
-                                            id="tags-standard"
-                                            options={users || []}
-                                            getOptionLabel={(option) => option.name}
-                                            renderOption={(props, option) => (
-                                                <li {...props} key={option.userid}>
-                                                    <Typography variant="body2">{option.name}</Typography>
-                                                </li>
-                                            )}
-                                            value={value || []}
-                                            onChange={(_event, newValue) => {
-                                                onChange(newValue);
-                                            }}
-                                            isOptionEqualToValue={(option, value) => option.userid === value.userid}
-                                            renderInput={(params) => (
-                                                <TextField {...params} label="Assignees" />
-                                            )}
-
-                                        />
-                                    )}
-                                />
-                            </>
-
-                        )}
-                    </>
                 </Grid>
                 <Grid item xs={240}>
                     <TextField label="Corner note" fullWidth {...register("cornerNote", {
