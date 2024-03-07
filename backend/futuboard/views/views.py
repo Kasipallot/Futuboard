@@ -200,12 +200,25 @@ def update_ticket(request, column_id, ticket_id):
         except:
             raise Http404("Cannot update Ticket")
         
-@api_view(['PUT'])
+@api_view(['PUT', 'DELETE'])
 def update_column(request, board_id, column_id):
     try:
         column = Column.objects.get(pk=column_id, boardid=board_id)
     except Column.DoesNotExist:
         raise Http404("Column not found")
+    if request.method == 'DELETE':
+        try:
+            tickets = Ticket.objects.filter(columnid=column_id)
+            for ticket in tickets:
+                usergroup = Usergroup.objects.get(ticketid=ticket.ticketid)
+                usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+                users = [group.userid for group in usergroupuser]
+                for user in users:
+                    user.delete()
+            column.delete()
+            return JsonResponse({"message": "Column deleted successfully"}, status=200)
+        except:
+            raise Http404("Cannot delete Column")
 
     if request.method == 'PUT':
         try:
