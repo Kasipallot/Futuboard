@@ -13,7 +13,6 @@ import uuid
 @api_view(['GET', 'POST'])
 def get_all_boards(request: rest_framework.request.Request, format=None):
     if request.method == 'POST':
-        print(request.data['id'])
         try:
             new_board = Board(boardid = request.data['id'],
                               description = '',
@@ -36,7 +35,7 @@ def get_all_boards(request: rest_framework.request.Request, format=None):
         serializer = BoardSerializer(query_set, many=True)
         return JsonResponse(serializer.data, safe=False)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 def get_board_by_id(request, board_id):
     if request.method == 'POST':
         # Get password from request
@@ -102,11 +101,11 @@ def get_columns_from_board(request, board_id):
                         title = name,
                         ordernum = defaultSwimlaneNames.index(name)
                     )
+                    print("SWIM: " + str(swimlanecolumn.swimlanecolumnid))
                     swimlanecolumn.save()
             serializer = ColumnSerializer(new_column)
             return JsonResponse(serializer.data, safe=False)
         except:
-            print("Column creation failed")
             raise Http404("Column creation failed")
 
 @api_view(['GET', 'POST', 'PUT'])
@@ -152,8 +151,6 @@ def get_tickets_from_column(request, board_id, column_id):
             new_ticket.save()
 
             new_usergroup = Usergroup(ticketid = new_ticket, type = 'ticket')
-            print("NEW USER GROUP")
-            print(new_usergroup.usergroupid)
             new_usergroup.save()
 
             serializer = TicketSerializer(new_ticket)
