@@ -1,6 +1,5 @@
-import { Button, Divider, Grid, TextField, Typography } from "@mui/material";
+import { Button, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
-
 import { User } from "../../types";
 import { Task as TaskType } from "../../types";
 
@@ -8,7 +7,6 @@ interface TaskEditFormProps {
     onSubmit: (data: FormData) => void,
     onCancel: () => void,
     task: TaskType
-
 }
 
 interface FormData {
@@ -28,7 +26,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         task,
     } = props;
 
-    const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+    const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm<FormData>({
         //set initial values form the task prop
         defaultValues: {
             taskTitle: task.title,
@@ -40,8 +38,18 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         }
     });
 
+    const selectedColor = watch("color");
+
+    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue("color", event.target.value);
+    };
+
+    const handleFormSubmit = (data: FormData) => {
+        onSubmit(data);
+    };
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <Typography noWrap gutterBottom variant="h6" > {task.title}</Typography>
@@ -76,11 +84,10 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                                 }}
                             />
                         )}
-
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
                         valueAsNumber: true,
                         min: {
                             value: 0,
@@ -88,7 +95,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                         },
                         max: {
                             value: 99,
-                            message: "Size must be at smaller than 100"
+                            message: "Size must be smaller than 100"
                         }
                     })} />
                 </Grid>
@@ -98,7 +105,19 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                 </Grid>
                 <Grid item xs={240}>
                     <TextField label="Description" multiline rows={11} fullWidth {...register("description", { //rows amount hardcoded due to bug with multiline textAreaAutoSize
-                    })} />
+                        })} />
+                </Grid>
+                <Grid item xs={12}>
+                    <FormControl component="fieldset">
+                        <Typography variant="subtitle1">Color</Typography>
+                        <RadioGroup row aria-label="color" value={selectedColor} onChange={handleColorChange}>
+                            <FormControlLabel value="#ffffff" control={<Radio style={{ color: "#ffffff" }} />} label={null} />
+                            <FormControlLabel value="#ffeb3b" control={<Radio style={{ color: "#ffeb3b" }} />} label={null} />
+                            <FormControlLabel value="#8bc34a" control={<Radio style={{ color: "#8bc34a" }} />} label={null} />
+                            <FormControlLabel value="#ff4081" control={<Radio style={{ color: "#ff4081" }} />} label={null} />
+                            <FormControlLabel value="#03a9f4" control={<Radio style={{ color: "#03a9f4" }} />} label={null} />
+                        </RadioGroup>
+                    </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Save Changes</Button>
