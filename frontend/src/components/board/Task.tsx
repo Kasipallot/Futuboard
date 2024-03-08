@@ -83,6 +83,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     };
 
     const handleOnSubmit = async (data: FormData) => {
+        setTaskSelected(false);
+        setAnchorEl(null);
         const taskObject = {
             ticketid: task.ticketid,
             title: data.taskTitle,
@@ -93,19 +95,13 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             color: data.color,
             columnid: task.columnid,
         };
-
         await updateTask({ task: taskObject });
         if (sendMessage !== null) {
             sendMessage("Task updated");
         }
-
-        setTaskSelected(false);
-        setAnchorEl(null);
     };
-
     const open = Boolean(anchorEl);
     const popOverid = open ? "popover" : undefined;
-
     return (
         <div>
             <Tooltip title="Edit card">
@@ -118,7 +114,6 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                 id={popOverid}
                 open={open}
                 anchorEl={anchorEl}
-                onClose={handleClose}
                 anchorOrigin={{
                     vertical: "center",
                     horizontal: "right",
@@ -130,11 +125,9 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             >
                 <Paper sx={{ height: "fit-content", padding: "20px", width: "400px" }}>
                     <TaskEditForm onSubmit={handleOnSubmit} onCancel={handleClose} task={task} />
-
                 </Paper>
             </Popover>
         </div>
-
     );
 };
 
@@ -197,14 +190,14 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                             height: "100px",
                             marginBottom: "5px",
                             borderColor: task.color,
-                            borderBottomWidth: "7px", 
-                            borderBottomStyle: "solid", 
+                            borderBottomWidth: "7px",
+                            borderBottomStyle: "solid",
                             borderLeftWidth: "2px",
                             borderLeftStyle: "solid",
-                            borderRightWidth: "2px", 
-                            borderRightStyle: "solid", 
-                            borderTopWidth: "2px", 
-                            borderTopStyle: "solid", 
+                            borderRightWidth: "2px",
+                            borderRightStyle: "solid",
+                            borderTopWidth: "2px",
+                            borderTopStyle: "solid",
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>

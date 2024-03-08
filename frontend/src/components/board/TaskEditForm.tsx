@@ -1,5 +1,6 @@
-import { Button, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Button, ClickAwayListener, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
+
 import { User } from "../../types";
 import { Task as TaskType } from "../../types";
 
@@ -26,16 +27,18 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         task,
     } = props;
 
-    const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm<FormData>({
+    const initialFormValues = {
+        taskTitle: task.title,
+        corners: task.caretakers,
+        cornerNote: task.cornernote,
+        description: task.description,
+        color: task.color,
+        size: task.size,
+    };
+
+    const { register, handleSubmit, control, formState: { errors }, setValue, watch, getValues  } = useForm<FormData>({
         //set initial values form the task prop
-        defaultValues: {
-            taskTitle: task.title,
-            corners: task.caretakers,
-            cornerNote: task.cornernote,
-            description: task.description,
-            color: task.color,
-            size: task.size,
-        }
+        defaultValues: initialFormValues
     });
 
     const selectedColor = watch("color");
@@ -44,11 +47,20 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
         setValue("color", event.target.value);
     };
 
+    const closeModule = () => {
+        if(JSON.stringify(initialFormValues) === JSON.stringify(getValues())) {
+            onCancel();
+            return;
+        }
+        handleSubmit(onSubmit)();
+    };
+
     const handleFormSubmit = (data: FormData) => {
         onSubmit(data);
     };
 
     return (
+        <ClickAwayListener onClickAway={closeModule}>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -125,6 +137,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                 </Grid>
             </Grid>
         </form>
+        </ClickAwayListener>
     );
 };
 

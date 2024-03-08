@@ -39,11 +39,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
         }
     });
 
-    const { 
-        onSubmit, 
-        onCancel 
+    const {
+        onSubmit,
+        onCancel
     } = props;
-    
+
     const selectedColor = watch("color");
 
     const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +51,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
     };
 
     const handleFormSubmit = (data: FormData) => {
-        console.log(data); // Print the form data
         onSubmit(data);
     };
 
