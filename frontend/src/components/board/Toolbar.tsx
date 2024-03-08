@@ -1,4 +1,4 @@
-import { AppBar, Box, IconButton, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
+import { AppBar, Box, Divider, IconButton, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState, useContext } from "react";
 import { useParams } from "react-router-dom";
 
@@ -84,21 +84,22 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
   const { data: users, isSuccess } = useGetUsersByBoardIdQuery(boardId);
 
   return (
-    <AppBar position="fixed" sx={{ background: "white", height: "80px" }}>
-      <Toolbar>
+    <AppBar position="fixed" sx={{ background: "white", height: "65px", boxShadow: "none", borderBottom: "2px solid #D1D5DB" }}>
+      <Toolbar sx={{ justifyContent: "center" }}>
         <Box display="flex" alignContent="center" sx={{ flexGrow: 1 }}>
           <HomeButton />
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "#2D3748", marginLeft: "10px", marginTop: "5px" }}>
+          <Divider orientation="vertical" flexItem sx={{ margin: "0 10px", borderRightWidth: "2px", height: "35px", marginTop: "5px", borderColor: "#D1D5DB" }} />
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "#2D3748", marginLeft: "10px", marginTop: "7px" }}>
             {title}
           </Typography>
-          <Box sx={{ flexGrow: 1 }}>
+          <Box sx={{ flexGrow: 1 }} style={{ marginTop: "3px" }}>
           {isSuccess && users.length > 0 &&
             <UserList users={users} />
           }
           </Box>
-        </Box>
-        <Box display="flex">
-          <AddUserButton />
+          <div style={{ marginLeft: "10px" }}>
+            <AddUserButton />
+          </div>
           <CopyToClipboardButton />
           <CreateColumnButton boardId={boardId} />
         </Box>

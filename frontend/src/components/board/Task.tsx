@@ -193,7 +193,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                     <div ref={provided.innerRef}>
                         <Paper elevation={selected ? 24 : 4} sx={{
                             padding: "4px",
-                            backgroundColor: snapshot.isDraggingOver ? "lightblue" : "white",
+                            backgroundColor: snapshot.isDraggingOver ? "rgba(22, 95, 199, 0.2)" : "white",
                             height: "100px",
                             marginBottom: "5px",
                             borderColor: task.color,
@@ -221,7 +221,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                                 />
                                             </ClickAwayListener>
                                         ) : (
-                                            <Typography noWrap variant={"body2"} gutterBottom width={"70%"}>
+                                            <Typography noWrap variant={"body2"} gutterBottom width={"70%"} style={{ paddingTop: "6px", paddingLeft: "7px", color: "#2D3748" }}>
                                                 {cornernote}
                                             </Typography>
                                         )}
@@ -241,7 +241,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                             width: "85%",
                                             padding: "0px 20px 0px 10px"
                                         }}>
-                                            <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                            <Typography variant={"body2"} gutterBottom style={{ color: "#2D3748" }}><strong>{task.title}</strong></Typography>
                                         </div>
                                     </div>
                                 </div>
@@ -254,9 +254,9 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                     <div style={{ overflow: "hidden", width: "90%" }}>
                                         {users && <UserMagnetList users={users} />}
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", paddingRight: "15px", paddingLeft: "7px", paddingBottom: "3px" }}>
                                         <div>
-                                            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
+                                            <Typography sx={{ fontWeight: "bold", fontSize: "17px", color: "#2D3748" }}>{task.size}</Typography>
                                         </div>
                                     </div>
                                 </div>

@@ -95,8 +95,8 @@ const SwimlaneContainer:React.FC<SwimlaneContainerProps> = ({ column }) => {
                     <Swimlane key={task.ticketid} task={task} swimlaneColumns={swimlaneColumns}/>
                 ))
             ) : (
-                <div>
-                    No Cards
+                <div style={{ textAlign: "center", paddingTop: "15px", color: "#2D3748" }}>
+                    No cards yet
                 </div>
             )}
         </Paper>

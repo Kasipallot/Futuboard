@@ -39,8 +39,8 @@ const UserList: React.FC<UserListProps> = ({ users }) => {
                         alignItems: "center",
                         overflowX: "auto",
                         maxWidth: "750px",   //change to something else
-                        border: "solid 1px black",
-                        borderRadius: "10px",
+                        border: "solid 2px #D1D5DB",
+                        borderRadius: "10px"
                         }}
                     >
                         {users && users.map((user, index) => (

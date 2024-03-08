@@ -30,7 +30,8 @@ const SwimlaneActionList: React.FC<SwimlaneActionListProps> = ({ taskId, swimlan
             flex: "1",
             padding: "2px",
             alignContent: "center",
-            border: snapshot.isDraggingOver ? "1px solid black" : "1px solid white",
+            border: snapshot.isDraggingOver ? "1px solid rgba(22, 95, 199)" : "1px solid rgba(0, 0, 0, 0.12)",
+            backgroundColor: snapshot.isDraggingOver ? "rgba(22, 95, 199, 0.1)" : "#E5DB0",
             height: "118px",
             overflowX: "hidden",
             //custom scrollbar has issues with react-beautiful-dnd, remove if it's causing problems

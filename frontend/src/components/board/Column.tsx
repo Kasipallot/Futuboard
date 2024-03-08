@@ -2,7 +2,7 @@ import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from 
 import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { Box, Dialog, DialogContent, IconButton, List, Popover, Tooltip, Typography } from "@mui/material";
+import { Box, Dialog, DialogContent, Divider, IconButton, List, Popover, Tooltip, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useMemo, useState, useContext } from "react";
 import { useSelector } from "react-redux";
@@ -126,7 +126,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
           <div
             ref={provided.innerRef}
             style={{
-              backgroundColor: snapshot.isDraggingOver ? "lightblue" : "transparent",
+              backgroundColor: snapshot.isDraggingOver ? "rgba(22, 95, 199, 0.1)" : "transparent",
               minHeight: "1000px",
               height: "auto",
             }}
@@ -154,7 +154,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
                 </Draggable>
               ))
             ) : (
-              <Typography variant={"body2"} gutterBottom>
+              <Typography variant={"body2"} gutterBottom style={{ textAlign: "center", paddingTop: "30px", color: "#2D3748" }}>
                 No cards yet
               </Typography>
             )}
@@ -255,22 +255,25 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
 
   return (
     <>
-
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px" }}>
+        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderColor: "rgba(0, 0, 0, 0.12)"}}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant={"h5"} noWrap gutterBottom>{column.title}</Typography>
+            <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
             <EditColumnButton column={column} />
             {isSwimlaneColumn && <IconButton color="primary" aria-label="expand swimlane" onClick={() => setShowSwimlanes(!showSwimlanes)}>
               <ArrowForwardIosIcon />
             </IconButton>}
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <Divider />
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingRight: "13px", paddingBottom: "4px", paddingTop: "4px"}}>
             <CreateTaskButton columnid={column.columnid} />
-            <Typography title={"Number of tasks"} variant={"body1"} >{taskNum}</Typography>
-            <Typography title={"Total size of tasks"} variant={"body1"} >{sizeSum}</Typography>
+            <Typography title={"Number of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{taskNum}</Typography>
+            <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748"}} >{sizeSum}</Typography>
           </div>
-          <TaskList column={column} />
+          <Divider />
+          <div style={{ paddingTop: "5px" }}>
+            <TaskList column={column} />
+          </div>
         </Paper>
         <Box sx={{ overflowX:"hidden", height:"fit-content" }}>
             <Box sx={{ width: showSwimlanes ? "820px" : "0px", transition: "width 300ms" }}>
