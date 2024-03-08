@@ -82,8 +82,8 @@ const SwimlaneContainer:React.FC<SwimlaneContainerProps> = ({ column }) => {
     const tasks = taskList;
 
     return (
-        <Paper elevation={4} sx={{ margin: "25px 0px", width: "800px", minHeight: "1000px", backgroundColor: "#E5DBD9", padding: "4px" }}>
-            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "30px", padding:"5px 10px", paddingLeft:"30px" }}>
+        <Paper elevation={4} sx={{ margin: "25px 0px", width: "800px", minHeight: "85vh", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)"}}>
+            <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", marginBottom: "30px", paddingTop: "20px", paddingLeft:"30px" }}>
                 {swimlaneColumns && swimlaneColumns.map((swimlaneColumn) => (
                     <Box key={swimlaneColumn.swimlanecolumnid} sx={{ flexGrow: 1, flexShrink: 1, flexBasis: "0", display: "flex", justifyContent: "center", alignItems: "center", overflow:"hidden" }}>
                         <SwimlaneColumnTitleComponent swimlanecolumn={swimlaneColumn}/>

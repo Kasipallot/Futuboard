@@ -127,7 +127,7 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
             ref={provided.innerRef}
             style={{
               backgroundColor: snapshot.isDraggingOver ? "rgba(22, 95, 199, 0.1)" : "transparent",
-              minHeight: "1000px",
+              minHeight: "74vh",
               height: "auto",
             }}
             {...provided.droppableProps}
@@ -256,7 +256,7 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "1000px", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderColor: "rgba(0, 0, 0, 0.12)"}}>
+        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "74vh", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)"}}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
             <EditColumnButton column={column} />
@@ -271,7 +271,7 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
             <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748"}} >{sizeSum}</Typography>
           </div>
           <Divider />
-          <div style={{ paddingTop: "5px" }}>
+          <div>
             <TaskList column={column} />
           </div>
         </Paper>

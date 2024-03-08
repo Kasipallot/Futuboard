@@ -130,7 +130,7 @@ const Swimlane: React.FC<SwimlaneProps> = ({ task, swimlaneColumns }) => {
   return (
     <div style={{ display: "flex" }}>
       {swimlaneColumns && <CreateActionButton taskId={task.ticketid} swimlanecolumnid={swimlaneColumns[0].swimlanecolumnid} />}
-      <Box sx={{ height: "129px", /*might later need to change swimlane height to show all actions*/  width: "100%", backgroundColor: "#E5DB0" }}>
+      <Box sx={{ height: "129px", /*might later need to change swimlane height to show all actions*/  width: "100%", backgroundColor: "#E5DB0", paddingBottom: "10px" }}>
         <Box sx={{ display: "flex" }}>
           {swimlaneColumns && swimlaneColumns.map((swimlaneColumn, index) => (
             <SwimlaneActionList key={index} taskId={task.ticketid} swimlanecolumnid={swimlaneColumn.swimlanecolumnid} />
