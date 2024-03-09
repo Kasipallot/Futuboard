@@ -2,7 +2,7 @@ from django.http import Http404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
-from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser, Swimlanecolumn
+from ..models import Board, Column, Ticket, Usergroup, User, UsergroupUser, Swimlanecolumn, Action
 from ..serializers import BoardSerializer, ColumnSerializer, TicketSerializer, UserSerializer
 import rest_framework.request
 from django.utils import timezone
@@ -10,64 +10,6 @@ from ..verification import new_password, verify_password
 import uuid
 
 # Create your views here.
-@api_view(['GET', 'POST'])
-def get_all_boards(request: rest_framework.request.Request, format=None):
-    if request.method == 'POST':
-        try:
-            new_board = Board(boardid = request.data['id'],
-                              description = '',
-                            title = request.data['title'],
-                            creator = '',
-                            creation_date = timezone.now(),
-                            passwordhash = new_password(request.data['password']),
-                            salt = '')
-            new_board.save()
-
-            new_usergroup = Usergroup(boardid = new_board, type = 'board')
-            new_usergroup.save()
-
-            serializer = BoardSerializer(new_board)
-            return JsonResponse(serializer.data, safe=False)
-        except:
-            raise Http404("Cannot create Board")
-    if request.method == 'GET':
-        query_set = Board.objects.all()
-        serializer = BoardSerializer(query_set, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-@api_view(['GET', 'POST', 'DELETE'])
-def get_board_by_id(request, board_id):
-    if request.method == 'POST':
-        # Get password from request
-        password = request.data['password']
-        # Get board from database
-        try:
-            board = Board.objects.get(pk=board_id)
-        except Board.DoesNotExist:
-            raise Http404("Board does not exist")
-        # verify password
-        if verify_password(password, board_id, board.passwordhash):
-            return JsonResponse({'success': True})
-        else:
-            return JsonResponse({'success': False})        
-    if request.method == 'GET':
-        try:
-            board = Board.objects.get(pk=board_id)
-            serializer = BoardSerializer(board)
-            return JsonResponse(serializer.data, safe=False)
-
-            # TODO: only return the board if the user is authorized
-            # (password is empty of the user has entered the password previously)
-
-            # if verify_password("", board_id, board.passwordhash):
-            #     serializer = BoardSerializer(board)
-            #     return JsonResponse(serializer.data, safe=False)
-            # else:
-            #     # return a 401 if the user does not have access to the board   
-            #     return HttpResponse(status=401)
-        except Board.DoesNotExist:
-            raise Http404("Board does not exist")
-
 @api_view(['GET', 'POST'])
 def get_columns_from_board(request, board_id):
     if request.method == 'GET':
@@ -172,11 +114,22 @@ def update_ticket(request, column_id, ticket_id):
         raise Http404("Ticket not found")
     if(request.method == 'DELETE'):
         try:
+            #Delete users on the ticket
             usergroup = Usergroup.objects.get(ticketid=ticket_id)
             usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
             users = [group.userid for group in usergroupuser]
             for user in users:
                 user.delete()
+
+            #Delete users from actions that are on the ticket's swimlane
+            actions = Action.objects.filter(ticketid=ticket_id)
+            for action in actions:
+                usergroup = Usergroup.objects.get(actionid=action.actionid)
+                usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+                users = [group.userid for group in usergroupuser]
+                for user in users:
+                    user.delete()
+
             ticket.delete()
             return JsonResponse({"message": "Ticket deleted successfully"}, status=200)
         except:
@@ -205,6 +158,7 @@ def update_column(request, board_id, column_id):
         raise Http404("Column not found")
     if request.method == 'DELETE':
         try:
+            #Delete users in tickets
             tickets = Ticket.objects.filter(columnid=column_id)
             for ticket in tickets:
                 usergroup = Usergroup.objects.get(ticketid=ticket.ticketid)
@@ -212,6 +166,17 @@ def update_column(request, board_id, column_id):
                 users = [group.userid for group in usergroupuser]
                 for user in users:
                     user.delete()
+
+            #Delete users from actions that are on the ticket's swimlane
+            swimlanecolumns = Swimlanecolumn.objects.filter(columnid=column_id)
+            for swimlanecolumn in swimlanecolumns:
+                actions = Action.objects.filter(swimlanecolumnid=swimlanecolumn.swimlanecolumnid)
+                for action in actions:
+                    usergroup = Usergroup.objects.get(actionid=action.actionid)
+                    usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+                    users = [group.userid for group in usergroupuser]
+                    for user in users:
+                        user.delete()
             column.delete()
             return JsonResponse({"message": "Column deleted successfully"}, status=200)
         except:
