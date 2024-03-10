@@ -1,5 +1,7 @@
-import { AppBar, Box, Divider, IconButton, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
+import { AppBar, Box, Divider, IconButton, Menu, MenuItem, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState, useContext } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import { WebsocketContext } from "@/pages/BoardContainer";
@@ -44,14 +46,14 @@ const AddUserButton: React.FC = () => {
 
   return (
     <div>
-    <Tooltip title="Add User">
-      <IconButton onClick={handleClick}>
-        <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-          <path fillRule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clipRule="evenodd"/>
-        </svg>
-      </IconButton>
+      <Tooltip title="Add User">
+        <IconButton onClick={handleClick}>
+          <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+            <path fillRule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1c0-.6.4-1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clipRule="evenodd" />
+          </svg>
+        </IconButton>
       </Tooltip>
-    <Popover
+      <Popover
         disableRestoreFocus
         id={popOverid}
         open={open}
@@ -81,7 +83,45 @@ interface ToolBarProps {
 
 //refactor later
 const ToolBar = ({ title, boardId }: ToolBarProps) => {
+
   const { data: users, isSuccess } = useGetUsersByBoardIdQuery(boardId);
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const open = Boolean(anchorEl);
+
+  const handleMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleExportAndClose = () => {
+    handleExport();
+    handleClose();
+  };
+
+  const handleExport = async () => {
+    const date = new Date();
+    const timestamp = date.toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/[^a-zA-Z0-9]/g, "_");
+    const filename = title + "-" + timestamp;
+    const response = await fetch(`${import.meta.env.VITE_DB_ADDRESS}/export/${boardId}/${filename}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "text/csv"
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${filename}.csv`;
+    a.click();
+  };
 
   return (
     <AppBar position="fixed" sx={{ background: "white", height: "65px", boxShadow: "none", borderBottom: "2px solid #D1D5DB" }}>
@@ -93,15 +133,37 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
             {title}
           </Typography>
           <Box sx={{ flexGrow: 1 }} style={{ marginTop: "3px" }}>
-          {isSuccess && users.length > 0 &&
-            <UserList users={users} />
-          }
+            {isSuccess && users.length > 0 &&
+              <UserList users={users} />
+            }
           </Box>
           <div style={{ marginLeft: "10px" }}>
             <AddUserButton />
           </div>
           <CopyToClipboardButton />
           <CreateColumnButton boardId={boardId} />
+          <IconButton
+            aria-label="more"
+            aria-controls="long-menu"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            sx={{ padding: "5px" }}
+          >
+            <MoreVert />
+          </IconButton>
+          <Menu
+            id="long-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+          >
+            <MenuItem onClick={handleExportAndClose} sx={{ py: 1 }}>
+              <Typography variant="body2">Download Board CSV</Typography>
+            </MenuItem>
+          </Menu>
         </Box>
       </Toolbar>
     </AppBar>
