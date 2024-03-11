@@ -5,7 +5,7 @@ describe('Futuboard Home Page Test', () => {
   
       // Assert that the title is what you expect
      cy.get('.MuiTypography-root').should('contain', 'Futuboard home page');
-
+ 
     })
   });
 

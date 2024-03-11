@@ -28,8 +28,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["cypress"],
+    
   },
-  "include": ["src"],
+  "include": ["src", "cypress"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
