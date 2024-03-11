@@ -1,7 +1,7 @@
 describe('Futuboard Home Page Test', () => {
     it('should have the correct title', () => {
       // Visit the URL
-      cy.visit('https://white-ocean-04e4e8003.4.azurestaticapps.net');
+      cy.visit('https://ashy-sea-0c7c52603.4.azurestaticapps.net');
   
       // Assert that the title is what you expect
      cy.get('.MuiTypography-root').should('contain', 'Futuboard home page');
@@ -12,7 +12,7 @@ describe('Futuboard Home Page Test', () => {
   describe('Board Creation Test', () => {
     it('should open the dialog, allow entry, and submit the form', () => {
       // Replace with the correct URL
-      cy.visit('https://white-ocean-04e4e8003.4.azurestaticapps.net');
+      cy.visit('https://ashy-sea-0c7c52603.4.azurestaticapps.net');
   
       // Click the "Create board" button
       cy.contains('button', 'Create board').click();
