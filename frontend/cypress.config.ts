@@ -1,8 +1,12 @@
-const { defineConfig } = require('cypress')
+import { defineConfig } from "cypress";
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
-    baseUrl: 'https://ashy-sea-0c7c52603.4.azurestaticapps.net',
-    // Add other configuration options as needed
-  }
-})
+    supportFile: false, // Disable the default support file for end-to-end tests
+    specPattern: 'src/cypress/test.cy.tsx', // Example spec pattern for end-to-end tests
+  },
+  component: {
+    supportFile: false, // Disable the default support file for component tests
+    specPattern: 'src/cypress/test.cy.tsx', // Example spec pattern for component tests
+  },
+});
