@@ -27,7 +27,7 @@ const UserMagnet: React.FC<UserMagnetProps> = ({ user, editable }) => {
             display: "flex",
             justifyContent: "center",
             backgroundColor: editable ? "rgb(230,170,170)" : user.color || "rgb(230,247,206)",
-            alignItems: "center", margin: "5px", border: "solid 1px", borderRadius: "10px", color: "black", width: editable ? "70px":  "60px", overflow: "hidden", height:"20px"
+            alignItems: "center", margin: "4px", border: "solid 1px", borderRadius: "10px", color: "black", width: editable ? "70px":  "60px", overflow: "hidden", height:"20px"
         }}>
             <Typography sx={{
                 fontSize: "13px",

@@ -79,12 +79,28 @@ export const boardsApi = createApi({
                 { type: "Ticket", id: task.ticketid },
             ],
         }),
+        deleteTask: builder.mutation<Task, { task: Task }>({
+            query: ({ task }) => ({
+                url: `columns/${task.columnid}/tickets/${task.ticketid}/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: (_result, _error, { task }) => [
+                { type: "Ticket", id: task.ticketid },
+            ],
+        }),
 
         updateColumn: builder.mutation<Column, { column: Column, ticketIds?: string[] }>({
             query: ({ column, ticketIds }) => ({
                 url: `boards/${column.boardid}/columns/${column.columnid}/`,
                 method: "PUT",
                 body: { ...column, ticket_ids: ticketIds }
+            }),
+            invalidatesTags: ["Columns"]
+        }),
+        deleteColumn: builder.mutation<Column, { column: Column }>({
+            query: ({ column }) => ({
+                url: `boards/${column.boardid}/columns/${column.columnid}/`,
+                method: "DELETE",
             }),
             invalidatesTags: ["Columns"]
         }),
@@ -419,7 +435,9 @@ export const {
     useAddColumnMutation,
     useAddTaskMutation,
     useUpdateTaskMutation,
+    useDeleteTaskMutation,
     useUpdateColumnMutation,
+    useDeleteColumnMutation,
     useLoginMutation,
     useUpdateTaskListByColumnIdMutation,
     usePostUserToBoardMutation,

@@ -39,7 +39,7 @@ interface CreateColumnButtonProps {
     return (
       <Box>
         <Tooltip title="Create Column">
-          <IconButton aria-label="add task" onClick={handleOpenDialog}>
+          <IconButton aria-label="add column" onClick={handleOpenDialog}>
             <svg style={{ width: "1.5rem", height: "1.5rem", color: "#2D3748" }} fill="none" xmlns="http://www.w3.org/2000/svg">
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
               <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>

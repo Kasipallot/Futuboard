@@ -83,6 +83,8 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
     };
 
     const handleOnSubmit = async (data: FormData) => {
+        setTaskSelected(false);
+        setAnchorEl(null);
         const taskObject = {
             ticketid: task.ticketid,
             title: data.taskTitle,
@@ -93,19 +95,13 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             color: data.color,
             columnid: task.columnid,
         };
-
         await updateTask({ task: taskObject });
         if (sendMessage !== null) {
             sendMessage("Task updated");
         }
-
-        setTaskSelected(false);
-        setAnchorEl(null);
     };
-
     const open = Boolean(anchorEl);
     const popOverid = open ? "popover" : undefined;
-
     return (
         <div>
             <Tooltip title="Edit card">
@@ -118,7 +114,6 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
                 id={popOverid}
                 open={open}
                 anchorEl={anchorEl}
-                onClose={handleClose}
                 anchorOrigin={{
                     vertical: "center",
                     horizontal: "right",
@@ -130,11 +125,9 @@ const EditTaskButton: React.FC<{ task: TaskType, setTaskSelected: Dispatch<SetSt
             >
                 <Paper sx={{ height: "fit-content", padding: "20px", width: "400px" }}>
                     <TaskEditForm onSubmit={handleOnSubmit} onCancel={handleClose} task={task} />
-
                 </Paper>
             </Popover>
         </div>
-
     );
 };
 
@@ -193,9 +186,18 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                     <div ref={provided.innerRef}>
                         <Paper elevation={selected ? 24 : 4} sx={{
                             padding: "4px",
-                            backgroundColor: snapshot.isDraggingOver ? "lightblue" : task.color,
+                            backgroundColor: snapshot.isDraggingOver ? "rgba(22, 95, 199, 0.2)" : "white",
                             height: "100px",
                             marginBottom: "5px",
+                            borderColor: task.color,
+                            borderBottomWidth: "7px",
+                            borderBottomStyle: "solid",
+                            borderLeftWidth: "2px",
+                            borderLeftStyle: "solid",
+                            borderRightWidth: "2px",
+                            borderRightStyle: "solid",
+                            borderTopWidth: "2px",
+                            borderTopStyle: "solid",
                         }}  >
                             <div style={{ display: "flex", justifyContent: "space-between", flexDirection: "column", height: "100%" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", overflow: "hidden" }}>
@@ -212,7 +214,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                                 />
                                             </ClickAwayListener>
                                         ) : (
-                                            <Typography noWrap variant={"body2"} gutterBottom width={"70%"}>
+                                            <Typography noWrap variant={"body2"} gutterBottom width={"70%"} style={{ paddingTop: "6px", paddingLeft: "7px", color: "#2D3748" }}>
                                                 {cornernote}
                                             </Typography>
                                         )}
@@ -232,7 +234,7 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                             width: "85%",
                                             padding: "0px 20px 0px 10px"
                                         }}>
-                                            <Typography variant={"body2"} gutterBottom>{task.title}</Typography>
+                                            <Typography variant={"body2"} gutterBottom style={{ color: "#2D3748" }}><strong>{task.title}</strong></Typography>
                                         </div>
                                     </div>
                                 </div>
@@ -245,9 +247,9 @@ const Task: React.FC<TaskProps> = ({ task }) => {
                                     <div style={{ overflow: "hidden", width: "90%" }}>
                                         {users && <UserMagnetList users={users} />}
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}>
+                                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end", paddingRight: "15px", paddingLeft: "7px", paddingBottom: "3px" }}>
                                         <div>
-                                            <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{task.size}</Typography>
+                                            <Typography sx={{ fontWeight: "bold", fontSize: "17px", color: "#2D3748" }}>{task.size}</Typography>
                                         </div>
                                     </div>
                                 </div>
