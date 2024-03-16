@@ -10,7 +10,7 @@ from ..verification import new_password, verify_password
 import uuid
 
 # Create your views here.
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'PUT'])
 def get_columns_from_board(request, board_id):
     if request.method == 'GET':
         try:
@@ -49,6 +49,16 @@ def get_columns_from_board(request, board_id):
             return JsonResponse(serializer.data, safe=False)
         except:
             raise Http404("Column creation failed")
+    if request.method =='PUT':
+        try:
+            columns_data = request.data
+            for index, column_data in enumerate(columns_data):
+                column = Column.objects.get(columnid=column_data['columnid'])
+                column.ordernum = index
+                column.save()
+            return JsonResponse({"message": "Columns order updated successfully"}, status=200)
+        except:
+            raise Http404("Error updating columns order.")
 
 @api_view(['GET', 'POST', 'PUT'])
 def get_tickets_from_column(request, board_id, column_id):

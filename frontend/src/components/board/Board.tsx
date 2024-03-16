@@ -1,3 +1,4 @@
+import { Droppable } from "@hello-pangea/dnd";
 import { Box, Typography } from "@mui/material";
 import { useParams } from "react-router";
 
@@ -56,12 +57,21 @@ const Board: React.FC = () => {
     }
 
     return (
-            <Box sx={{ display: "inline-flex", height: "100vh", width: "fit-content", margin: "4rem 25px 25px 25px" }} >
-                {isSuccess && columns.map((column, index) => (
-                    <Column key={column.columnid} column={column} index={index} />
-                ))}
+        <Droppable droppableId="columns" direction="horizontal" type="COLUMN">
+          {(provided) => (
+            <Box
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              sx={{ display: "inline-flex", height: "100vh", width: "fit-content", margin: "4rem 25px 25px 25px" }}
+            >
+              {isSuccess && columns.map((column, index) => (
+                <Column key={column.columnid} column={column} index={index} />
+              ))}
+              {provided.placeholder}
             </Box>
-    );
+          )}
+        </Droppable>
+      );
 };
 
 export default Board;
