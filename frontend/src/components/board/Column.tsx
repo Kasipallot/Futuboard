@@ -36,6 +36,8 @@ interface CreateTaskButtonProps {
 const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   const { id = "default-id" } = useParams();
 
+  const [defaultValues, setDefaultValues] = useState<FormData | null>(null);
+
   //function for sending a websocket message
   const sendMessage = useContext(WebsocketContext);
 
@@ -74,6 +76,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       console.error(error);
     });
     setOpen(false);
+    setDefaultValues(null);
 
   };
   return (
@@ -93,7 +96,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       }}
       >
         <DialogContent>
-          <TaskCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} />
+          <TaskCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} defaultValues={defaultValues} setDefaultValues={setDefaultValues} />
         </DialogContent>
       </Dialog>
     </Box>
