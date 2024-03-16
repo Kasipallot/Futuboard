@@ -27,6 +27,13 @@ export const boardsApi = createApi({
             },
             invalidatesTags: ["Boards"],
         }),
+        deleteBoard: builder.mutation<Board, string>({
+            query: (boardId) => ({
+                url: `boards/${boardId}/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Boards"],
+        }),
 
         getColumnsByBoardId: builder.query<Column[], string>({
             query: (boardid) => `boards/${boardid}/columns/`,
@@ -430,6 +437,7 @@ export const {
     useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
+    useDeleteBoardMutation,
     useGetColumnsByBoardIdQuery,
     useGetTaskListByColumnIdQuery,
     useAddColumnMutation,
