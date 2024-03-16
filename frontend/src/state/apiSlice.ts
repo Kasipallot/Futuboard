@@ -10,7 +10,7 @@ import { Action, Board, Column, SwimlaneColumn, Task, User } from "../types";
 //TODO: refactor
 export const boardsApi = createApi({
     reducerPath: "boardsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://127.0.0.1:8000/api/" }), //https://futuboardbackend.azurewebsites.net
+    baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_DB_ADDRESS }), //https://futuboardbackend.azurewebsites.net
     tagTypes: ["Boards", "Columns", "Ticket", "Users", "Action", "ActionList", "SwimlaneColumn"],
     endpoints: (builder) => ({
         getBoard: builder.query<Board, string>({
