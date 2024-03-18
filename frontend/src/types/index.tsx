@@ -11,6 +11,8 @@ export type Column = {
     title: string;
     boardid: string;
     swimlane?: boolean;
+    wip_limit?: number | null;
+    wip_limit_story?: number | null;
 };
 
 export type ColumnData = {

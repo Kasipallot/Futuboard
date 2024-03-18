@@ -25,14 +25,12 @@ def get_columns_from_board(request, board_id):
             new_column = Column(
                 columnid = request.data['columnid'],
                 boardid = Board.objects.get(pk=board_id),
-                wip_limit = 0,
                 color = '',
                 description = '',
                 title = request.data['title'],
                 ordernum = length,
                 creation_date = timezone.now(),
                 swimlane = request.data['swimlane'],
-                wip_limit_story = 0,
                 )
             new_column.save()
             if request.data['swimlane']:

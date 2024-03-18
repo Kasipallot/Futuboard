@@ -173,6 +173,8 @@ const TaskList: React.FC<TaskListProps> = ({ column }) => {
 
 interface ColumnFormData {
   columnTitle: string,
+  columnWipLimit: number | null,
+  columnWipLimitStory: number | null,
 }
 
 const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
@@ -192,7 +194,9 @@ const EditColumnButton: React.FC<{ column: Column }> = ({ column }) => {
     const columnObject = {
       columnid: column.columnid,
       title: data.columnTitle,
-      boardid: column.boardid
+      boardid: column.boardid,
+      wip_limit: data.columnWipLimit,
+      wip_limit_story: data.columnWipLimitStory,
     };
 
     await updateColumn({ column: columnObject });
@@ -275,8 +279,8 @@ const Column: React.FC<ColumnProps> = ({ column, index }) => {
             <Divider />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingRight: "13px", paddingBottom: "4px", paddingTop: "4px" }}>
               <CreateTaskButton columnid={column.columnid} />
-              <Typography title={"Number of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{taskNum}</Typography>
-              <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{sizeSum}</Typography>
+              <Typography title={"Number of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{column.wip_limit ? `${taskNum} / ${column.wip_limit}` : taskNum}</Typography>
+              <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{column.wip_limit_story ? `${sizeSum} / ${column.wip_limit_story}` : sizeSum}</Typography>
             </div>
             <Divider />
             <div>

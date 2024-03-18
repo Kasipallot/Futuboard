@@ -72,17 +72,30 @@ interface AddColumnCreationFormProps {
 
 interface FormData {
     columnTitle: string;
-
+    columnWipLimit: number | null;
+    columnWipLimitStory: number | null;
 }
 
 const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
 
-    const inputRef = useRef<HTMLInputElement>(null);
-
+    const inputRefName = useRef<HTMLInputElement>(null);
+    const inputRefWipLimit = useRef<HTMLInputElement>(null);
+    const inputRefWipLimitStory = useRef<HTMLInputElement>(null);
+    
     useEffect(() => {
-      if (inputRef.current) {
-        inputRef.current.focus();
-      }
+      switch (true) {
+        case inputRefWipLimit.current && inputRefWipLimit.current.value.trim() === "":
+          inputRefWipLimit.current.focus();
+          break;
+        case inputRefWipLimitStory.current && inputRefWipLimitStory.current.value.trim() === "":
+          inputRefWipLimitStory.current.focus();
+          break;
+        case inputRefName.current !== null:
+          inputRefName.current.focus();
+          break;
+        default:
+          // do nothing
+        }
     }, []);
 
     const {
@@ -90,10 +103,11 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
         onCancel,
         column,
     } = props;
-
     const {  register, handleSubmit, formState: { errors } } = useForm<FormData>({
         defaultValues:{
-            columnTitle : column.title
+            columnTitle: column.title,
+            columnWipLimit: column.wip_limit,
+            columnWipLimitStory: column.wip_limit_story,
         }
     });
 
@@ -108,17 +122,45 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
                     <Divider/>
                 </Grid>
                 <Divider/>
-                <Grid item xs={12}>
-                <TextField inputRef={inputRef} label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
-                minLength: {
-                    value : 3,
-                    message: "Column name must be at least 3 characters"
-                },
-                required: {
-                    value: true,
-                    message: "Column name is required"
-                }
-            })} />
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <TextField inputRef={inputRefName} label="Name" helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
+                        minLength: {
+                        value : 3,
+                        message: "Column name must be at least 3 characters"
+                        },
+                        required: {
+                        value: true,
+                        message: "Column name is required"
+                        }
+                        })} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField type="number" inputRef={inputRefWipLimit} label="Ticket count limit" helperText={errors.columnWipLimit?.message} error={Boolean(errors.columnWipLimit)} {...register("columnWipLimit", {
+                        valueAsNumber: true,
+                        min: {
+                        value: 1,
+                        message: "Limit must be at least 1"
+                        },
+                        max: {
+                        value: 99,
+                        message: "Limit must be smaller than 100"
+                        }
+                        })} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField type="number" inputRef={inputRefWipLimitStory} label="Story point limit" helperText={errors.columnWipLimitStory?.message} error={Boolean(errors.columnWipLimitStory)} {...register("columnWipLimitStory", {
+                        valueAsNumber: true,
+                        min: {
+                        value: 1,
+                        message: "Limit must be at least 1"
+                        },
+                        max: {
+                        value: 9999,
+                        message: "Limit must be smaller than 9999"
+                        }
+                        })} />
+                    </Grid>
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
