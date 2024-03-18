@@ -6,7 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-import uuid
+
 
 class Action(models.Model):
     actionid = models.UUIDField(db_column='actionID', primary_key=True)  # Field name made lowercase.
@@ -67,7 +67,7 @@ class Event(models.Model):
 
 
 class Swimlanecolumn(models.Model):
-    swimlanecolumnid = models.UUIDField(db_column='swimlaneColumnID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
+    swimlanecolumnid = models.UUIDField(db_column='swimlaneColumnID', primary_key=True)  # Field name made lowercase.
     columnid = models.ForeignKey(Column, models.DO_NOTHING, db_column='columnID', blank=True, null=True)  # Field name made lowercase.
     color = models.TextField(blank=True, null=True)
     title = models.TextField(blank=True, null=True)
@@ -96,7 +96,7 @@ class Ticket(models.Model):
 
 
 class User(models.Model):
-    userid = models.UUIDField(db_column='userID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
+    userid = models.UUIDField(db_column='userID', primary_key=True)  # Field name made lowercase.
     name = models.TextField(blank=True, null=True)
     color = models.TextField(blank=True, null=True)
 
@@ -106,11 +106,11 @@ class User(models.Model):
 
 
 class Usergroup(models.Model):
-    usergroupid = models.UUIDField(db_column='usergroupID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase.
+    usergroupid = models.UUIDField(db_column='usergroupID', primary_key=True)  # Field name made lowercase.
     boardid = models.ForeignKey(Board, models.DO_NOTHING, db_column='boardID', blank=True, null=True)  # Field name made lowercase.
     ticketid = models.ForeignKey(Ticket, models.DO_NOTHING, db_column='ticketID', blank=True, null=True)  # Field name made lowercase.
-    actionid = models.ForeignKey(Action, models.DO_NOTHING, db_column='actionID', blank=True, null=True)  # Field name made lowercase.
     type = models.TextField(blank=True, null=True)
+    actionid = models.ForeignKey(Action, models.DO_NOTHING, db_column='actionID', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -118,11 +118,124 @@ class Usergroup(models.Model):
 
 
 class UsergroupUser(models.Model):
-    usergroupid = models.OneToOneField(Usergroup, models.DO_NOTHING, db_column='usergroupID', default=uuid.uuid4, primary_key=True)  # Field name made lowercase. The composite primary key (usergroupID, userID) found, that is not supported. The first column is selected.
+    usergroupid = models.OneToOneField(Usergroup, models.DO_NOTHING, db_column='usergroupID', primary_key=True)  # Field name made lowercase. The composite primary key (usergroupID, userID) found, that is not supported. The first column is selected.
     userid = models.ForeignKey(User, models.DO_NOTHING, db_column='userID')  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'UserGroup_User'
         unique_together = (('usergroupid', 'userid'),)
-        
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.BooleanField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.BooleanField()
+    is_active = models.BooleanField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.SmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'

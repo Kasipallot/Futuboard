@@ -32,6 +32,7 @@ def get_columns_from_board(request, board_id):
                 ordernum = length,
                 creation_date = timezone.now(),
                 swimlane = request.data['swimlane'],
+                wip_limit_story = 0,
                 )
             new_column.save()
             if request.data['swimlane']:
@@ -195,6 +196,8 @@ def update_column(request, board_id, column_id):
     if request.method == 'PUT':
         try:
             column.title = request.data.get('title', column.title)
+            column.wip_limit = request.data.get('wip_limit', column.wip_limit)
+            column.wip_limit_story = request.data.get('wip_limit_story', column.wip_limit_story)
             column.save()
 
             serializer = ColumnSerializer(column)
