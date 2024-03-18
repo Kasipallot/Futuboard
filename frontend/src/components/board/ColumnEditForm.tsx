@@ -83,18 +83,17 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
     const inputRefWipLimitStory = useRef<HTMLInputElement>(null);
     
     useEffect(() => {
-      switch (true) {
-        case inputRefWipLimit.current && inputRefWipLimit.current.value.trim() === "":
-          inputRefWipLimit.current.focus();
-          break;
-        case inputRefWipLimitStory.current && inputRefWipLimitStory.current.value.trim() === "":
-          inputRefWipLimitStory.current.focus();
-          break;
-        case inputRefName.current !== null:
-          inputRefName.current.focus();
-          break;
-        default:
-          // do nothing
+        if (inputRefWipLimit.current && inputRefName.current && inputRefWipLimitStory.current) {
+            switch (true) {
+                case inputRefWipLimit.current.value.trim() === "":
+                    inputRefWipLimit.current.focus();
+                    break;
+                case inputRefWipLimitStory.current.value.trim() === "":
+                    inputRefWipLimitStory.current.focus();
+                    break;
+                default:
+                    inputRefName.current.focus();
+            }
         }
     }, []);
 
