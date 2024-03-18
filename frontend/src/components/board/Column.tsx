@@ -260,6 +260,12 @@ const Column: React.FC<ColumnProps> = ({ column, index }) => {
 
   const taskNum = useMemo(() => tasks.length, [tasks]);
 
+  let bgColor = "#E5DBD9";
+  
+  // change border color when task or size limit is exceeded
+  if ((column.wip_limit && taskNum > column.wip_limit) || (column.wip_limit_story && sizeSum > column.wip_limit_story)) {
+    bgColor = "#FF4747"
+  }
   return (
     <Draggable draggableId={column.columnid} index={index}>
       {(provided) => (
@@ -268,7 +274,7 @@ const Column: React.FC<ColumnProps> = ({ column, index }) => {
           ref={provided.innerRef}
           sx={{ display: "flex", flexDirection: "row" }}
         >
-          <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "74vh", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)" }}>
+          <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "74vh", height: "fit-content", backgroundColor: bgColor, padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)" }}>
             <div {...provided.dragHandleProps} style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
               <EditColumnButton column={column} />
