@@ -1,4 +1,4 @@
-import { MoreVert } from "@mui/icons-material";
+import { MoreVert, Download } from "@mui/icons-material";
 import { AppBar, Box, Divider, IconButton, Menu, MenuItem, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState, useContext } from "react";
 import React from "react";
@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetUsersByBoardIdQuery, usePostUserToBoardMutation } from "@/state/apiSlice";
 
+import BoardDeletionComponent from "./BoardDeletionComponent";
 import CopyToClipboardButton from "./CopyToClipBoardButton";
 import CreateColumnButton from "./CreateColumnButton";
 import HomeButton from "./HomeButton";
@@ -161,8 +162,10 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
             }}
           >
             <MenuItem onClick={handleExportAndClose} sx={{ py: 1 }}>
+              <Download sx={{ fontSize: "1rem", mr: 1 }} />
               <Typography variant="body2">Download Board CSV</Typography>
             </MenuItem>
+            <BoardDeletionComponent />
           </Menu>
         </Box>
       </Toolbar>

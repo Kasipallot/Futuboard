@@ -36,6 +36,8 @@ interface CreateTaskButtonProps {
 const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
   const { id = "default-id" } = useParams();
 
+  const [defaultValues, setDefaultValues] = useState<FormData | null>(null);
+
   //function for sending a websocket message
   const sendMessage = useContext(WebsocketContext);
 
@@ -74,6 +76,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       console.error(error);
     });
     setOpen(false);
+    setDefaultValues(null);
 
   };
   return (
@@ -93,7 +96,7 @@ const CreateTaskButton: React.FC<CreateTaskButtonProps> = ({ columnid }) => {
       }}
       >
         <DialogContent>
-          <TaskCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} />
+          <TaskCreationForm onSubmit={handleSubmit} onCancel={handleCloseDialog} defaultValues={defaultValues} setDefaultValues={setDefaultValues} />
         </DialogContent>
       </Dialog>
     </Box>
@@ -239,7 +242,7 @@ interface ColumnProps {
 
 const defaultTasks: TaskType[] = [];
 
-const Column: React.FC<ColumnProps> = ({ column }) => {
+const Column: React.FC<ColumnProps> = ({ column, index }) => {
   const [showSwimlanes, setShowSwimlanes] = useState(false);
 
   const isSwimlaneColumn = column.swimlane || false; // change this to column.swimlane boolean
@@ -254,35 +257,40 @@ const Column: React.FC<ColumnProps> = ({ column }) => {
   const taskNum = useMemo(() => tasks.length, [tasks]);
 
   return (
-    <>
-      <Box sx={{ display: "flex", flexDirection: "row" }}>
-        <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "74vh", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)"}}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
-            <EditColumnButton column={column} />
-            {isSwimlaneColumn && <IconButton color="primary" aria-label="expand swimlane" onClick={() => setShowSwimlanes(!showSwimlanes)}>
-              <ArrowForwardIosIcon />
-            </IconButton>}
-          </div>
-          <Divider />
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingRight: "13px", paddingBottom: "4px", paddingTop: "4px"}}>
-            <CreateTaskButton columnid={column.columnid} />
-            <Typography title={"Number of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{taskNum}</Typography>
-            <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748"}} >{sizeSum}</Typography>
-          </div>
-          <Divider />
-          <div>
-            <TaskList column={column} />
-          </div>
-        </Paper>
-        <Box sx={{ overflowX:"hidden", height:"fit-content" }}>
-            <Box sx={{ width: showSwimlanes ? "820px" : "0px", transition: "width 300ms" }}>
-              {showSwimlanes && <SwimlaneContainer column={column} />}
-            </Box>
-
+    <Draggable draggableId={column.columnid} index={index}>
+      {(provided) => (
+        <Box
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          sx={{ display: "flex", flexDirection: "row" }}
+        >
+          <Paper elevation={4} sx={{ margin: "25px 20px", width: "250px", minHeight: "74vh", height: "fit-content", backgroundColor: "#E5DBD9", padding: "4px", border: "2px solid #000", borderBottom: "5px solid #000", borderColor: "rgba(0, 0, 0, 0.12)" }}>
+            <div {...provided.dragHandleProps} style={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
+              <EditColumnButton column={column} />
+              {isSwimlaneColumn && <IconButton color="primary" aria-label="expand swimlane" onClick={() => setShowSwimlanes(!showSwimlanes)}>
+                <ArrowForwardIosIcon />
+              </IconButton>}
+            </div>
+            <Divider />
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingRight: "13px", paddingBottom: "4px", paddingTop: "4px" }}>
+              <CreateTaskButton columnid={column.columnid} />
+              <Typography title={"Number of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{taskNum}</Typography>
+              <Typography title={"Total size of tasks"} sx={{ fontSize: "17px", color: "#2D3748" }} >{sizeSum}</Typography>
+            </div>
+            <Divider />
+            <div>
+              <TaskList column={column} />
+            </div>
+          </Paper>
+          <Box sx={{ overflowX:"hidden", height:"fit-content" }}>
+              <Box sx={{ width: showSwimlanes ? "820px" : "0px", transition: "width 300ms" }}>
+                {showSwimlanes && <SwimlaneContainer column={column} />}
+              </Box>
+          </Box>
         </Box>
-      </Box>
-    </>
+      )}
+    </Draggable>
   );
 };
 
