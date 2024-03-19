@@ -25,7 +25,6 @@ def get_columns_from_board(request, board_id):
             new_column = Column(
                 columnid = request.data['columnid'],
                 boardid = Board.objects.get(pk=board_id),
-                wip_limit = 0,
                 color = '',
                 description = '',
                 title = request.data['title'],
@@ -195,6 +194,8 @@ def update_column(request, board_id, column_id):
     if request.method == 'PUT':
         try:
             column.title = request.data.get('title', column.title)
+            column.wip_limit = request.data.get('wip_limit', column.wip_limit)
+            column.wip_limit_story = request.data.get('wip_limit_story', column.wip_limit_story)
             column.save()
 
             serializer = ColumnSerializer(column)

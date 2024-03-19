@@ -46,6 +46,7 @@ class Column(models.Model):
     ordernum = models.IntegerField(db_column='orderNum')  # Field name made lowercase.
     creation_date = models.DateTimeField(blank=True, null=True)
     swimlane = models.BooleanField()
+    wip_limit_story = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
