@@ -27,15 +27,21 @@ export const boardsApi = createApi({
             },
             invalidatesTags: ["Boards"],
         }),
-        importBoard: builder.mutation<Board, {board:Board, file: File} >({
-            query: ({board, file}) => {
-                return ({
+        importBoard: builder.mutation<any, { board: Board, file: File }>({
+            query: ({ board, file }) => {
+                const formData = new FormData();
+                formData.append('file', file[0]);
+                formData.append('board', JSON.stringify(board));
+                return {
                     url: `import/${board.id}/`,
-                    method: "POST",
-                    body: {...board, file},
-                });
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                };
             },
-            invalidatesTags: ["Boards"],
+            invalidatesTags: [],
         }),
         deleteBoard: builder.mutation<Board, string>({
             query: (boardId) => ({

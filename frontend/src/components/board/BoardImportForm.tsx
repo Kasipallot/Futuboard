@@ -37,7 +37,6 @@ const BoardImportForm: React.FC<AddBoardCreationFormProps> = ({ onSubmit, onCanc
     });
 
     const handleFormSubmit = (data: NewBoardFormImport) => {
-        console.log(data);
         onSubmit({ ...data, file: data.file });
     };
 
