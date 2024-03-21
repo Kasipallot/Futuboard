@@ -9,6 +9,8 @@ import io
 from rest_framework.decorators import api_view
 from django.http import Http404
 from ..verification import new_password
+from django.http import JsonResponse
+import json
 
 @api_view(['GET'])
 def export_board_data(request, board_id, filename):
@@ -36,18 +38,19 @@ def import_board_data(request, board_id):
     Import board data from a csv file
     """
     if request.method == 'POST':
-        csv_file = request.data['file']
+        print(request.data)
+        csv_file = request.FILES['file']
         print(csv_file)
         if not csv_file.name.endswith('.csv'):
-            return HttpResponse('File is not a csv file')
+            return JsonResponse({'success': False})
         data_set = csv_file.read().decode('UTF-8')
         io_string = io.StringIO(data_set)
         reader = csv.reader(io_string, delimiter=',', quotechar='"')
         if not verify_csv_header(reader):
-            return HttpResponse('Invalid csv file')
-        board_title = request.data['title']
-        password_hash = new_password(request.data['password'])
-        read_board_data(reader, board_id, board_title, password_hash) 
-        return HttpResponse('Board data imported')
-    return HttpResponse('Invalid request')
+            return JsonResponse({'success': False})
+        board = request.data["board"]
+        board = json.loads(board)
+        read_board_data(reader, board_id, board["title"], new_password(board["password"]))
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 

@@ -40,6 +40,8 @@ def write_board_data(writer, boardid):
     writer.writerow([])
     # Get all the columns for the board
     columns = Column.objects.filter(boardid=boardid)
+    # Write columns with swimlanecolumns first order by swimlane True first
+    columns = sorted(columns, key=lambda column: column.swimlane, reverse=True)
     # Write the all the columns to the csv file
     for column in columns:
         #Write the column to the csv file
@@ -64,21 +66,20 @@ def write_board_data(writer, boardid):
                 for usergroupuser in usergroupusers:
                     user = usergroupuser.userid
                     writer.writerow(['User', user.name, user.color])
-            if column.swimlane:
-                # Get all the actions for the swimlanecolumn
-                actions = Action.objects.filter(ticketid=ticket.ticketid)
-                # Write all the actions in the swimlanecolumn to the csv file
-                for action in actions:
-                    writer.writerow(['Action', action.title, action.color, action.order])
-                    # Get usergroups with actionid and boardid
-                    usergroups = Usergroup.objects.filter(actionid=action.actionid)
-                    # Get userids of usergroupuser with usergroupid 
-                    for usergroup in usergroups:
-                        usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
-                        # Get userids
-                        for usergroupuser in usergroupusers:
-                            user = usergroupuser.userid
-                            writer.writerow(['User', user.name, user.color])                
+            # Get all the actions for the swimlanecolumn
+            actions = Action.objects.filter(ticketid=ticket.ticketid)
+            # Write all the actions in the swimlanecolumn to the csv file
+            for action in actions:
+                writer.writerow(['Action', action.title, action.color, action.order])
+                # Get usergroups with actionid and boardid
+                usergroups = Usergroup.objects.filter(actionid=action.actionid)
+                # Get userids of usergroupuser with usergroupid 
+                for usergroup in usergroups:
+                    usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
+                    # Get userids
+                    for usergroupuser in usergroupusers:
+                        user = usergroupuser.userid
+                        writer.writerow(['User', user.name, user.color])                
         # Split the columns in the csv file with an empty line
         writer.writerow([])
     return writer
@@ -91,19 +92,18 @@ def read_board_data(reader, boardid, board_title, password_hash):
     # Get the board data from the csv file, skip the empty line    board_id = uuid.uuid4()
     next(reader)
     board_data = next(reader)
-    # Create the board in the database
-    # Replace empty strings with None
-    for i in range(len(board_data)):
-        if board_data[i] == '':
-            board_data[i] = None
-    board = Board.objects.create(boardid = boardid, title=board_title, creator=board_data[1], description=board_data[2], passwordhash=password_hash, creation_date=timezone.now())
-    #print("Added board: ", board)
+    swimlanecolumns = []
+    board = Board.objects.create(boardid = boardid, 
+                                 title=board_title,
+                                creator=board_data[1], 
+                                description=board_data[2], 
+                                passwordhash=password_hash,
+                                salt = '', 
+                                creation_date=timezone.now())
     # Read the board users from the csv file
     # Create board usergroup
     usergroup = Usergroup.objects.create(usergroupid = uuid.uuid4(), boardid = board, type = 'board')
-    #print("Added usergroup: ", usergroup)
     for row in reader:
-        #print("USER ROW: ", row)
         # Replace empty strings with None
         for i in range(len(row)):
             if row[i] == '':
@@ -112,15 +112,11 @@ def read_board_data(reader, boardid, board_title, password_hash):
         if len(row) > 0 and row[0] == 'User':
             user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
             UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
-            #print("Added user: ", user)
-            #print("Added usergroupuser: ", usergroup)
         else:
-            #print("BREAK!")
             break
     # Read the columns from the csv file
     row = next(reader, None)
     while row is not None:
-        #print("Got column row: ", row)
         # Empty row = new column
         if(len(row) == 0):
             row = next(reader, None)
@@ -134,16 +130,14 @@ def read_board_data(reader, boardid, board_title, password_hash):
             row = next(reader, None)
             # Read the swimlanecolumns from the csv file
             if column.swimlane == "True":
-                #print("Swimlane column :", column.swimlane)
                 while len(row) > 0 and row[0] == 'Swimlanecolumn':
                     for i in range(len(row)):
                         if row[i] == '':
                             row[i] = None
-                    #print("Got swimlanecolumn: ", row)
-                    Swimlanecolumn.objects.create(swimlanecolumnid = uuid.uuid4(), columnid = column, color=row[1], title=row[2], ordernum=row[3])
+                    swimlane = Swimlanecolumn.objects.create(swimlanecolumnid = uuid.uuid4(), columnid = column, color=row[1], title=row[2], ordernum=row[3])
+                    swimlanecolumns.append(swimlane)
                     row = next(reader, None)
             while len(row) > 0 and row[0] == 'Ticket':
-                #print("Got ticket row: ", row)
                 # Replace empty strings with None
                 for i in range(len(row)):
                     if row[i] == '':
@@ -153,7 +147,6 @@ def read_board_data(reader, boardid, board_title, password_hash):
                 usergroup = Usergroup.objects.create(usergroupid = uuid.uuid4(), ticketid = ticket, type = 'ticket')
                 row = next(reader, None)
                 while len(row) > 0 and row[0] == 'User':
-                    #print("Got ticket user: ", row)
                     for i in range(len(row)):
                         if row[i] == '':
                             row[i] = None
@@ -161,28 +154,23 @@ def read_board_data(reader, boardid, board_title, password_hash):
                     UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
                     row = next(reader, None)
                 # Read the actions from the csv file
-                if column.swimlane == "True":
-                    #print("Swimlane column :", column.swimlane)
-                    while len(row) > 0 and row[0] == 'Action':
-                        #print("Got action: ", row)
+                while len(row) > 0 and row[0] == 'Action':
+                    for i in range(len(row)):
+                        if row[i] == '':
+                            row[i] = None
+                    action = Action.objects.create(actionid = uuid.uuid4(), swimlanecolumnid = swimlanecolumns[0], ticketid = ticket, title=row[1], color=row[2], order=row[3])
+                    # Read the action users from the csv file
+                    row = next(reader, None)
+                    usergroup = Usergroup.objects.create(usergroupid = uuid.uuid4(), actionid = action, type = 'action')
+                    while len(row) > 0 and row[0] == 'User':
                         for i in range(len(row)):
                             if row[i] == '':
                                 row[i] = None
-                        action = Action.objects.create(actionid = uuid.uuid4(), ticketid = ticket, title=row[1], color=row[2], order=row[3])
-                        # Read the action users from the csv file
+                        user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
+                        UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
                         row = next(reader, None)
-                        usergroup = Usergroup.objects.create(usergroupid = uuid.uuid4(), actionid = action, type = 'action')
-                        while len(row) > 0 and row[0] == 'User':
-                            #print("Got action user: ", row)
-                            for i in range(len(row)):
-                                if row[i] == '':
-                                    row[i] = None
-                            user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
-                            UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
-                            row = next(reader, None)
         else:
             row = next(reader, None)
-            print("GOT INVALID ROW: ", row)
     return True
 
     
