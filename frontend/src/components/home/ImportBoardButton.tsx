@@ -4,14 +4,14 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 
 import { NewBoardFormImport } from "@/types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getId } from "@/services/Utils";
 
 interface CreateBoardButtonProps {
     onNewBoard: (data: NewBoardFormImport) => Promise<void>;
 }
 
-const CreateBoardButton = ({ onNewBoard }: CreateBoardButtonProps) => {
+const CreateBoardButton = ({ }: CreateBoardButtonProps) => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
 
