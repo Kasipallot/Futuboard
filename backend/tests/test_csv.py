@@ -29,7 +29,7 @@ def test_import_export():
     n = 10
     boards = []
     for i in range(n):
-        board = md.Board.objects.create(boardid=uuid.uuid4(), title=f"Test Board{i}", creator=f"Test User{i}", creation_date=timezone.now(), passwordhash="test", salt="test")
+        board = md.Board.objects.create(boardid=uuid.uuid4(), title=f"Test Board{i}", creator=f"Test User{i}", creation_date=timezone.now(), description='', passwordhash="test", salt="test")
         boards.append(board)
     num = 0
     # Fill boards with random data
@@ -94,7 +94,9 @@ def test_import_export():
         assert response.status_code == 200
         # Import the board, response should have the data of the exported board csv as a content disposition
         new_boardid = uuid.uuid4()
-        response = client.post(reverse('import_board_data', args=[new_boardid]), {'title': "Test Board", 'password': "abc", 'file': file})
+        board_data = {"title": "Test Board", "password": "abc"}
+        board_data = json.dumps(board_data)
+        response = client.post(reverse('import_board_data', args=[new_boardid]), {'board': board_data, 'file': file})
         assert response.status_code == 200
         # Check that the imported board is the same as the exported board
         imported_board = md.Board.objects.get(boardid=new_boardid)
