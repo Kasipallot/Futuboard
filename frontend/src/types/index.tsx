@@ -45,7 +45,7 @@ export type NewBoardFormData = {
 export type NewBoardFormImport = {
     title: string;
     password: string;
-    file: File[];
+    file: FileList;
 }
 
 export type Action = {
