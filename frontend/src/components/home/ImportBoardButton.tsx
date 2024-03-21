@@ -2,16 +2,12 @@ import BoardImportForm from "@components/board/BoardImportForm";
 import { Typography, Dialog, DialogContent } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-
-import { NewBoardFormImport } from "@/types";
 import { useNavigate } from "react-router-dom";
+
 import { getId } from "@/services/Utils";
+import { NewBoardFormImport } from "@/types";
 
-interface CreateBoardButtonProps {
-    onNewBoard: (data: NewBoardFormImport) => Promise<void>;
-}
-
-const CreateBoardButton = ({ }: CreateBoardButtonProps) => {
+const CreateBoardButton = () => {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
 
@@ -28,26 +24,24 @@ const CreateBoardButton = ({ }: CreateBoardButtonProps) => {
             title: data.title,
             password: data.password,
             id: getId(),
-        }
+        };
 
         const formData = new FormData();
-        formData.append('file', data.file[0]);
-        formData.append('board', JSON.stringify(board));
+        formData.append("file", data.file[0]);
+        formData.append("board", JSON.stringify(board));
 
         await fetch(`${import.meta.env.VITE_DB_ADDRESS}import/${board.id}/`, {
-            method: 'POST',
+            method: "POST",
             body: formData,
         })
         .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            console.log("Board created")
+        .then(() => {
             navigate(`/board/${board.id}`);
         }).catch((error) => {
-            console.error('Error:', error);
+            console.error("Error:", error);
         }
         );
-        
+
     };
     return (
         <div>

@@ -1,19 +1,18 @@
 import CreateBoardButton from "@components/home/CreateBoardButton";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import { getId } from "@services/Utils";
 import { useNavigate } from "react-router-dom";
 
-import { useAddBoardMutation, useImportBoardMutation } from "@/state/apiSlice";
-import { Board, NewBoardFormData, NewBoardFormImport } from "@/types";
 import ImportBoardButton from "@/components/home/ImportBoardButton";
+import { useAddBoardMutation } from "@/state/apiSlice";
+import { Board, NewBoardFormData  } from "@/types";
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
     const [addBoard] = useAddBoardMutation();
-    const [importBoard] = useImportBoardMutation();
 
     const handleCreateBoard = async ({ title, password }: NewBoardFormData) => {
 
@@ -28,23 +27,6 @@ const Home: React.FC = () => {
         //send board object to server
         // TODO: add error handling
         await addBoard(board);
-        //redirect to created board page
-        navigate(`/board/${id}`);
-    };
-
-    const handleImportBoard = async ({ title, password, file }: NewBoardFormImport) => {
-
-        const id = getId();
-        const board: Board = {
-            id,
-            title,
-            password,
-            users: [],
-            columns:[]
-        };
-        //send board object to server
-        // TODO: add error handling
-        await importBoard ({board, file});
         //redirect to created board page
         navigate(`/board/${id}`);
     };
@@ -77,7 +59,7 @@ const Home: React.FC = () => {
                     <CreateBoardButton onNewBoard={handleCreateBoard}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <ImportBoardButton onNewBoard={handleImportBoard}/>
+                    <ImportBoardButton/>
                 </Grid>
                 <Grid item xs={12} marginTop={"20px"}>
                     <Grid item xs={12}>

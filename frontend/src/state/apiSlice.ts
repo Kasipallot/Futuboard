@@ -27,22 +27,6 @@ export const boardsApi = createApi({
             },
             invalidatesTags: ["Boards"],
         }),
-        importBoard: builder.mutation<any, { board: Board, file: File }>({
-            query: ({ board, file }) => {
-                const formData = new FormData();
-                formData.append('file', file[0]);
-                formData.append('board', JSON.stringify(board));
-                return {
-                    url: `import/${board.id}/`,
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                };
-            },
-            invalidatesTags: [],
-        }),
         deleteBoard: builder.mutation<Board, string>({
             query: (boardId) => ({
                 url: `boards/${boardId}/`,
@@ -485,7 +469,6 @@ export const {
     useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
-    useImportBoardMutation,
     useDeleteBoardMutation,
     useGetColumnsByBoardIdQuery,
     useGetTaskListByColumnIdQuery,
