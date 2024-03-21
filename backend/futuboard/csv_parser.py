@@ -70,7 +70,7 @@ def write_board_data(writer, boardid):
             actions = Action.objects.filter(ticketid=ticket.ticketid)
             # Write all the actions in the swimlanecolumn to the csv file
             for action in actions:
-                writer.writerow(['Action', action.title, action.color, action.order])
+                writer.writerow(['Action', action.title, action.color, action.order, action.swimlanecolumnid.ordernum])
                 # Get usergroups with actionid and boardid
                 usergroups = Usergroup.objects.filter(actionid=action.actionid)
                 # Get userids of usergroupuser with usergroupid 
@@ -137,6 +137,8 @@ def read_board_data(reader, boardid, board_title, password_hash):
                     swimlane = Swimlanecolumn.objects.create(swimlanecolumnid = uuid.uuid4(), columnid = column, color=row[1], title=row[2], ordernum=row[3])
                     swimlanecolumns.append(swimlane)
                     row = next(reader, None)
+            # Sort the swimlanecolumns by ordernum in ascending order
+            swimlanecolumns.sort(key=lambda x: x.ordernum)
             while len(row) > 0 and row[0] == 'Ticket':
                 # Replace empty strings with None
                 for i in range(len(row)):
@@ -158,7 +160,7 @@ def read_board_data(reader, boardid, board_title, password_hash):
                     for i in range(len(row)):
                         if row[i] == '':
                             row[i] = None
-                    action = Action.objects.create(actionid = uuid.uuid4(), swimlanecolumnid = swimlanecolumns[0], ticketid = ticket, title=row[1], color=row[2], order=row[3])
+                    action = Action.objects.create(actionid = uuid.uuid4(), swimlanecolumnid = swimlanecolumns[int(row[4])], ticketid = ticket, title=row[1], color=row[2], order=row[3])
                     # Read the action users from the csv file
                     row = next(reader, None)
                     usergroup = Usergroup.objects.create(usergroupid = uuid.uuid4(), actionid = action, type = 'action')
