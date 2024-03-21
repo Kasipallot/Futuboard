@@ -17,12 +17,22 @@ export const boardsApi = createApi({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ["Boards"],
         }),
-        addBoard: builder.mutation<Board, Board>({
+        addBoard: builder.mutation<Board, Board >({
             query: (board) => {
                 return ({
                     url: "boards/",
                     method: "POST",
                     body: board,
+                });
+            },
+            invalidatesTags: ["Boards"],
+        }),
+        importBoard: builder.mutation<Board, {board:Board, file: File} >({
+            query: ({board, file}) => {
+                return ({
+                    url: `import/${board.id}/`,
+                    method: "POST",
+                    body: {...board, file},
                 });
             },
             invalidatesTags: ["Boards"],
@@ -469,6 +479,7 @@ export const {
     useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
+    useImportBoardMutation,
     useDeleteBoardMutation,
     useGetColumnsByBoardIdQuery,
     useGetTaskListByColumnIdQuery,
