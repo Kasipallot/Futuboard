@@ -1,6 +1,7 @@
 import csv
 import uuid
 from futuboard.models import Board, Column, Ticket, User, Usergroup, UsergroupUser, Swimlanecolumn, Action
+from django.utils import timezone
 """
 This file is used to export and import board data to and from a csv file.
 
@@ -55,6 +56,7 @@ def write_board_data(writer, boardid):
             writer.writerow(['Ticket', ticket.title, ticket.description, ticket.color, ticket.storypoints, ticket.size, ticket.order, ticket.creation_date, ticket.cornernote])
             # Get usergroups with ticketid and boardid
             usergroups = Usergroup.objects.filter(ticketid=ticket.ticketid)
+            print("Wrote ticket user")
             # Get userids of usergroupuser with usergroupid 
             for usergroup in usergroups:
                 usergroupusers = UsergroupUser.objects.filter(usergroupid=usergroup.usergroupid)
@@ -69,6 +71,7 @@ def write_board_data(writer, boardid):
                 for action in actions:
                     writer.writerow(['Action', action.title, action.color, action.order])
                     # Get usergroups with actionid and boardid
+                    print("Wrote action user")
                     usergroups = Usergroup.objects.filter(actionid=action.actionid)
                     # Get userids of usergroupuser with usergroupid 
                     for usergroup in usergroups:
@@ -90,54 +93,82 @@ def read_board_data(reader, boardid, board_title, password_hash):
     next(reader)
     board_data = next(reader)
     # Create the board in the database
-    board = Board.objects.create(board_id = boardid, title=board_title, creator=board_data[1], description=board_data[2], passwordHash=password_hash)
+    # Replace empty strings with None
+    for i in range(len(board_data)):
+        if board_data[i] == '':
+            board_data[i] = None
+    board = Board.objects.create(boardid = boardid, title=board_title, creator=board_data[1], description=board_data[2], passwordhash=password_hash, creation_date=timezone.now())
+    print("Added board: ", board)
     # Read the board users from the csv file
     # Create board usergroup
-    Usergroupid = uuid.uuid4()
-    Usergroup.objects.create(usergroup_id = Usergroupid, board_id = board.id, type = 'board')
+    usergroupid = uuid.uuid4()
+    usergroup = Usergroup.objects.create(usergroupid = usergroupid, boardid = board, type = 'board')
+    print("Added usergroup: ", usergroup)
     for row in reader:
+        print("USER ROW: ", row)
+        # Replace empty strings with None
+        for i in range(len(row)):
+            if row[i] == '':
+                row[i] = None
         # Read users until the next object type is found
-        if row[0] == 'User':
-            user = User.objects.create(user_id = uuid.uuid4(), name=row[1], color=row[2])
-            UsergroupUser.objects.create(usergroup_id = Usergroupid, user_id=user.id)
+        if len(row) > 0 and row[0] == 'User':
+            user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
+            UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
+            print("Added user: ", user)
+            print("Added usergroupuser: ", usergroup)
         else:
+            print("BREAK!")
             break
     # Read the columns from the csv file
     for row in reader:
+        print("Row: ", row)
+        # Empty row = new column
+        if(len(row) == 0):
+            continue
         if row[0] == 'Column':
-            column = Column.objects.create(column_id = uuid.uuid4(), board_id = board.id, wip_limit=row[1], color=row[2], description=row[3], title=row[4], ordernum=row[5], swimlane=row[6])
+            # Replace empty strings with None
+            for i in range(len(row)):
+                if row[i] == '':
+                    row[i] = None
+            column = Column.objects.create(columnid = uuid.uuid4(), boardid = board, wip_limit=row[1], color=row[2], description=row[3], title=row[4], ordernum=row[5], swimlane=row[6])
             # Read the swimlanecolumns from the csv file
             if column.swimlane:
                 for row in reader:
                     if row[0] == 'Swimlanecolumn':
-                        Swimlanecolumn.objects.create(swimlanecolumn_id = uuid.uuid4(), column_id = column.id, color=row[1], title=row[2], ordernum=row[3])
+                        Swimlanecolumn.objects.create(swimlanecolumnid = uuid.uuid4(), columnid = column, color=row[1], title=row[2], ordernum=row[3])
                     else:
                         break
             # Read the tickets from the csv file
             for row in reader:
+                print("Got row: ", row)
+                # Replace empty strings with None
+                for i in range(len(row)):
+                    if row[i] == '':
+                        row[i] = None
                 if row[0] == 'Ticket':
-                    ticket = Ticket.objects.create(ticket_id = uuid.uuid4(), column_id = column.id, title=row[1], description=row[2], color=row[3], storypoints=row[4], size=row[5], order=row[6], creation_date=row[7], cornernote=row[8])
+                    print("Got ticket")
+                    ticket = Ticket.objects.create(ticketid = uuid.uuid4(), columnid = column, title=row[1], description=row[2], color=row[3], storypoints=row[4], size=row[5], order=row[6], creation_date=row[7], cornernote=row[8])
                     # Read the ticket users from the csv file
                     for row in reader:
                         usergroupid = uuid.uuid4()
-                        Usergroup.objects.create(usergroup_id = usergroupid, ticket_id = ticket.id, type = 'ticket')
+                        usergroup = Usergroup.objects.create(usergroup_id = usergroupid, ticket_id = ticket.ticketid, type = 'ticket')
                         if row[0] == 'User':
-                            user = User.objects.create(user_id = uuid.uuid4(), name=row[1], color=row[2])
-                            UsergroupUser.objects.create(usergroup_id = Usergroupid, user_id=user.id)
+                            user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
+                            UsergroupUser.objects.create(usergroup_id = usergroup, userid=user)
                         else:
                             break
                     # Read the actions from the csv file
                     if column.swimlane:
                         for row in reader:
                             if row[0] == 'Action':
-                                action = Action.objects.create(action_id = uuid.uuid4(), ticket_id = ticket.id, title=row[1], color=row[2], order=row[3])
+                                action = Action.objects.create(action_id = uuid.uuid4(), ticketid = ticket, title=row[1], color=row[2], order=row[3])
                                 # Read the action users from the csv file
                                 for row in reader:
                                     usergroupid = uuid.uuid4()
-                                    Usergroup.objects.create(usergroup_id = usergroupid, action_id = action.id, type = 'action')
+                                    usergroup = Usergroup.objects.create(usergroup_id = usergroupid, action_id = action, type = 'action')
                                     if row[0] == 'User':
-                                        user = User.objects.create(user_id = uuid.uuid4(), name=row[1], color=row[2])
-                                        UsergroupUser.objects.create(usergroup_id = Usergroupid, user_id=user.id)
+                                        user = User.objects.create(userid = uuid.uuid4(), name=row[1], color=row[2])
+                                        UsergroupUser.objects.create(usergroupid = usergroup, userid=user)
                                     else:
                                         break
                             else:

@@ -31,12 +31,13 @@ def export_board_data(request, board_id, filename):
         
 
 @api_view(['POST'])
-def import_board_data(request, boardid):
+def import_board_data(request, board_id):
     """
     Import board data from a csv file
     """
-    if request.method == 'POST' and request.FILES['file']:
-        csv_file = request.FILES['file']
+    if request.method == 'POST':
+        csv_file = request.data['file']
+        print(csv_file)
         if not csv_file.name.endswith('.csv'):
             return HttpResponse('File is not a csv file')
         data_set = csv_file.read().decode('UTF-8')
@@ -46,7 +47,7 @@ def import_board_data(request, boardid):
             return HttpResponse('Invalid csv file')
         board_title = request.data['title']
         password_hash = new_password(request.data['password'])
-        read_board_data(reader, boardid, board_title, password_hash) 
+        read_board_data(reader, board_id, board_title, password_hash) 
         return HttpResponse('Board data imported')
     return HttpResponse('Invalid request')
 
