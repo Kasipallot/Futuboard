@@ -22,7 +22,7 @@ const BoardCreationForm : React.FC<AddBoardCreationFormProps> = ({ onSubmit, onC
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={1} textAlign="center" height="275px" width="250px">
+            <Grid container spacing={1} textAlign="center" height="285px" width="250px">
                 <Grid item xs={12}>
                     <Typography gutterBottom variant="h6" > Create board </Typography>
                     <Divider/>

@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import { useForm } from "react-hook-form";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-
 import { NewBoardFormImport } from "../../types";
 import styled from "@emotion/styled";
 
@@ -25,10 +24,10 @@ const VisuallyHiddenInput = styled('input')({
     left: 0,
     whiteSpace: 'nowrap',
     width: 1,
-  });
+});
 
 const BoardImportForm: React.FC<AddBoardCreationFormProps> = ({ onSubmit, onCancel }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm<NewBoardFormImport>({
+    const { register, handleSubmit, formState: { errors }, watch } = useForm<NewBoardFormImport>({
         defaultValues: {
             title: "",
             password: "",
@@ -40,42 +39,50 @@ const BoardImportForm: React.FC<AddBoardCreationFormProps> = ({ onSubmit, onCanc
         onSubmit({ ...data, file: data.file });
     };
 
+    const uploadedFileName = watch("file")?.[0]?.name;
+
     return (
         <form onSubmit={handleSubmit(handleFormSubmit)}>
-            <Grid container spacing={1} textAlign="center" height="275px" width="250px">
+            <Grid container spacing={1} textAlign="center" height="285px" width="250px">
                 <Grid item xs={12}>
-                    <Typography gutterBottom variant="h6" > Create board </Typography>
+                    <Typography gutterBottom variant="h6" > Import board </Typography>
                     <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                <TextField label="Name" helperText={errors.title?.message} error={Boolean(errors.title)} {...register("title", {
-                minLength: {
-                    value : 3,
-                    message: "Board name must be at least 3 characters"
-                },
-                maxLength: {
-                    value : 40,
-                    message: "Board name can be up to 40 characters"
-                },
-                required: {
-                    value: true,
-                    message: "Board name is required"
-                }
-                })} />
+                    <TextField label="Name" helperText={errors.title?.message} error={Boolean(errors.title)} {...register("title", {
+                        minLength: {
+                            value : 3,
+                            message: "Board name must be at least 3 characters"
+                        },
+                        maxLength: {
+                            value : 40,
+                            message: "Board name can be up to 40 characters"
+                        },
+                        required: {
+                            value: true,
+                            message: "Board name is required"
+                        }
+                    })} />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Password" {...register("password")}/>
+                    <TextField label="Password" {...register("password")} />
                 </Grid>
-                <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    tabIndex={-1}
-                    startIcon={<CloudUploadIcon />}
-                >
-                    Upload file
-                    <VisuallyHiddenInput type="file" {...register("file")} />
-                </Button>
+                <Grid item xs={12}>
+                    <Button
+                        component="label"
+                        role={undefined}
+                        variant="contained"
+                        tabIndex={-1}
+                        startIcon={<CloudUploadIcon />}
+                        sx={{ width: "84%"}}
+                    >
+                        Upload file
+                        <VisuallyHiddenInput type="file" {...register("file")} />
+                    </Button>
+                    <Typography variant="body2" color="textSecondary" style={{ marginTop: "8px" }}>
+                        Uploaded file: {uploadedFileName || "No file uploaded"}
+                    </Typography>
+                </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
                     <Button onClick={onCancel}>Cancel</Button>
@@ -85,4 +92,4 @@ const BoardImportForm: React.FC<AddBoardCreationFormProps> = ({ onSubmit, onCanc
     );
 };
 
-export default BoardImportForm; 
+export default BoardImportForm;
