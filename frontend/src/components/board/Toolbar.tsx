@@ -18,7 +18,7 @@ interface FormData {
   name: string,
 }
 
-const AddUserButton: React.FC = () => {
+export const AddUserButton: React.FC = () => {
 
   const sendMessage = useContext(WebsocketContext);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
