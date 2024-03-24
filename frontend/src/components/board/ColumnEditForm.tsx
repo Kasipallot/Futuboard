@@ -81,7 +81,7 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
     const inputRefName = useRef<HTMLInputElement>(null);
     const inputRefWipLimit = useRef<HTMLInputElement>(null);
     const inputRefWipLimitStory = useRef<HTMLInputElement>(null);
-    
+
     useEffect(() => {
         if (inputRefWipLimit.current && inputRefName.current && inputRefWipLimitStory.current) {
             switch (true) {

@@ -261,10 +261,10 @@ const Column: React.FC<ColumnProps> = ({ column, index }) => {
   const taskNum = useMemo(() => tasks.length, [tasks]);
 
   let bgColor = "#E5DBD9";
-  
+
   // change border color when task or size limit is exceeded
   if ((column.wip_limit && taskNum > column.wip_limit) || (column.wip_limit_story && sizeSum > column.wip_limit_story)) {
-    bgColor = "#FF4747"
+    bgColor = "#FF4747";
   }
   return (
     <Draggable draggableId={column.columnid} index={index}>

@@ -74,7 +74,7 @@ const CreateActionButton: React.FC<{ taskId: string, swimlanecolumnid: string }>
     setAnchorEl(null);
   };
 
-  const handleOnSubmit = async (data: { actionTitle: string }) => {
+  const handleOnSubmit = async (data: { actionTitle: string, resetActionTitle: () => void }) => {
     const actionObject: ActionType = {
       title: data.actionTitle,
       actionid: getId(),
@@ -86,7 +86,7 @@ const CreateActionButton: React.FC<{ taskId: string, swimlanecolumnid: string }>
     if (sendMessage !== null) {
       sendMessage("Action created");
     }
-    setAnchorEl(null);
+    data.resetActionTitle();
   };
 
   const open = Boolean(anchorEl);
