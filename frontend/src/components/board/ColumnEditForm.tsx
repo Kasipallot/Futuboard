@@ -37,7 +37,7 @@ const DeleteColumnButton: React.FC<DeleteColumnButtonProps> = ({ column }) => {
     return (
         <div>
             <Tooltip title="Delete Column">
-                <IconButton onClick={handleClickOpen}>
+                <IconButton sx={{ color: 'red' }} onClick={handleClickOpen}>
                     <DeleteForever />
                 </IconButton>
             </Tooltip>

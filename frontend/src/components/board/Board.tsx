@@ -6,7 +6,7 @@ import CopyToClipboardButton from "./CopyToClipBoardButton";
 import CreateColumnButton from "./CreateColumnButton";
 import { AddUserButton } from "./Toolbar";
 
-import {  useGetColumnsByBoardIdQuery, useGetBoardQuery } from "../../state/apiSlice";
+import {  useGetColumnsByBoardIdQuery} from "../../state/apiSlice";
 
 import Column from "./Column";
 

@@ -34,7 +34,7 @@ const DeleteTaskButton: React.FC<DeleteTaskButtonProps> = ({ task }) => {
     return (
         <div>
             <Tooltip title="Delete Card">
-                <IconButton onClick={handleClickOpen}>
+                <IconButton sx={{ color: 'red' }} onClick={handleClickOpen}>
                     <DeleteForever />
                 </IconButton>
             </Tooltip>
