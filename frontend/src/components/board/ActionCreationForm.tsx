@@ -6,7 +6,7 @@ import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 interface AddActionCreationFormProps {
-    onSubmit: ({ actionTitle } : {actionTitle: string}) => void,
+    onSubmit: ({ actionTitle, resetActionTitle } : {actionTitle: string, resetActionTitle: () => void}) => void,
     onCancel: () => void,
 }
 
@@ -29,14 +29,18 @@ const ActionEditForm : React.FC<AddActionCreationFormProps> = (props) => {
         onCancel,
     } = props;
 
-    const {  register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const {  register, setValue, handleSubmit, formState: { errors } } = useForm<FormData>({
         defaultValues:{
             actionTitle : ""
         }
     });
 
+    const resetActionTitle = () => {
+        setValue("actionTitle", "");
+    }
+
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((data) => onSubmit({ ...data, resetActionTitle }))}>
             <Grid container spacing={1}>
                 <Grid item xs={12}>
                     <Typography>Add action</Typography>
