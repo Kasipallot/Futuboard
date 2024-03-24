@@ -1,8 +1,8 @@
 import CreateBoardButton from "@components/home/CreateBoardButton";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
+import Typography from "@mui/material/Typography";
 import { getId } from "@services/Utils";
 import { useNavigate } from "react-router-dom";
 

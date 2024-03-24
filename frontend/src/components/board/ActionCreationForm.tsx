@@ -37,7 +37,7 @@ const ActionEditForm : React.FC<AddActionCreationFormProps> = (props) => {
 
     const resetActionTitle = () => {
         setValue("actionTitle", "");
-    }
+    };
 
     return (
         <form onSubmit={handleSubmit((data) => onSubmit({ ...data, resetActionTitle }))}>
