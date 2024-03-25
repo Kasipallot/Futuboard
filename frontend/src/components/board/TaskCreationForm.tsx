@@ -83,7 +83,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
+                    <TextField label={
+                        <span>
+                            Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
+                        </span>
+                    } inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
                         required: {
                             value: true,
                             message: "Task name is required"
