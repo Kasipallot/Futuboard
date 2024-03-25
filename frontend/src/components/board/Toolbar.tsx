@@ -1,4 +1,4 @@
-import { MoreVert } from "@mui/icons-material";
+import { MoreVert, Download } from "@mui/icons-material";
 import { AppBar, Box, Divider, IconButton, Menu, MenuItem, Paper, Popover, Toolbar, Tooltip, Typography } from "@mui/material";
 import { useState, useContext } from "react";
 import React from "react";
@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { WebsocketContext } from "@/pages/BoardContainer";
 import { useGetUsersByBoardIdQuery, usePostUserToBoardMutation } from "@/state/apiSlice";
 
+import BoardDeletionComponent from "./BoardDeletionComponent";
 import CopyToClipboardButton from "./CopyToClipBoardButton";
 import CreateColumnButton from "./CreateColumnButton";
 import HomeButton from "./HomeButton";
@@ -17,7 +18,7 @@ interface FormData {
   name: string,
 }
 
-const AddUserButton: React.FC = () => {
+export const AddUserButton: React.FC = () => {
 
   const sendMessage = useContext(WebsocketContext);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -106,7 +107,7 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
     const date = new Date();
     const timestamp = date.toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/[^a-zA-Z0-9]/g, "_");
     const filename = title + "-" + timestamp;
-    const response = await fetch(`${import.meta.env.VITE_DB_ADDRESS}/export/${boardId}/${filename}`, {
+    const response = await fetch(`${import.meta.env.VITE_DB_ADDRESS}export/${boardId}/${filename}`, {
       method: "GET",
       headers: {
         "Content-Type": "text/csv"
@@ -161,8 +162,10 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
             }}
           >
             <MenuItem onClick={handleExportAndClose} sx={{ py: 1 }}>
+              <Download sx={{ fontSize: "1rem", mr: 1 }} />
               <Typography variant="body2">Download Board CSV</Typography>
             </MenuItem>
+            <BoardDeletionComponent />
           </Menu>
         </Box>
       </Toolbar>

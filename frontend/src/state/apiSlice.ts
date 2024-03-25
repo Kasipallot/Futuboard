@@ -17,7 +17,7 @@ export const boardsApi = createApi({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ["Boards"],
         }),
-        addBoard: builder.mutation<Board, Board>({
+        addBoard: builder.mutation<Board, Board >({
             query: (board) => {
                 return ({
                     url: "boards/",
@@ -27,12 +27,18 @@ export const boardsApi = createApi({
             },
             invalidatesTags: ["Boards"],
         }),
+        deleteBoard: builder.mutation<Board, string>({
+            query: (boardId) => ({
+                url: `boards/${boardId}/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Boards"],
+        }),
 
         getColumnsByBoardId: builder.query<Column[], string>({
             query: (boardid) => `boards/${boardid}/columns/`,
             providesTags: [{ type: "Columns", id: "LIST" }],
         }),
-
         getTaskListByColumnId: builder.query< Task[], { boardId: string; columnId: string }>({
             query: ({ boardId, columnId }) => {
                 return `boards/${boardId}/columns/${columnId}/tickets`;
@@ -96,6 +102,39 @@ export const boardsApi = createApi({
                 body: { ...column, ticket_ids: ticketIds }
             }),
             invalidatesTags: ["Columns"]
+        }),
+        //optimistclly updates column order
+        updateColumnOrder: builder.mutation<Column[], { boardId: string, columns: Column[] }>({
+            query: ({ boardId, columns }) => ({
+                url: `boards/${boardId}/columns/`,
+                method: "PUT",
+                body: columns,
+            }),
+            async onQueryStarted(patchArgs: { boardId: string, columns: Column[] }, apiActions) {
+                const cacheList = boardsApi.util.selectInvalidatedBy(apiActions.getState(), [{ type: "Columns", id: "LIST" }]);
+                const patchResults: PatchCollection[] = [];
+                cacheList.forEach((cache) => {
+                    if (cache.endpointName === "getColumnsByBoardId") {
+                        const patchResult = apiActions.dispatch(
+                            boardsApi.util.updateQueryData("getColumnsByBoardId", cache.originalArgs, () => {
+                                return patchArgs.columns;
+                            })
+                        );
+                        patchResults.push(patchResult);
+                    }
+
+                });
+
+                try {
+                    await apiActions.queryFulfilled;
+                } catch {
+                    patchResults.forEach((patchResult) => {
+                        patchResult.undo();
+                    });
+                    apiActions.dispatch(boardsApi.util.invalidateTags([{ type: "Columns", id: "LIST" }]));
+                }
+
+            }
         }),
         deleteColumn: builder.mutation<Column, { column: Column }>({
             query: ({ column }) => ({
@@ -430,6 +469,7 @@ export const {
     useGetUsersByBoardIdQuery,
     useGetBoardQuery,
     useAddBoardMutation,
+    useDeleteBoardMutation,
     useGetColumnsByBoardIdQuery,
     useGetTaskListByColumnIdQuery,
     useAddColumnMutation,
@@ -437,6 +477,7 @@ export const {
     useUpdateTaskMutation,
     useDeleteTaskMutation,
     useUpdateColumnMutation,
+    useUpdateColumnOrderMutation,
     useDeleteColumnMutation,
     useLoginMutation,
     useUpdateTaskListByColumnIdMutation,

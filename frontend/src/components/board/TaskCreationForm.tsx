@@ -1,4 +1,4 @@
-import { Button, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
+import { Button, ClickAwayListener, Divider, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Typography } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
@@ -7,16 +7,18 @@ import { User } from "../../types";
 interface TaskCreationFormProps {
     onSubmit: (data: FormData) => void,
     onCancel: () => void,
+    defaultValues: FormData | null,
+    setDefaultValues: (data: FormData | null) => void
 }
 
 interface FormData {
-    taskTitle: string;
-    cornerNote: string;
-    corners: User[];
-    description: string;
-    color: string;
-    size: number | undefined;
-}
+    taskTitle: string,
+    size?: number,
+    corners?: User[],
+    description?: string,
+    cornerNote?: string,
+    color?: string,
+  }
 
 const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
     // Focus on the title field when the form is opened
@@ -28,8 +30,15 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
         }
     }, []);
 
+    const {
+        onSubmit,
+        onCancel,
+        defaultValues,
+        setDefaultValues
+    } = props;
+
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormData>({
-        defaultValues: {
+        defaultValues: defaultValues || {
             taskTitle: "",
             corners: [],
             cornerNote: "",
@@ -38,11 +47,6 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
             size: undefined,
         }
     });
-
-    const {
-        onSubmit,
-        onCancel
-    } = props;
 
     const selectedColor = watch("color");
 
@@ -54,7 +58,24 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
         onSubmit(data);
     };
 
+    const watchedValues = watch();
+
+    const onModuleClose = () => {
+        if (JSON.stringify(defaultValues) === JSON.stringify(watchedValues)) {
+            onCancel();
+            return;
+        }
+        if (setDefaultValues) {
+            setDefaultValues(watchedValues);
+        }
+    };
+
+    const onFormCancel = () => {
+        setDefaultValues(null);
+        onCancel();
+    };
     return (
+        <ClickAwayListener onClickAway={onModuleClose}>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
             <Grid container spacing={2}>
                 <Grid item xs={12}>
@@ -62,7 +83,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     <Divider />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField label="Name" inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
+                    <TextField label={
+                        <span>
+                            Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
+                        </span>
+                    } inputRef={inputRef} inputProps={{ spellCheck: "false" }} multiline fullWidth helperText={errors.taskTitle?.message} error={Boolean(errors.taskTitle)} {...register("taskTitle", {
                         required: {
                             value: true,
                             message: "Task name is required"
@@ -78,7 +103,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                    <TextField type="number" label="Size" placeholder="Size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
                         valueAsNumber: true,
                         min: {
                             value: 0,
@@ -110,10 +135,11 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                     <Button type="submit" color="primary" variant="contained">Submit</Button>
-                    <Button onClick={onCancel}>Cancel</Button>
+                    <Button onClick={onFormCancel}>Cancel</Button>
                 </Grid>
             </Grid>
         </form>
+        </ClickAwayListener>
     );
 };
 

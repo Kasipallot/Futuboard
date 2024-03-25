@@ -14,7 +14,7 @@ import { Action, Task } from "@/types";
 
 import AccessBoardForm from "../components/board/AccessBoardForm";
 import Board from "../components/board/Board";
-import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation, useUpdateActionListMutation, usePostUserToActionMutation, useUpdateUserListByActionIdMutation } from "../state/apiSlice";
+import { boardsApi, useGetBoardQuery, usePostUserToTicketMutation, useUpdateTaskListByColumnIdMutation, useUpdateUserListByTicketIdMutation, useLoginMutation, useDeleteUserMutation, useUpdateActionListMutation, usePostUserToActionMutation, useUpdateUserListByActionIdMutation, useUpdateColumnOrderMutation } from "../state/apiSlice";
 
 export const WebsocketContext = createContext<SendMessage | null>(null);
 
@@ -46,6 +46,7 @@ const BoardContainer: React.FC = () => {
   };
 
   const [updateTaskList] = useUpdateTaskListByColumnIdMutation();
+  const [updateColumns] = useUpdateColumnOrderMutation();
   const [postUserToTask] = usePostUserToTicketMutation();
   const [postUserToAction] = usePostUserToActionMutation();
   const [updateTaskUsers] = useUpdateUserListByTicketIdMutation();
@@ -59,6 +60,7 @@ const BoardContainer: React.FC = () => {
   const selectUsersByTaskId = boardsApi.endpoints.getUsersByTicketId.select;
   const selectUsersByActionId = boardsApi.endpoints.getUsersByActionId.select;
   const selectActions = boardsApi.endpoints.getActionListByTaskIdAndSwimlaneColumnId.select;
+  const selectColumns = boardsApi.endpoints.getColumnsByBoardId.select(id);
 
   const handleOnDragEnd = async (result: DropResult) => {
     const { source, destination, type, draggableId } = result;
@@ -248,6 +250,16 @@ const BoardContainer: React.FC = () => {
         await Promise.all([updateActions({ taskId: destination.droppableId.split("/")[1], swimlaneColumnId: destination.droppableId.split("/")[0], actions: nextDestinationActions ?? [] }), updateActions({ taskId: source.droppableId.split("/")[1], swimlaneColumnId: source.droppableId.split("/")[0], actions: nextSourceActions ?? [] })]);
         updatedSendMessage();
       }
+    }
+    //reordering columns
+    if(type ==="COLUMN") {
+      if (destination.index === source.index) return;
+      //select columns from state
+      const columns = selectColumns(state).data || [];
+      const dataCopy = [...columns];
+      const newOrdered = reorder(dataCopy, source.index, destination.index); //reorder column list
+      await updateColumns({ boardId: id, columns: newOrdered });
+      updatedSendMessage();
     }
   };
 

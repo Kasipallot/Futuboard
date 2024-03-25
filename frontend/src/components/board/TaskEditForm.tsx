@@ -34,7 +34,7 @@ const DeleteTaskButton: React.FC<DeleteTaskButtonProps> = ({ task }) => {
     return (
         <div>
             <Tooltip title="Delete Card">
-                <IconButton onClick={handleClickOpen}>
+                <IconButton sx={{ color: "red" }} onClick={handleClickOpen}>
                     <DeleteForever />
                 </IconButton>
             </Tooltip>
@@ -143,7 +143,11 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                             render={({ field }) => (
                                 <TextField
                                     {...field}
-                                    label="Name"
+                                    label={
+                                        <span>
+                                            Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
+                                        </span>
+                                    }
                                     multiline
                                     maxRows={3}
                                     fullWidth
@@ -161,7 +165,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                        <TextField type="number" label="Size" placeholder="Size" InputLabelProps={{ shrink: true }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
                             valueAsNumber: true,
                             min: {
                                 value: 0,

@@ -11,6 +11,8 @@ export type Column = {
     title: string;
     boardid: string;
     swimlane?: boolean;
+    wip_limit?: number | null;
+    wip_limit_story?: number | null;
 };
 
 export type ColumnData = {
@@ -38,6 +40,12 @@ export type User = {
 export type NewBoardFormData = {
     title: string;
     password: string;
+}
+
+export type NewBoardFormImport = {
+    title: string;
+    password: string;
+    file: FileList;
 }
 
 export type Action = {
