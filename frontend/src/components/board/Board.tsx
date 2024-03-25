@@ -2,13 +2,12 @@ import { Droppable } from "@hello-pangea/dnd";
 import { Box, Typography } from "@mui/material";
 import { useParams } from "react-router";
 
+import {  useGetColumnsByBoardIdQuery } from "../../state/apiSlice";
+
+import Column from "./Column";
 import CopyToClipboardButton from "./CopyToClipBoardButton";
 import CreateColumnButton from "./CreateColumnButton";
 import { AddUserButton } from "./Toolbar";
-
-import {  useGetColumnsByBoardIdQuery} from "../../state/apiSlice";
-
-import Column from "./Column";
 
 const Board: React.FC = () => {
     const { id = "default-id" } = useParams();
@@ -38,7 +37,7 @@ const Board: React.FC = () => {
                     <Typography>Add a column:</Typography>
                     <CreateColumnButton boardId={id}/>
                 </Box>
-                
+
                 <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 1, marginBottom: 1 }}>
                     <Typography>Add a user:</Typography>
                     <AddUserButton />

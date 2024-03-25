@@ -34,7 +34,7 @@ const DeleteTaskButton: React.FC<DeleteTaskButtonProps> = ({ task }) => {
     return (
         <div>
             <Tooltip title="Delete Card">
-                <IconButton sx={{ color: 'red' }} onClick={handleClickOpen}>
+                <IconButton sx={{ color: "red" }} onClick={handleClickOpen}>
                     <DeleteForever />
                 </IconButton>
             </Tooltip>
@@ -145,7 +145,7 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                                     {...field}
                                     label={
                                         <span>
-                                            Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
+                                            Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
                                         </span>
                                     }
                                     multiline

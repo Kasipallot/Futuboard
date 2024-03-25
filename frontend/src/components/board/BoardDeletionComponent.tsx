@@ -55,7 +55,7 @@ const BoardDeletionComponent = () => {
     return (
         <Box>
             <MenuItem onClick={handleOpenModal} sx={{ py: 1 }}>
-                <Delete sx={{ fontSize: "1rem", mr: 1, color: 'red' }} />
+                <Delete sx={{ fontSize: "1rem", mr: 1, color: "red" }} />
                 <Typography variant="body2">Delete Board</Typography>
             </MenuItem>
             <Dialog

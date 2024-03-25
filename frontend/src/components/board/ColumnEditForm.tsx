@@ -37,7 +37,7 @@ const DeleteColumnButton: React.FC<DeleteColumnButtonProps> = ({ column }) => {
     return (
         <div>
             <Tooltip title="Delete Column">
-                <IconButton sx={{ color: 'red' }} onClick={handleClickOpen}>
+                <IconButton sx={{ color: "red" }} onClick={handleClickOpen}>
                     <DeleteForever />
                 </IconButton>
             </Tooltip>
@@ -125,7 +125,7 @@ const ColumnEditForm : React.FC<AddColumnCreationFormProps> = (props) => {
                     <Grid item xs={12}>
                         <TextField inputRef={inputRefName} label={
                             <span>
-                                Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
+                                Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
                             </span>
                         } helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
                         minLength: {

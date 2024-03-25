@@ -48,8 +48,8 @@ const ActionEditForm : React.FC<AddActionCreationFormProps> = (props) => {
                 <Grid item xs={12}>
                 <TextField inputRef={inputRef} label={
                     <span>
-                        Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
-                    </span>    
+                        Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
+                    </span>
                 } size={"small"} helperText={errors.actionTitle?.message} error={Boolean(errors.actionTitle)} {...register("actionTitle", {
                 required: {
                     value: true,

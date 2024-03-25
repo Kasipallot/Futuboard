@@ -52,7 +52,7 @@ const ColumnCreationForm: React.FC<AddColumnCreationFormProps> = (props) => {
                 <Grid item xs={12}>
                     <TextField inputRef={inputRef} label={
                         <span>
-                            Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
+                            Name <span style={{ color: "red", fontSize: "1.2rem" }}>*</span>
                         </span>
                     } helperText={errors.columnTitle?.message} error={Boolean(errors.columnTitle)} {...register("columnTitle", {
                         required: {
