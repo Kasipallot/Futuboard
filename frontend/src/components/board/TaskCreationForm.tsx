@@ -103,7 +103,7 @@ const TaskCreationForm: React.FC<TaskCreationFormProps> = (props) => {
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField type="number" placeholder="size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
+                    <TextField type="number" label="Size" placeholder="Size" InputLabelProps={{ shrink: true, }} helperText={errors.size?.message} error={Boolean(errors.size)} {...register("size", {
                         valueAsNumber: true,
                         min: {
                             value: 0,
