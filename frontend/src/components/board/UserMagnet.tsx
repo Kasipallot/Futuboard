@@ -3,7 +3,7 @@ import { Card, IconButton, Typography } from "@mui/material";
 import { useContext } from "react";
 
 import { WebsocketContext } from "@/pages/BoardContainer";
-import { useDeleteUserMutation } from "@/state/apiSlice";
+import { useDeleteUserRecursiveMutation } from "@/state/apiSlice";
 import { User } from "@/types";
 
 interface UserMagnetProps {
@@ -13,7 +13,7 @@ interface UserMagnetProps {
 
 const UserMagnet: React.FC<UserMagnetProps> = ({ user, editable }) => {
 
-    const [deleteUser] = useDeleteUserMutation();
+    const [deleteUser] = useDeleteUserRecursiveMutation();
     const sendMessage = useContext(WebsocketContext);
     const handleDelete = async () => {
         await deleteUser({ userId: user.userid });
