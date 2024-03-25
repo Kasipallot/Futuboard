@@ -6,8 +6,11 @@ import Typography from "@mui/material/Typography";
 import { getId } from "@services/Utils";
 import { useNavigate } from "react-router-dom";
 
+import ImportBoardButton from "@/components/home/ImportBoardButton";
 import { useAddBoardMutation } from "@/state/apiSlice";
-import { Board, NewBoardFormData } from "@/types";
+import { Board, NewBoardFormData  } from "@/types";
+
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const Home: React.FC = () => {
     const navigate = useNavigate();
@@ -55,17 +58,19 @@ const Home: React.FC = () => {
 
                 </Grid>
                 <Grid item xs={12}>
-                    <CreateBoardButton onNewBoard={handleCreateBoard}/>
+                    <Grid container spacing={1} justifyContent="center">
+                        <Grid item>
+                            <CreateBoardButton onNewBoard={handleCreateBoard}/>
+                        </Grid>
+                        <Grid item>
+                            <ImportBoardButton/>
+                        </Grid>
+                    </Grid>
                 </Grid>
                 <Grid item xs={12} marginTop={"20px"}>
-                    <Grid item xs={12}>
-                        <Typography color={"black"} display="inline">
-                            Source code available at:&nbsp;
-                        </Typography>
-                        <Link href="https://github.com/Kasipallot/Futuboard" underline="hover" display="inline">
-                            GitHub
-                        </Link>
-                    </Grid>
+                    <Link href="https://github.com/Kasipallot/Futuboard" underline="hover" display="inline" color="black">
+                        <GitHubIcon />
+                    </Link>
                 </Grid>
             </Grid>
         </Box>

@@ -41,6 +41,7 @@ class Migration(migrations.Migration):
                 ('ordernum', models.IntegerField(db_column='orderNum')),
                 ('creation_date', models.DateTimeField(blank=True, null=True)),
                 ('swimlane', models.BooleanField()),
+                ('wip_limit_story', models.IntegerField(blank=True, null=True)),
             ],
             options={
                 'db_table': 'Column',

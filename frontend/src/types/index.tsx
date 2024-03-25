@@ -42,6 +42,12 @@ export type NewBoardFormData = {
     password: string;
 }
 
+export type NewBoardFormImport = {
+    title: string;
+    password: string;
+    file: FileList;
+}
+
 export type Action = {
     actionid: string;
     ticketid?: string;

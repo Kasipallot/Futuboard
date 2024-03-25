@@ -17,7 +17,7 @@ export const boardsApi = createApi({
             query: (boardId) => `boards/${boardId}/`,
             providesTags: ["Boards"],
         }),
-        addBoard: builder.mutation<Board, Board>({
+        addBoard: builder.mutation<Board, Board >({
             query: (board) => {
                 return ({
                     url: "boards/",
