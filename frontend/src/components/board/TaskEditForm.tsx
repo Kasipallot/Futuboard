@@ -143,7 +143,11 @@ const TaskEditForm: React.FC<TaskEditFormProps> = (props) => {
                             render={({ field }) => (
                                 <TextField
                                     {...field}
-                                    label="Name"
+                                    label={
+                                        <span>
+                                            Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
+                                        </span>
+                                    }
                                     multiline
                                     maxRows={3}
                                     fullWidth

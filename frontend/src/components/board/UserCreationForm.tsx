@@ -49,7 +49,11 @@ const UserCreationForm: React.FC<AddUserCreationFormProps> = (props) => {
                     <Divider/>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField inputRef={inputRef} size="small" label="Name" helperText={errors.name?.message} error={Boolean(errors.name)} {...register("name", {
+                    <TextField inputRef={inputRef} size="small" label={
+                        <span>
+                            Name <span style={{ color: 'red', fontSize: '1.2rem'}}>*</span>
+                        </span>
+                    } helperText={errors.name?.message} error={Boolean(errors.name)} {...register("name", {
                         required: {
                             value: true,
                             message: "User name is required"
