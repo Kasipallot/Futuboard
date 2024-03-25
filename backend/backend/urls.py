@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/boards/<uuid:board_id>/users/', views.get_users_from_board, name='get_users_from_board'),
     path('api/tickets/<uuid:ticket_id>/users/', views.get_users_from_ticket, name='get_users_from_ticket'),
     path('api/users/<uuid:user_id>', views.update_user, name='update_user'),
+    path('api/users/<uuid:user_id>/delete_recursive/', views.delete_user_recursive, name='delete_user_recursive'),
     path('api/tickets/<uuid:ticket_id>/users/', views.get_users_from_ticket, name='get_users_from_ticket'),
 
     path('api/actions/<uuid:action_id>/users/', swimlaneViews.get_users_from_action, name='get_users_from_action'),

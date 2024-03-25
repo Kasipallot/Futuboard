@@ -283,3 +283,39 @@ def update_user(request, user_id):
             return HttpResponse(response)
         except:
             raise Http404("User deletion failed")
+        
+@api_view(['DELETE'])
+def delete_user_recursive(request, user_id):
+    if request.method == 'DELETE':
+        try:
+            original_user = User.objects.get(pk=user_id)
+            usergroupUser = UsergroupUser.objects.get(userid=original_user)
+            usergroup = Usergroup.objects.get(usergroupid=usergroupUser.usergroupid)
+            if usergroup.type == 'board':
+                boardid = usergroup.boardid
+                columns = Column.objects.filter(boardid=boardid)
+                for column in columns:
+                    Swimlanecolumns = Swimlanecolumn.objects.filter(columnid=column)
+                    for swimlanecolumn in Swimlanecolumns:
+                        actions = Action.objects.filter(swimlanecolumnid=swimlanecolumn)
+                        for action in actions:
+                            usergroup = Usergroup.objects.get(actionid=action.actionid)
+                            usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+                            users = [group.userid for group in usergroupuser]
+                            for user in users:
+                                if(original_user.name == user.name):
+                                    user.delete()
+
+                    tickets = Ticket.objects.filter(columnid=column)
+                    for ticket in tickets:
+                        usergroup = Usergroup.objects.get(ticketid=ticket.ticketid)
+                        usergroupuser = UsergroupUser.objects.filter(usergroupid=usergroup)
+                        users = [group.userid for group in usergroupuser]
+                        for user in users:
+                            if(original_user.name == user.name):
+                                user.delete()
+            response = u'Successfully deleted user: {}'.format(user_id)
+            user.delete()
+            return HttpResponse(response)
+        except:
+            raise Http404("User deletion failed")
