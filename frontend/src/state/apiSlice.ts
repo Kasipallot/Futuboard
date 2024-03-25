@@ -312,7 +312,7 @@ export const boardsApi = createApi({
                 url: `users/${userId}/delete_recursive/`,
                 method: "DELETE",
             }),
-            invalidatesTags: [{ type: "Users", id: "USERLIST" }],
+            invalidatesTags: ["Users"],
         }),
         updateUserListByTicketId: builder.mutation<User[], { ticketId: string; users: User[]}>({
             query: ({ ticketId, users }) => ({
