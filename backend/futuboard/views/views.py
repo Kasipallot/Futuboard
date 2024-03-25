@@ -290,9 +290,8 @@ def delete_user_recursive(request, user_id):
         try:
             original_user = User.objects.get(pk=user_id)
             usergroupUser = UsergroupUser.objects.get(userid=original_user)
-            usergroup = Usergroup.objects.get(usergroupid=usergroupUser.usergroupid)
-            if usergroup.type == 'board':
-                boardid = usergroup.boardid
+            if usergroupUser.usergroupid.type == 'board':
+                boardid = usergroupUser.usergroupid.boardid
                 columns = Column.objects.filter(boardid=boardid)
                 for column in columns:
                     Swimlanecolumns = Swimlanecolumn.objects.filter(columnid=column)
@@ -305,7 +304,6 @@ def delete_user_recursive(request, user_id):
                             for user in users:
                                 if(original_user.name == user.name):
                                     user.delete()
-
                     tickets = Ticket.objects.filter(columnid=column)
                     for ticket in tickets:
                         usergroup = Usergroup.objects.get(ticketid=ticket.ticketid)
@@ -315,7 +313,8 @@ def delete_user_recursive(request, user_id):
                             if(original_user.name == user.name):
                                 user.delete()
             response = u'Successfully deleted user: {}'.format(user_id)
-            user.delete()
+            original_user.delete()
             return HttpResponse(response)
-        except:
+        except Exception as e:
+            print(e)
             raise Http404("User deletion failed")
