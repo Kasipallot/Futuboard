@@ -106,7 +106,7 @@ const ToolBar = ({ title, boardId }: ToolBarProps) => {
   const handleExport = async () => {
     const date = new Date();
     const timestamp = date.toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }).replace(/[^a-zA-Z0-9]/g, "_");
-    const filename = title + "-" + timestamp;
+    const filename = title.replace(/ /g, "_") + "-" + timestamp;
     const response = await fetch(`${import.meta.env.VITE_DB_ADDRESS}export/${boardId}/${filename}/`, {
       method: "GET",
       headers: {
