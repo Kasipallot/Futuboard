@@ -307,7 +307,13 @@ export const boardsApi = createApi({
             }),
             invalidatesTags: [{ type: "Users", id: "USERLIST" }],
         }),
-
+        deleteUserRecursive: builder.mutation<User, { userId: string }>({
+            query: ({ userId }) => ({
+                url: `users/${userId}/delete_recursive/`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Users"],
+        }),
         updateUserListByTicketId: builder.mutation<User[], { ticketId: string; users: User[]}>({
             query: ({ ticketId, users }) => ({
                 url: `tickets/${ticketId}/users/`,
@@ -486,6 +492,7 @@ export const {
     usePostUserToTicketMutation,
     useUpdateUserListByTicketIdMutation,
     useDeleteUserMutation,
+    useDeleteUserRecursiveMutation,
     useGetSwimlaneColumnsByColumnIdQuery,
     useUpdateSwimlaneColumnMutation,
     useGetActionListByTaskIdAndSwimlaneColumnIdQuery,

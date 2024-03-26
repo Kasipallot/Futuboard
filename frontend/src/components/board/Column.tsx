@@ -2,6 +2,7 @@ import { Draggable, Droppable, DroppableProvided, DroppableStateSnapshot } from 
 import { Edit } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Box, Dialog, DialogContent, Divider, IconButton, List, Popover, Tooltip, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useMemo, useState, useContext } from "react";
@@ -278,9 +279,15 @@ const Column: React.FC<ColumnProps> = ({ column, index }) => {
             <div {...provided.dragHandleProps} style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant={"h5"} noWrap gutterBottom sx={{ paddingLeft: "3px", color: "#2D3748" }}>{column.title}</Typography>
               <EditColumnButton column={column} />
-              {isSwimlaneColumn && <IconButton color="primary" aria-label="expand swimlane" onClick={() => setShowSwimlanes(!showSwimlanes)}>
-                <ArrowForwardIosIcon />
-              </IconButton>}
+              {isSwimlaneColumn && (
+                <IconButton
+                  color="primary"
+                  aria-label="expand swimlane"
+                  onClick={() => setShowSwimlanes(!showSwimlanes)}
+                >
+                  {showSwimlanes ? <ArrowBackIosIcon /> : <ArrowForwardIosIcon />}
+                </IconButton>
+              )}
             </div>
             <Divider />
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingRight: "13px", paddingBottom: "4px", paddingTop: "4px" }}>
