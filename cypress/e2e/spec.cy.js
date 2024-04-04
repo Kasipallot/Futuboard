@@ -1,3 +1,4 @@
+
 describe('Futuboard Home Page Test', () => {
   it('should have the correct title', () => {
     // Visit the Futuboard URL
@@ -117,3 +118,7 @@ describe('Board Creation and Task Management Test', () => {
 
       });
     });
+    
+
+//To do lisää jokaiselle Before Each että se suorittaa jotain sitten voi tehdä testejä
+
