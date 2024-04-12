@@ -69,7 +69,6 @@ After this the backend server can be run using:
 ```
 python3 manage.py runserver 
 ```
-Websocketit saa paikallisesti käyntiin alla olevalla komennolla. Sijoita PORT osion kohdalle portti, jossa haluat websoketin pyörivän.
 Websockets can be enabled locally using the command below, replace PORT with your desired port.
 ```
 daphne -p PORT backend.asgi:application  
