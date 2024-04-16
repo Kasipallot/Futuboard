@@ -1,3 +1,4 @@
+
 describe('Futuboard Home Page Test', () => {
   it('should have the correct title', () => {
     // Visit the Futuboard URL
@@ -98,6 +99,12 @@ describe('Board Creation and Task Management Test', () => {
     cy.get('input[name="cornerNote"]').type('Critical');
     cy.contains('button', 'Submit').click();
 
+    cy.get('[data-testid="ArrowForwardIosIcon"]').click();
+    // First, locate the column with the "To Do" text, then find the "Add" button within it.
+    cy.get('[data-testid="AddIcon"]').eq(2).click();
+    cy.get('label').contains('Name').next('div').find('input').type('Syödä');
+    cy.get('button').contains('Submit').click();
+
     //Downloading the CSV
     cy.get('[data-testid="MoreVertIcon"]').click();
     cy.get('[data-testid="DownloadIcon"]').click();
@@ -111,3 +118,7 @@ describe('Board Creation and Task Management Test', () => {
 
       });
     });
+    
+
+//To do lisää jokaiselle Before Each että se suorittaa jotain sitten voi tehdä testejä
+
