@@ -143,39 +143,56 @@ daphne -p PORT backend.asgi:application
 ## Instructions for future developers
 
 # Technologies
+> [!NOTE]
+> Need to add links to documentations here.
+
+Here are some technologies used in the project and brief justifications:
 
 ## Frontend
 
 ### React - TypeScript
 
+React is a popular JavaScript library that offers extensive documentation and flexible interoperability with other libraries.
+
+TypeScript provides type safety and improves the readability and understanding of the program.
+
 ### Vite
+
+Vite provides a fast and efficient development environment and an optimized production process for the frontend.
 
 ### Redux Toolkit - RTK Query
 
-### Styling: MaterialUI
+Redux is a state management method familiar to many team members, suitable for scalable project state management needs. Because using Redux can be complex, the Redux Toolkit and RTK Query have been adopted to make the use of Redux smoother and more efficient.
+
+### Style Library: MaterialUI
+
+We decided to use a ready-made component library to avoid unnecessary time wastage on styling. MaterialUI allows us to easily give our application a proper appearance.
 
 ### React-beautiful-dnd
 
-### Testing
+React beautiful dnd makes it easy to move elements in lists, which should be well-suited for this project. It provides neat animations and extensive documentation.
+
+React-beautiful dnd turned out not to be the smartest choice for this project as it works well only with lists.
+
+### Frontend testing
+For frontend unit tests we use Jest and react-testing-library and for end-to-end testing we use Cypress
 
 ### ESLint
 
-## Other technologies
+ESLint helps developers identify and fix code quality and style issues, ensure compliance with coding standards, and detect errors and bugs in early development stages. It allows teams to define a consistent code style and maintain code quality in their projects.
 
-### Backend: Django
+## Other Technologies
 
-### Cloud: Azure
+### Backend technology: Django
+
+Django offers comprehensive documentation and support, scalability, a fast and dynamic framework for software development, and tools for database management and logic building.
+
+### Cloud Service: Azure
+
+Azure provides a scalable and secure cloud for project development. It offers the necessary database options and tools for maintaining web applications. The price level also seems to be affordable in Azure, where there are many free features and $100 free credits are offered to students. The documentation also appeared to be clear.
 
 ### Database: PostgreSQL
 
-# Architechture
-
-# Quality Goals
-
-## PUBS First
-
-## Definition of done
-
-## Measuring quality
+Since we chose Django as our framework, it is natural to select PostgreSQL as our database, as Django provides PostgreSQL-specific tools for communication and numerous data types that operate only in PostgreSQL. Additionally, PostgreSQL offers diverse features that Django supports.
 
 # Deployment instructions
