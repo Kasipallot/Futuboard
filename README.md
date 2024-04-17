@@ -18,6 +18,26 @@ From the front page the user can either create a new blank board or import a new
 
 When the user creates a new board the tool asks for the name of the board and for an optional password. Creating the board will redirect the user to the newly created board. If the board had a password, then the user will have to enter it first.
 
+## Features
+
+* The user can create a board with a name and optional password
+* The user gets a link to the board, which they have to store personally
+* The user can create a Column
+* The column can be given a name and whether or not it contains swimlane columns
+* After creation the name of the column can be changed
+* Tickets can be created in a column
+* A tickets name, story points, corner notes, description and color can be chosen.
+* Tickets in Columns containing swimlanes can be given actions with descriptions
+* Tickets can be moved between columns and columns can be moved
+* Actions can be moved between swimlane columns
+* Actions, tickets and columns can be deleted
+* A user can create new user magnets
+* A user magnet can be placed on a ticket or action
+* Users, tickets, columns and actions can be deleted
+* The data of the board can be exported in a CSV file
+* A board can be deleted
+* A new board can be imported from a previously exported CSV file
+
 # Instructions for local development
 
 The following sections include information about how to start using the tool in a local development environment and about how the project file structure and libraries work.
