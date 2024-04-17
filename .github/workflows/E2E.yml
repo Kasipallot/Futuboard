@@ -1,13 +1,30 @@
-stages:
-  - test
+name: Cypress E2E Tests
 
-test:
-  image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
-  stage: test
-  script:
-    # install dependencies
-    - npm ci
-    # start the server in the background
-    - npm start &
-    # run Cypress tests
-    - npx cypress run --browser firefox
+on:
+  push:
+    branches: [ main, development ]
+  pull_request:
+    branches: [ main, development ]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start the server
+        run: npm start &
+
+      - name: Run Cypress tests
+        run: npx cypress run --browser firefox
