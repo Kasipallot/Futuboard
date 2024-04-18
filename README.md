@@ -10,6 +10,8 @@
 * Allows for automatic visualizations and statistics about the progress of work.
 * Allows for an easier to use platform then alternative tools with the same features.
 
+This README includes a users manual, instructions for setting up development, information about what we've used to create this project with documentation links and guides on deploying your own instance.
+
 # Usage
 
 The current version of the tool is found at [the Futuboard Website](https://futuboard.live)
@@ -90,6 +92,25 @@ The following sections include information about how to start using the tool in 
 
 ## Getting started in a local environment
 
+### Environment variables
+
+You will need an environment variable file (.env) in the frontend folder for the frontend and in the root folder for the backend.
+
+In the frontend folder .env place:
+* VITE_DB_ADDRESS = "your backend address"
+* VITE_WEBSOCKET_ADDRESS = "your websocket address"
+
+In the backend .env in root place:
+* DB_NAME="Your database name"
+* DB_USER="Your database user"
+* DB_PASSWORD="Your database password"
+* DB_HOST="Your database host"
+* DB_PORT="Your database port"
+* DB_SCHEMA="Your database schema", this is in case two instances of the website with seperate database schemas are needed to run.
+
+Another way for you to get the backend running will be to fix the django database settings to your liking.
+
+
 ### Frontend
 
 First make sure that you have at least v20 of node installed on your computer.
@@ -128,8 +149,6 @@ After this you can install required packages by running:
 cd backend/
 pip install -r requirements.txt
 ```
-> [!NOTE]
-> Instructions for creating backend .env needs to be added here
 
 After this the backend server can be run using:
 ```
@@ -143,8 +162,6 @@ daphne -p PORT backend.asgi:application
 ## Instructions for future developers
 
 # Technologies
-> [!NOTE]
-> Need to add links to documentations here.
 
 Here are some technologies used in the project and brief justifications:
 
@@ -156,23 +173,33 @@ React is a popular JavaScript library that offers extensive documentation and fl
 
 TypeScript provides type safety and improves the readability and understanding of the program.
 
+[React - Typescript documentation](https://www.typescriptlang.org/docs/handbook/react.html)
+
 ### Vite
 
 Vite provides a fast and efficient development environment and an optimized production process for the frontend.
+
+[Vite Guide](https://vitejs.dev/guide/)
 
 ### Redux Toolkit - RTK Query
 
 Redux is a state management method familiar to many team members, suitable for scalable project state management needs. Because using Redux can be complex, the Redux Toolkit and RTK Query have been adopted to make the use of Redux smoother and more efficient.
 
+[Redux Toolkit Usage Guide](https://redux-toolkit.js.org/usage/usage-guide)
+
+[RTK Query Overview](https://redux-toolkit.js.org/rtk-query/overview)
+
 ### Style Library: MaterialUI
 
 We decided to use a ready-made component library to avoid unnecessary time wastage on styling. MaterialUI allows us to easily give our application a proper appearance.
+
+[MaterialUI documentation](https://mui.com/material-ui/getting-started/)
 
 ### React-beautiful-dnd
 
 React beautiful dnd makes it easy to move elements in lists, which should be well-suited for this project. It provides neat animations and extensive documentation.
 
-React-beautiful dnd turned out not to be the smartest choice for this project as it works well only with lists.
+[React-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd)
 
 ### Frontend testing
 For frontend unit tests we use Jest and react-testing-library and for end-to-end testing we use Cypress
@@ -181,18 +208,77 @@ For frontend unit tests we use Jest and react-testing-library and for end-to-end
 
 ESLint helps developers identify and fix code quality and style issues, ensure compliance with coding standards, and detect errors and bugs in early development stages. It allows teams to define a consistent code style and maintain code quality in their projects.
 
+[ESLint documentation](https://eslint.org/docs/latest/)
+
 ## Other Technologies
 
 ### Backend technology: Django
 
-Django offers comprehensive documentation and support, scalability, a fast and dynamic framework for software development, and tools for database management and logic building.
+Django offers comprehensive documentation and support, scalability, a fast and dynamic framework for software development, and tools for database management and logic building. More specifically the project uses the django-rest-framework.
+
+[Django documentation](https://docs.djangoproject.com/en/5.0/)
+
+[Rest Framework](https://www.django-rest-framework.org/)
 
 ### Cloud Service: Azure
 
 Azure provides a scalable and secure cloud for project development. It offers the necessary database options and tools for maintaining web applications. The price level also seems to be affordable in Azure, where there are many free features and $100 free credits are offered to students. The documentation also appeared to be clear.
 
+[Azure Documentation](https://learn.microsoft.com/en-us/azure/?product=popular)
+
 ### Database: PostgreSQL
 
 Since we chose Django as our framework, it is natural to select PostgreSQL as our database, as Django provides PostgreSQL-specific tools for communication and numerous data types that operate only in PostgreSQL. Additionally, PostgreSQL offers diverse features that Django supports.
 
+[PostgreSQL documentation](https://www.postgresql.org/docs/)
+
+### Backend Unit Testing: PyTest
+
+We decided to use PyTest for backend unit testing due to its simplicity and previous experience using it.
+
+[PyTest documentation](https://docs.pytest.org/en/7.1.x/contents.html)
+
 # Deployment instructions
+
+Deployment instructions:
+
+Deployment to Azure and other SaaS platforms
+
+## Frontend
+
+Create a new static web app
+
+Use the subscription and resource group of your choice. Name the application as you wish and select a subscription suitable for your use. Choose GitHub as the deployment style and follow Azure's instructions correctly for selecting the GitHub repository.
+
+Choose React as the build preset. Change the App Location to /frontend and the build location to dist.
+
+Advanced settings do not need to be changed.
+
+After this, you can create the application and follow Azure's instructions to completion.
+
+In order for the frontend to function as desired, you still need to add environment variables. For the backend, you need to add the variable VITE_DB_ADDRESS: "your backend address". For websockets, you need to add the variable VITE_WEBSOCKET_ADDRESS: "your websocket address"
+These variables can be set, for example, in the GitHub workflow file. Once Azure has completed the deployment, a new workflow file will appear in GitHub (/.github/workflows). An env section needs to be added to this file.
+
+## Backend
+
+Deployment of the backend can be accomplished through Azure's App Service Web App. Create a new Web App. Choose the subscription and resource group you prefer. Also, name your application.
+
+The publish style is code and the runtime stack is Python 3.9. Newer Python versions may not work. After this, choose your preferred region and agreement. Then, from the deployment section, continuous deployment must be activated. Choose the correct GitHub folder for this. After these settings, you are ready to proceed from this view. Leave all other values at their defaults and create the Web App. This will create a new workflow file in GitHub again. At this stage, change all the initial commands in the file’s working-directory: ./backend. Also change the paths in the path to include backend.
+
+Once the Azure deployment is complete, more important settings can be set. From the CORS section, set allowed origins to all (*). However, if the application is no longer in development, set valid CORS values here. If you want to use websockets, add the following command to the startup command section of the configuration: daphne -b 0.0.0.0 -p 8000 backend.asgi:application.
+
+In the environment variables section, you need to include all the used env variables:
+![image](https://github.com/Kasipallot/Futuboard/assets/135588324/4679f713-0983-42c3-8ef9-504e134359e3)
+
+
+DB-prefixed variables are database variables. The value of SCM_DO_BUILD_DURING_DEPLOYMENT should be 1 to ensure the deployment works as intended. After this, restart the application from Azure.
+
+### Database creation
+
+Create a new database using Azure's default settings. After this...
+>[!NOTE]
+>Someone needs to fill this in!
+
+### Common issues:
+
+If changes are not visible in the backend or it does not work for some reason, it is advisable in Azure to "kill" the application and keep it turned off for about 10 minutes. Then restart it. If you do not wait long enough, the application may not actually have shut down.
