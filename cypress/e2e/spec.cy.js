@@ -2,7 +2,7 @@
 describe('Futuboard Home Page Test', () => {
   it('should have the correct title', () => {
     // Visit the Futuboard URL
-    cy.visit('https://ashy-sea-0c7c52603.4.azurestaticapps.net');
+    cy.visit('https://futuboard.live');
 
     // Assert that the page title is "FutuBoard"
     cy.get('.MuiTypography-root').should('contain', 'FutuBoard');
@@ -13,7 +13,7 @@ describe('Board Creation and Task Management Test', () => {
 
   beforeEach(() => {
     // Visit the Futuboard URL before each test
-    cy.visit('https://ashy-sea-0c7c52603.4.azurestaticapps.net');
+    cy.visit('https://futuboard.live');
   });
 
   it('should create a board, add columns, tasks, and manage users', () => {
@@ -37,7 +37,7 @@ describe('Board Creation and Task Management Test', () => {
 
     // Add a new column for "To Do" tasks
     cy.get('button[aria-label="add column"]').click();
-    cy.get('.MuiDialog-root').find('label').contains('Name').parent().find('input').type('To Do');
+    cy.get('.MuiDialog-root').find('label').contains('Name').parent().type('To Do');
     cy.get('.MuiDialog-root').contains('button', 'Submit').click();
 
     // Edit the "To Do" column to set work-in-progress limits
@@ -50,7 +50,7 @@ describe('Board Creation and Task Management Test', () => {
     // Add a task to the "To Do" column
     cy.get('button[aria-label="add task"]').click();
     cy.get('textarea[name="taskTitle"]').type('Design Homepage');
-    cy.get('input[placeholder="size"]').type('3');
+    cy.get('input[placeholder="Size"]').type('3');
     cy.get('textarea[name="description"]').type('Create a mockup for the homepage');
     cy.get('input[name="cornerNote"]').type('Urgent');
     cy.contains('button', 'Submit').click();
@@ -58,7 +58,7 @@ describe('Board Creation and Task Management Test', () => {
     // Edit the task to update details
     cy.get('[data-testid="EditNoteIcon"]').click();
     cy.get('textarea[name="taskTitle"]').clear().type('Design Homepage - Revised');
-    cy.get('input[placeholder="size"]').clear().type('4');
+    cy.get('input[placeholder="Size"]').clear().type('4');
     cy.get('textarea[name="description"]').clear().type('Update the homepage mockup with new requirements');
     cy.get('input[name="cornerNote"]').clear().type('High Priority');
     cy.contains('button', 'Save Changes').click();
@@ -66,7 +66,7 @@ describe('Board Creation and Task Management Test', () => {
     // Add another task to the "To Do" column
     cy.get('button[aria-label="add task"]').click();
     cy.get('textarea[name="taskTitle"]').clear().type('Research Competitors');
-    cy.get('input[placeholder="size"]').clear().type('2');
+    cy.get('input[placeholder="Size"]').clear().type('2');
     cy.get('textarea[name="description"]').clear().type('Analyze competitor websites for features and design');
     cy.get('input[name="cornerNote"]').clear().type('Normal');
     cy.contains('button', 'Submit').click();
@@ -87,14 +87,14 @@ describe('Board Creation and Task Management Test', () => {
 
   // Add a new column for "In Progress" tasks
     cy.get('button[aria-label="add column"]').click();
-    cy.get('.MuiDialog-root').find('label').contains('Name').parent().find('input').type('In Progress');
+    cy.get('.MuiDialog-root').find('label').contains('Name').parent().type('In Progress');
     cy.get('.MuiCheckbox-root').click(); // Optionally check a checkbox if needed
     cy.get('.MuiDialog-root').contains('button', 'Submit').click();
     
     // Add a task to the "In Progress" column
     cy.get('button[aria-label="add task"]').eq(1).click(); // Use eq(1) to click the second "Add task" button
     cy.get('textarea[name="taskTitle"]').type('Develop Homepage');
-    cy.get('input[placeholder="size"]').type('5');
+    cy.get('input[placeholder="Size"]').type('5');
     cy.get('textarea[name="description"]').type('Implement the homepage based on the design mockup');
     cy.get('input[name="cornerNote"]').type('Critical');
     cy.contains('button', 'Submit').click();
@@ -102,8 +102,9 @@ describe('Board Creation and Task Management Test', () => {
     cy.get('[data-testid="ArrowForwardIosIcon"]').click();
     // First, locate the column with the "To Do" text, then find the "Add" button within it.
     cy.get('[data-testid="AddIcon"]').eq(2).click();
-    cy.get('label').contains('Name').next('div').find('input').type('Syödä');
+    cy.get('label').contains('Name').type('Syödä');
     cy.get('button').contains('Submit').click();
+    cy.get('button').contains('Cancel').click();
 
     //Downloading the CSV
     cy.get('[data-testid="MoreVertIcon"]').click();
@@ -118,7 +119,3 @@ describe('Board Creation and Task Management Test', () => {
 
       });
     });
-    
-
-//To do lisää jokaiselle Before Each että se suorittaa jotain sitten voi tehdä testejä
-
