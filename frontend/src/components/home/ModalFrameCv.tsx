@@ -74,7 +74,7 @@ const ModalFrameCv = () => {
                         },
                     }}
                 />
-                <img style={inlineStyles.CVImage} id='CV-image' alt='a picture of our cv' src='/src/assets/Team_Kasipallot_CV.png' />
+                <img style={inlineStyles.CVImage} id='CV-image' alt='a picture of our cv' src='/Team_Kasipallot_CV.png' />
             </div>
         </>
     );
