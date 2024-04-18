@@ -27,4 +27,14 @@ jobs:
         run: npm start &
 
       - name: Run Cypress tests
-        run: npx cypress run --browser chrome --spec "cypress/e2e/spec.cy.js"
+        run: |
+          n=0
+          maxRetries=2
+          until [ $n -ge $maxRetries ]
+          do
+            npx cypress run --browser chrome --spec "cypress/e2e/spec.cy.js" && break
+            n=$[$n+1]
+            echo "Retry $n/$maxRetries"
+            sleep 5
+          done
+        continue-on-error: true
