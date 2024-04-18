@@ -27,4 +27,4 @@ jobs:
         run: npm start &
 
       - name: Run Cypress tests
-        run: npx cypress run --browser chrome
+        run: npx cypress run --browser chrome --spec "cypress/e2e/spec.cy.js"

@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import { getId } from "@services/Utils";
 import { useNavigate } from "react-router-dom";
 
+import ModalFrameCv from "@/components/home/ModalFrameCv";
 import ImportBoardButton from "@/components/home/ImportBoardButton";
 import { useAddBoardMutation } from "@/state/apiSlice";
 import { Board, NewBoardFormData  } from "@/types";
@@ -68,9 +69,16 @@ const Home: React.FC = () => {
                     </Grid>
                 </Grid>
                 <Grid item xs={12} marginTop={"20px"}>
-                    <Link href="https://github.com/Kasipallot/Futuboard" underline="hover" display="inline" color="black">
-                        <GitHubIcon />
-                    </Link>
+                    <Grid container spacing={3} justifyContent="center" alignItems="center">
+                        <Grid item>
+                            <Link href="https://github.com/Kasipallot/Futuboard" underline="hover" display="inline" color="black">
+                                <GitHubIcon />
+                            </Link>
+                        </Grid>
+                        <Grid item>
+                            <ModalFrameCv />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </Grid>
         </Box>
