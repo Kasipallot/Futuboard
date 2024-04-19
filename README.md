@@ -1,6 +1,3 @@
-> [!NOTE]
-> The readme is work in progress.
-
 # Introduction
 
 * Our goal is to make a free, easy to use and open source web tool for team workflow management
@@ -275,9 +272,19 @@ DB-prefixed variables are database variables. The value of SCM_DO_BUILD_DURING_D
 
 ### Database creation
 
-Create a new database using Azure's default settings. After this...
->[!NOTE]
->Someone needs to fill this in!
+You can create database migrations in django using
+```
+python3 manage.py makemigrations
+```
+And then to apply made migrations run:
+```
+python3 manage.py migrate
+```
+If you want django to run the migrations, switched managed to true in created migration file, otherwise keep as it is.
+
+To setup the database in Azure, follow this guide:
+
+[Azure database creation guide](https://learn.microsoft.com/en-us/azure/azure-sql/database/single-database-create-quickstart?view=azuresql&tabs=azure-portal)
 
 ### Common issues:
 
