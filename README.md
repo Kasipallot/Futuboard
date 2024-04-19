@@ -199,7 +199,8 @@ React beautiful dnd makes it easy to move elements in lists, which should be wel
 [React-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd)
 
 ### Frontend testing
-For frontend unit tests we use Jest and react-testing-library and for end-to-end testing we use Cypress
+
+We currently do not have any frontend unit tests, but we run end-to-end testing using cypress.
 
 ### ESLint
 
@@ -280,7 +281,7 @@ And then to apply made migrations run:
 ```
 python3 manage.py migrate
 ```
-If you want django to run the migrations, switched managed to true in created migration file, otherwise keep as it is.
+If you want django to run the migrations, switch "managed" to "true" in the created migration file, otherwise keep as it is.
 
 To setup the database in Azure, follow this guide:
 
