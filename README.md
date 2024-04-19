@@ -240,7 +240,7 @@ We decided to use PyTest for backend unit testing due to its simplicity and prev
 
 Deployment instructions:
 
-Deployment to Azure and other SaaS platforms
+Deployment to Azure and other PaaS platforms
 
 ## Frontend
 
